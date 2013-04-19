@@ -1,0 +1,88 @@
+\usepackage{xcolor}
+
+% Char literal
+\colorlet{Char}{black}
+
+% Numeral literal
+\colorlet{Numeral}{Char}
+
+% Keyword
+\colorlet{Keyword}{red!50!black}
+
+% Module identifier
+\colorlet{ModId}{Char}
+
+% Variable identifier and symbol
+\colorlet{VarId}{Char}
+\colorlet{VarSym}{VarId}
+
+% Data constructor identifier and symbol
+\colorlet{ConId}{VarId}
+\colorlet{ConSym}{ConId}
+
+% Type variable identifier
+\colorlet{TVarId}{green!45!black}
+
+% Type constructor identifier
+\colorlet{TConId}{TVarId}
+\colorlet{TConSym}{TConId}
+
+% Type class identifier
+\colorlet{TClassId}{TVarId}
+
+% Comment
+\colorlet{Comment}{blue!45!black}
+
+\newcommand\Char[1]{\textcolor{Char}{\texttt{#1}}}
+
+% Numeral literal
+\newcommand\Numeral[1]{\textcolor{Numeral}{\mathsf{#1}}}
+
+% Keyword
+\newcommand\Keyword[1]{\textcolor{Keyword}{\textbf{\textsf{#1}}}}
+
+% Module identifier
+\newcommand\ModId[1]{\mathord{\textcolor{ModId}{\mathsf{#1}}}}
+
+% Variable identifier and symbol
+\newcommand\VarId[1]{\mathord{\textcolor{VarId}{#1}}}
+\let\Varid\VarId
+\newcommand\VarSym[1]{\mathbin{\textcolor{VarSym}{#1}}}
+
+% Data constructor identifier and symbol
+\newcommand\ConId[1]{\mathord{\textcolor{ConId}{\mathsf{#1}}}}
+\let\Conid\ConId
+\newcommand\ConSym[1]{\mathbin{\textcolor{ConSym}{\mathsf{#1}}}}
+
+% Type variable identifier
+\newcommand\TVarId[1]{\mathord{\textcolor{TVarId}{\mathsf{#1}}}}
+
+% Type constructor identifier
+\newcommand\TConId[1]{\mathord{\textcolor{TConId}{\mathsf{#1}}}}
+% \newcommand\TConSym[1]{\mathbin{#1}}
+\newcommand\TConSym[1]{\mathbin{\textcolor{TConSym}{\mathsf{#1}}}}
+
+% Type class identifier
+\newcommand\TClassId[1]{\mathord{\textcolor{TClassId}{\textit{\textsf{#1}}}}}
+
+% Comment
+\newcommand\Comment[1]{\textcolor{Comment}{\textit{\textsf{#1}}}}
+
+% Package identifier (used in text, not code/math environment)
+\newcommand\PkgId[1]{\textcolor{Char}{\texttt{#1}}}
+
+
+%subst numeral a                = "\Numeral{" a "}"
+%subst char a    	        = "\Char{''" a "''}"
+%subst string a  	        = "\Char{\char34 " a "\char34}"
+
+%subst keyword a                = "\Keyword{" a "}"
+%subst varsym a                 = "\VarSym{" a "}"
+%subst consym a                 = "\ConSym{" a "}"
+
+% Comments: one-line, nested, pragmas
+
+%subst comment a                = "\Comment{-{}-\enskip" a "}"
+%subst nested a	                = "\Comment{\{-\enskip" a "\enskip-\}}"
+%subst pragma a                 = "\Comment{\{-\#\enskip" a "\enskip\#-\}}"
+

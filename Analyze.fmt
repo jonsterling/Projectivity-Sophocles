@@ -1,0 +1,58 @@
+%include polycode.fmt
+%include spacing.fmt
+%include colors.fmt
+
+\newcommand{\FN}{\mathsf}
+\newcommand{\comment}[1]{\marginpar{#1}}
+\newcommand{\ignore}[1]{}
+
+%subst keyword a = "\mathkw{" a "}"
+%subst conid a = "\mathsf{" a "}"
+
+%format a = "\alpha"
+%format b = "\beta"
+%format phi = "\phi"
+%format id = "\FN{id}"
+%format . = "\circ"
+%format <*> = "\circledast "
+%format <$> = "\mathop{\langle\$\rangle}"
+%format pure = "\FN{pure}"
+%format traverse = "\FN{traverse}"
+%format uncurry = "\FN{uncurry}"
+%format fmap = "\FN{fmap}"
+%format ap = "\FN{ap}"
+%format return = "\FN{return}"
+%format snd = "\FN{snd}"
+%format *** = "\times "
+%format mappend x y = x "\oplus" y
+%format mempty = "\mathcal{E}"
+%format fst = "\FN{fst}"
+%format find = "\FN{find}"
+%format minimum = "\FN{minimum}"
+%format maximum = "\FN{maximum}"
+%format notElem (x) (xs) = x "\notin" xs
+%format fold = "\FN{fold}"
+%format foldl = "\FN{foldl}"
+
+%format :-: = "\leftrightarrow"
+%format :| = "\lhd"
+%format getCrosses = "\FN{getCrosses}"
+%format getRange = "\FN{getRange}"
+%format getLabel = "\FN{getLabel}"
+%format RangeZero = "\FN{R_\emptyset}"
+%format Node (f) (g) = f "\curvearrowright" g
+
+%format rangesIntersect = "\FN{rangesIntersect}"
+%format rangeFrom = "\FN{rangeFrom}"
+%format analyzePath = "\FN{analyzePath}"
+%format analyzeTree = "\FN{analyzeTree}"
+%format treeOrPath = "\FN{treeOrPath}"
+%format extend = "\FN{extend}"
+%format inRange = "\FN{inRange}"
+%format maximalPoint = "\FN{maximalPoint}"
+%format rangeFrom = "\FN{rangeFrom}"
+
+%format associativity = "\FN{associativity}"
+%format leftIdentity = "\FN{leftIdentity}"
+%format rightIdentity = "\FN{rightIdentity}"
+

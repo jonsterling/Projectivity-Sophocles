@@ -1,0 +1,616 @@
+\documentclass{article}
+%% ODER: format ==         = "\mathrel{==}"
+%% ODER: format /=         = "\neq "
+%
+%
+\makeatletter
+\@ifundefined{lhs2tex.lhs2tex.sty.read}%
+  {\@namedef{lhs2tex.lhs2tex.sty.read}{}%
+   \newcommand\SkipToFmtEnd{}%
+   \newcommand\EndFmtInput{}%
+   \long\def\SkipToFmtEnd#1\EndFmtInput{}%
+  }\SkipToFmtEnd
+
+\newcommand\ReadOnlyOnce[1]{\@ifundefined{#1}{\@namedef{#1}{}}\SkipToFmtEnd}
+\usepackage{amstext}
+\usepackage{amssymb}
+\usepackage{stmaryrd}
+\DeclareFontFamily{OT1}{cmtex}{}
+\DeclareFontShape{OT1}{cmtex}{m}{n}
+  {<5><6><7><8>cmtex8
+   <9>cmtex9
+   <10><10.95><12><14.4><17.28><20.74><24.88>cmtex10}{}
+\DeclareFontShape{OT1}{cmtex}{m}{it}
+  {<-> ssub * cmtt/m/it}{}
+\newcommand{\texfamily}{\fontfamily{cmtex}\selectfont}
+\DeclareFontShape{OT1}{cmtt}{bx}{n}
+  {<5><6><7><8>cmtt8
+   <9>cmbtt9
+   <10><10.95><12><14.4><17.28><20.74><24.88>cmbtt10}{}
+\DeclareFontShape{OT1}{cmtex}{bx}{n}
+  {<-> ssub * cmtt/bx/n}{}
+\newcommand{\tex}[1]{\text{\texfamily#1}}	% NEU
+
+\newcommand{\Sp}{\hskip.33334em\relax}
+
+
+\newcommand{\Conid}[1]{\mathit{#1}}
+\newcommand{\Varid}[1]{\mathit{#1}}
+\newcommand{\anonymous}{\kern0.06em \vbox{\hrule\@width.5em}}
+\newcommand{\plus}{\mathbin{+\!\!\!+}}
+\newcommand{\bind}{\mathbin{>\!\!\!>\mkern-6.7mu=}}
+\newcommand{\rbind}{\mathbin{=\mkern-6.7mu<\!\!\!<}}% suggested by Neil Mitchell
+\newcommand{\sequ}{\mathbin{>\!\!\!>}}
+\renewcommand{\leq}{\leqslant}
+\renewcommand{\geq}{\geqslant}
+\usepackage{polytable}
+
+%mathindent has to be defined
+\@ifundefined{mathindent}%
+  {\newdimen\mathindent\mathindent\leftmargini}%
+  {}%
+
+\def\resethooks{%
+  \global\let\SaveRestoreHook\empty
+  \global\let\ColumnHook\empty}
+\newcommand*{\savecolumns}[1][default]%
+  {\g@addto@macro\SaveRestoreHook{\savecolumns[#1]}}
+\newcommand*{\restorecolumns}[1][default]%
+  {\g@addto@macro\SaveRestoreHook{\restorecolumns[#1]}}
+\newcommand*{\aligncolumn}[2]%
+  {\g@addto@macro\ColumnHook{\column{#1}{#2}}}
+
+\resethooks
+
+\newcommand{\onelinecommentchars}{\quad-{}- }
+\newcommand{\commentbeginchars}{\enskip\{-}
+\newcommand{\commentendchars}{-\}\enskip}
+
+\newcommand{\visiblecomments}{%
+  \let\onelinecomment=\onelinecommentchars
+  \let\commentbegin=\commentbeginchars
+  \let\commentend=\commentendchars}
+
+\newcommand{\invisiblecomments}{%
+  \let\onelinecomment=\empty
+  \let\commentbegin=\empty
+  \let\commentend=\empty}
+
+\visiblecomments
+
+\newlength{\blanklineskip}
+\setlength{\blanklineskip}{0.66084ex}
+
+\newcommand{\hsindent}[1]{\quad}% default is fixed indentation
+\let\hspre\empty
+\let\hspost\empty
+\newcommand{\NB}{\textbf{NB}}
+\newcommand{\Todo}[1]{$\langle$\textbf{To do:}~#1$\rangle$}
+
+\EndFmtInput
+\makeatother
+%
+%
+%
+%
+%
+%
+% This package provides two environments suitable to take the place
+% of hscode, called "plainhscode" and "arrayhscode". 
+%
+% The plain environment surrounds each code block by vertical space,
+% and it uses \abovedisplayskip and \belowdisplayskip to get spacing
+% similar to formulas. Note that if these dimensions are changed,
+% the spacing around displayed math formulas changes as well.
+% All code is indented using \leftskip.
+%
+% Changed 19.08.2004 to reflect changes in colorcode. Should work with
+% CodeGroup.sty.
+%
+\ReadOnlyOnce{polycode.fmt}%
+\makeatletter
+
+\newcommand{\hsnewpar}[1]%
+  {{\parskip=0pt\parindent=0pt\par\vskip #1\noindent}}
+
+% can be used, for instance, to redefine the code size, by setting the
+% command to \small or something alike
+\newcommand{\hscodestyle}{}
+
+% The command \sethscode can be used to switch the code formatting
+% behaviour by mapping the hscode environment in the subst directive
+% to a new LaTeX environment.
+
+\newcommand{\sethscode}[1]%
+  {\expandafter\let\expandafter\hscode\csname #1\endcsname
+   \expandafter\let\expandafter\endhscode\csname end#1\endcsname}
+
+% "compatibility" mode restores the non-polycode.fmt layout.
+
+\newenvironment{compathscode}%
+  {\par\noindent
+   \advance\leftskip\mathindent
+   \hscodestyle
+   \let\\=\@normalcr
+   \let\hspre\(\let\hspost\)%
+   \pboxed}%
+  {\endpboxed\)%
+   \par\noindent
+   \ignorespacesafterend}
+
+\newcommand{\compaths}{\sethscode{compathscode}}
+
+% "plain" mode is the proposed default.
+% It should now work with \centering.
+% This required some changes. The old version
+% is still available for reference as oldplainhscode.
+
+\newenvironment{plainhscode}%
+  {\hsnewpar\abovedisplayskip
+   \advance\leftskip\mathindent
+   \hscodestyle
+   \let\hspre\(\let\hspost\)%
+   \pboxed}%
+  {\endpboxed%
+   \hsnewpar\belowdisplayskip
+   \ignorespacesafterend}
+
+\newenvironment{oldplainhscode}%
+  {\hsnewpar\abovedisplayskip
+   \advance\leftskip\mathindent
+   \hscodestyle
+   \let\\=\@normalcr
+   \(\pboxed}%
+  {\endpboxed\)%
+   \hsnewpar\belowdisplayskip
+   \ignorespacesafterend}
+
+% Here, we make plainhscode the default environment.
+
+\newcommand{\plainhs}{\sethscode{plainhscode}}
+\newcommand{\oldplainhs}{\sethscode{oldplainhscode}}
+\plainhs
+
+% The arrayhscode is like plain, but makes use of polytable's
+% parray environment which disallows page breaks in code blocks.
+
+\newenvironment{arrayhscode}%
+  {\hsnewpar\abovedisplayskip
+   \advance\leftskip\mathindent
+   \hscodestyle
+   \let\\=\@normalcr
+   \(\parray}%
+  {\endparray\)%
+   \hsnewpar\belowdisplayskip
+   \ignorespacesafterend}
+
+\newcommand{\arrayhs}{\sethscode{arrayhscode}}
+
+% The mathhscode environment also makes use of polytable's parray 
+% environment. It is supposed to be used only inside math mode 
+% (I used it to typeset the type rules in my thesis).
+
+\newenvironment{mathhscode}%
+  {\parray}{\endparray}
+
+\newcommand{\mathhs}{\sethscode{mathhscode}}
+
+% texths is similar to mathhs, but works in text mode.
+
+\newenvironment{texthscode}%
+  {\(\parray}{\endparray\)}
+
+\newcommand{\texths}{\sethscode{texthscode}}
+
+% The framed environment places code in a framed box.
+
+\def\codeframewidth{\arrayrulewidth}
+\RequirePackage{calc}
+
+\newenvironment{framedhscode}%
+  {\parskip=\abovedisplayskip\par\noindent
+   \hscodestyle
+   \arrayrulewidth=\codeframewidth
+   \tabular{@{}|p{\linewidth-2\arraycolsep-2\arrayrulewidth-2pt}|@{}}%
+   \hline\framedhslinecorrect\\{-1.5ex}%
+   \let\endoflinesave=\\
+   \let\\=\@normalcr
+   \(\pboxed}%
+  {\endpboxed\)%
+   \framedhslinecorrect\endoflinesave{.5ex}\hline
+   \endtabular
+   \parskip=\belowdisplayskip\par\noindent
+   \ignorespacesafterend}
+
+\newcommand{\framedhslinecorrect}[2]%
+  {#1[#2]}
+
+\newcommand{\framedhs}{\sethscode{framedhscode}}
+
+% The inlinehscode environment is an experimental environment
+% that can be used to typeset displayed code inline.
+
+\newenvironment{inlinehscode}%
+  {\(\def\column##1##2{}%
+   \let\>\undefined\let\<\undefined\let\\\undefined
+   \newcommand\>[1][]{}\newcommand\<[1][]{}\newcommand\\[1][]{}%
+   \def\fromto##1##2##3{##3}%
+   \def\nextline{}}{\) }%
+
+\newcommand{\inlinehs}{\sethscode{inlinehscode}}
+
+% The joincode environment is a separate environment that
+% can be used to surround and thereby connect multiple code
+% blocks.
+
+\newenvironment{joincode}%
+  {\let\orighscode=\hscode
+   \let\origendhscode=\endhscode
+   \def\endhscode{\def\hscode{\endgroup\def\@currenvir{hscode}\\}\begingroup}
+   %\let\SaveRestoreHook=\empty
+   %\let\ColumnHook=\empty
+   %\let\resethooks=\empty
+   \orighscode\def\hscode{\endgroup\def\@currenvir{hscode}}}%
+  {\origendhscode
+   \global\let\hscode=\orighscode
+   \global\let\endhscode=\origendhscode}%
+
+\makeatother
+\EndFmtInput
+%
+%
+
+
+\usepackage{xcolor}
+
+% Char literal
+\colorlet{Char}{black}
+
+% Numeral literal
+\colorlet{Numeral}{Char}
+
+% Keyword
+\colorlet{Keyword}{red!50!black}
+
+% Module identifier
+\colorlet{ModId}{Char}
+
+% Variable identifier and symbol
+\colorlet{VarId}{Char}
+\colorlet{VarSym}{VarId}
+
+% Data constructor identifier and symbol
+\colorlet{ConId}{VarId}
+\colorlet{ConSym}{ConId}
+
+% Type variable identifier
+\colorlet{TVarId}{green!45!black}
+
+% Type constructor identifier
+\colorlet{TConId}{TVarId}
+\colorlet{TConSym}{TConId}
+
+% Type class identifier
+\colorlet{TClassId}{TVarId}
+
+% Comment
+\colorlet{Comment}{blue!45!black}
+
+\newcommand\Char[1]{\textcolor{Char}{\texttt{#1}}}
+
+% Numeral literal
+\newcommand\Numeral[1]{\textcolor{Numeral}{\mathsf{#1}}}
+
+% Keyword
+\newcommand\Keyword[1]{\textcolor{Keyword}{\textbf{\textsf{#1}}}}
+
+% Module identifier
+\newcommand\ModId[1]{\mathord{\textcolor{ModId}{\mathsf{#1}}}}
+
+% Variable identifier and symbol
+\newcommand\VarId[1]{\mathord{\textcolor{VarId}{#1}}}
+\let\Varid\VarId
+\newcommand\VarSym[1]{\mathbin{\textcolor{VarSym}{#1}}}
+
+% Data constructor identifier and symbol
+\newcommand\ConId[1]{\mathord{\textcolor{ConId}{\mathsf{#1}}}}
+\let\Conid\ConId
+\newcommand\ConSym[1]{\mathbin{\textcolor{ConSym}{\mathsf{#1}}}}
+
+% Type variable identifier
+\newcommand\TVarId[1]{\mathord{\textcolor{TVarId}{\mathsf{#1}}}}
+
+% Type constructor identifier
+\newcommand\TConId[1]{\mathord{\textcolor{TConId}{\mathsf{#1}}}}
+% \newcommand\TConSym[1]{\mathbin{#1}}
+\newcommand\TConSym[1]{\mathbin{\textcolor{TConSym}{\mathsf{#1}}}}
+
+% Type class identifier
+\newcommand\TClassId[1]{\mathord{\textcolor{TClassId}{\textit{\textsf{#1}}}}}
+
+% Comment
+\newcommand\Comment[1]{\textcolor{Comment}{\textit{\textsf{#1}}}}
+
+% Package identifier (used in text, not code/math environment)
+\newcommand\PkgId[1]{\textcolor{Char}{\texttt{#1}}}
+
+
+
+
+% Comments: one-line, nested, pragmas
+
+
+
+\newcommand{\FN}{\mathsf}
+\newcommand{\comment}[1]{\marginpar{#1}}
+\newcommand{\ignore}[1]{}
+
+
+
+
+
+
+
+\usepackage{stmaryrd,wasysym,url,upgreek}
+\DeclareMathAlphabet{\mathkw}{OT1}{cmss}{bx}{n}
+
+\begin{document}
+
+\author{Jonathan Sterling}
+
+\title{Phrase Projectivity in Antigone}
+\maketitle
+
+\ignore{
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\mathkw{module}\;\mathsf{Holes}\;\mathkw{where}{}\<[E]%
+\\
+\>[3]{}\mathkw{import}\;\mathsf{\mathsf{Control}.Applicative}{}\<[E]%
+\\
+\>[3]{}\mathkw{import}\;\mathsf{\mathsf{Control}.Arrow}\;((\VarSym{\&\&\&})){}\<[E]%
+\\
+\>[3]{}\mathkw{import}\;\mathsf{\mathsf{Data}.Foldable}{}\<[E]%
+\\
+\>[3]{}\mathkw{import}\;\mathsf{\mathsf{Data}.Monoid}{}\<[E]%
+\\
+\>[3]{}\mathkw{import}\;\mathsf{Prelude}\;\Varid{hiding}\;(\FN{maximum},\FN{minimum},\FN{foldl},\cdot \notin\cdot ){}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+}
+
+\section{Introduction}
+\label{sec:introduction}
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\mathkw{data}\;\mathsf{Tree}\;\alpha\mathrel{=}\alpha\curvearrowright[\mskip1.5mu \mathsf{Tree}\;\alpha\mskip1.5mu]{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\FN{getLabel}\ConSym{::}\mathsf{Tree}\;\alpha\to \alpha{}\<[E]%
+\\
+\>[3]{}\FN{getLabel}\;(\Varid{l}\curvearrowright\anonymous )\mathrel{=}\Varid{l}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{21}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\mathkw{type}\;\mathsf{Edge}\;\alpha{}\<[21]%
+\>[21]{}\mathrel{=}(\alpha,\alpha){}\<[E]%
+\\
+\>[3]{}\mathkw{data}\;\mathsf{Range}\;\alpha{}\<[21]%
+\>[21]{}\mathrel{=}\alpha\leftrightarrow\alpha\mid \FN{R_\emptyset}{}\<[E]%
+\\
+\>[3]{}\mathkw{data}\;\mathsf{RangeState}\;\alpha\mathrel{=}\alpha\lhd\mathsf{Range}\;\alpha{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\noindent
+A \ensuremath{\mathsf{Monoid}} is an algebraic structure which has a zero \ensuremath{\mathcal{E}} and a binary
+operation \ensuremath{\cdot \oplus\cdot }, and which satisfies some laws:
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{19}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\mathkw{class}\;\mathsf{Monoid}\;\alpha\;\mathkw{where}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\mathcal{E}\ConSym{::}\alpha{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\cdot \oplus\cdot \ConSym{::}\alpha\to \alpha\to \alpha{}\<[E]%
+\\[\blanklineskip]%
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\FN{associativity}\ConSym{::}\Varid{l}\oplus(\Varid{c}\oplus\Varid{r})\equiv (\Varid{l}\oplus\Varid{c})\oplus\Varid{r}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\FN{leftIdentity}{}\<[19]%
+\>[19]{}\ConSym{::}\Varid{l}\oplus\mathcal{E}\equiv \Varid{l}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\FN{rightIdentity}\ConSym{::}\mathcal{E}\oplus\Varid{l}\equiv \Varid{l}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\mathkw{instance}\;\mathsf{Ord}\;\alpha\Rightarrow \mathsf{Monoid}\;(\mathsf{Range}\;\alpha)\;\mathkw{where}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\mathcal{E}\mathrel{=}\FN{R_\emptyset}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}(\Varid{x}\leftrightarrow\Varid{y})\oplus(\Varid{u}\leftrightarrow\Varid{v})\mathrel{=}\FN{rangeFrom}\;[\mskip1.5mu \Varid{x},\Varid{y},\Varid{u},\Varid{v}\mskip1.5mu]{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\FN{R_\emptyset}\oplus\Varid{xy}\mathrel{=}\Varid{xy}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\Varid{xy}\oplus\FN{R_\emptyset}\mathrel{=}\Varid{xy}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{7}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{18}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\mathkw{instance}\;(\mathsf{Num}\;\alpha,\mathsf{Ord}\;\alpha)\Rightarrow \mathsf{Monoid}\;(\mathsf{RangeState}\;\alpha)\;\mathkw{where}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\mathcal{E}\mathrel{=}\Numeral{0}\lhd\mathcal{E}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}(\Varid{i}\lhd\Varid{xy})\oplus(\Varid{j}\lhd\Varid{uv})\mathrel{=}\Varid{count}\lhd(\Varid{xy}\oplus\Varid{uv})\;\mathkw{where}{}\<[E]%
+\\
+\>[5]{}\hsindent{2}{}\<[7]%
+\>[7]{}\Varid{count}\mathrel{=}\mathkw{if}\;\FN{rangesIntersect}\;\Varid{xy}\;\Varid{uv}{}\<[E]%
+\\
+\>[7]{}\hsindent{11}{}\<[18]%
+\>[18]{}\mathkw{then}\;\Varid{i}\VarSym{+}\Varid{j}\VarSym{+}\Numeral{0}{}\<[E]%
+\\
+\>[7]{}\hsindent{11}{}\<[18]%
+\>[18]{}\mathkw{else}\;\Varid{i}\VarSym{+}\Varid{j}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\FN{rangesIntersect}\ConSym{::}\mathsf{Ord}\;\alpha\Rightarrow \mathsf{Range}\;\alpha\to \mathsf{Range}\;\alpha\to \mathsf{Bool}{}\<[E]%
+\\
+\>[3]{}\FN{rangesIntersect}\;(\Varid{x}\leftrightarrow\Varid{y})\;(\Varid{u}\leftrightarrow\Varid{v})\mathrel{=}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\neg \;((\Varid{x}\VarSym{<}\Varid{u}\mathrel{\wedge}\Varid{y}\VarSym{<}\Varid{u})\mathrel{\vee}(\Varid{u}\VarSym{<}\Varid{v}\mathrel{\wedge}\Varid{v}\VarSym{<}\Varid{x})){}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\FN{rangeFrom}\ConSym{::}(\mathsf{Foldable}\;\phi,\mathsf{Ord}\;\alpha)\Rightarrow \phi\;\alpha\to \mathsf{Range}\;\alpha{}\<[E]%
+\\
+\>[3]{}\FN{rangeFrom}\;\Varid{xs}\mathrel{=}\FN{minimum}\;\Varid{xs}\leftrightarrow\FN{maximum}\;\Varid{xs}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{23}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\FN{analyzePath}\ConSym{::}(\mathsf{Num}\;\alpha,\mathsf{Ord}\;\alpha)\Rightarrow [\mskip1.5mu \alpha\mskip1.5mu]\to \mathsf{RangeState}\;\alpha{}\<[E]%
+\\
+\>[3]{}\FN{analyzePath}\;\Varid{path}\mathrel{=}\FN{foldl}\;\Varid{op}\;\mathcal{E}\;(\Varid{reverse}\;\Varid{path})\;\mathkw{where}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\Varid{op}\;(\Varid{c}\lhd\Varid{r})\;\Varid{i}\mathrel{=}\mathkw{if}\;\FN{inRange}\;\Varid{r}\;\Varid{i}{}\<[E]%
+\\
+\>[5]{}\hsindent{18}{}\<[23]%
+\>[23]{}\mathkw{then}\;(\Varid{c}\VarSym{+}\Numeral{1})\lhd\Varid{r}{}\<[E]%
+\\
+\>[5]{}\hsindent{18}{}\<[23]%
+\>[23]{}\mathkw{else}\;\Varid{c}\lhd(\FN{extend}\;\Varid{r}\;\Varid{i}){}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{7}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{9}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{18}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{24}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\FN{analyzeTree}\ConSym{::}(\mathsf{Num}\;\alpha,\mathsf{Ord}\;\alpha)\Rightarrow \mathsf{Tree}\;\alpha\to \mathsf{Tree}\;(\mathsf{RangeState}\;\alpha){}\<[E]%
+\\
+\>[3]{}\FN{analyzeTree}\;\Varid{tree}\mathrel{=}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\mathkw{case}\;\FN{treeOrPath}\;\Varid{tree}\;\mathkw{of}{}\<[E]%
+\\
+\>[5]{}\hsindent{2}{}\<[7]%
+\>[7]{}\mathsf{Left}\;(\Varid{i}\curvearrowright\Varid{ts})\to \Varid{c}\lhd\FN{extend}\;\Varid{r}\;\Varid{i}\curvearrowright\Varid{children}\;\mathkw{where}{}\<[E]%
+\\
+\>[7]{}\hsindent{2}{}\<[9]%
+\>[9]{}\Varid{children}\mathrel{=}\FN{analyzeTree}\mathop{\langle\$\rangle}\Varid{ts}{}\<[E]%
+\\
+\>[7]{}\hsindent{2}{}\<[9]%
+\>[9]{}\Varid{c}\lhd\Varid{r}{}\<[18]%
+\>[18]{}\mathrel{=}\FN{fold}\;(\FN{getLabel}\mathop{\langle\$\rangle}\Varid{children}){}\<[E]%
+\\
+\>[5]{}\hsindent{2}{}\<[7]%
+\>[7]{}\mathsf{Right}\;\Varid{path}{}\<[24]%
+\>[24]{}\to \FN{analyzePath}\;\Varid{path}\curvearrowright[\mskip1.5mu \mskip1.5mu]{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{27}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\FN{treeOrPath}\ConSym{::}\mathsf{Tree}\;\alpha\to \mathsf{Either}\;(\mathsf{Tree}\;\alpha)\;[\mskip1.5mu \alpha\mskip1.5mu]{}\<[E]%
+\\
+\>[3]{}\FN{treeOrPath}\;(\Varid{i}\curvearrowright[\mskip1.5mu \mskip1.5mu]){}\<[27]%
+\>[27]{}\mathrel{=}\mathsf{Right}\;[\mskip1.5mu \Varid{i}\mskip1.5mu]{}\<[E]%
+\\
+\>[3]{}\FN{treeOrPath}\;(\Varid{i}\curvearrowright[\mskip1.5mu \Varid{x}\mskip1.5mu])\mathrel{=}(\Varid{i}\mathbin{:})\mathop{\langle\$\rangle}\FN{treeOrPath}\;\Varid{x}{}\<[E]%
+\\
+\>[3]{}\FN{treeOrPath}\;\Varid{t}{}\<[27]%
+\>[27]{}\mathrel{=}\mathsf{Left}\;\Varid{t}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\FN{extend}\ConSym{::}\mathsf{Ord}\;\alpha\Rightarrow \mathsf{Range}\;\alpha\to \alpha\to \mathsf{Range}\;\alpha{}\<[E]%
+\\
+\>[3]{}\FN{extend}\;(\Varid{x}\leftrightarrow\Varid{y})\;\Varid{z}\mathrel{=}\FN{rangeFrom}\;[\mskip1.5mu \Varid{x},\Varid{y},\Varid{z}\mskip1.5mu]{}\<[E]%
+\\
+\>[3]{}\FN{extend}\;\FN{R_\emptyset}\;\Varid{z}\mathrel{=}\Varid{z}\leftrightarrow\Varid{z}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\FN{inRange}\ConSym{::}\mathsf{Ord}\;\alpha\Rightarrow \mathsf{Range}\;\alpha\to \alpha\to \mathsf{Bool}{}\<[E]%
+\\
+\>[3]{}\FN{inRange}\;(\Varid{x}\leftrightarrow\Varid{y})\;\Varid{z}\mathrel{=}\Varid{z}\VarSym{>}\Varid{x}\mathrel{\wedge}\Varid{z}\VarSym{<}\Varid{y}{}\<[E]%
+\\
+\>[3]{}\FN{inRange}\;\FN{R_\emptyset}\;\anonymous \mathrel{=}\mathsf{False}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{4}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\FN{maximalPoint}\ConSym{::}\mathsf{Eq}\;\alpha\Rightarrow [\mskip1.5mu \mathsf{Edge}\;\alpha\mskip1.5mu]\to \mathsf{Maybe}\;\alpha{}\<[E]%
+\\
+\>[3]{}\FN{maximalPoint}\;\Varid{es}\mathrel{=}{}\<[E]%
+\\
+\>[3]{}\hsindent{1}{}\<[4]%
+\>[4]{}\FN{find}\;(\lambda \Varid{x}\to \Varid{x}\notin\FN{snd}\mathop{\langle\$\rangle}\Varid{es})\;(\FN{fst}\mathop{\langle\$\rangle}\Varid{es}){}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\end{document}
+
+

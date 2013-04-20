@@ -365,6 +365,8 @@
 
 
 
+
+
 \usepackage{homework,stmaryrd,wasysym,url,upgreek,subfigure}
 \usepackage[margin=1cm]{caption}
 \usepackage{xytree}
@@ -803,23 +805,23 @@ Finally, \ensuremath{\FN{\omega}} is computed for a tree as follows:
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{5}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{17}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{22}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[3]{}\FN{\omega}\ConSym{::}(\mathsf{Fractional}\;\Varid{n},\mathsf{Ord}\;\VarSym{\alpha})\Rightarrow \mathsf{Tree}\;\VarSym{\alpha}\to \Varid{n}{}\<[E]%
+\>[3]{}\FN{\omega}\ConSym{::}\mathsf{Ord}\;\VarSym{\alpha}\Rightarrow \mathsf{Tree}\;\VarSym{\alpha}\to \mathbb{Q}{}\<[E]%
 \\
-\>[3]{}\FN{\omega}\;\Varid{tree}\mathrel{=}\FN{violations}\mathbin{/}\FN{totalArcs}\;\mathkw{where}{}\<[E]%
-\\
-\>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\FN{edges}{}\<[17]%
-\>[17]{}\mathrel{=}\FN{allEdges}\;\Varid{tree}{}\<[E]%
+\>[3]{}\FN{\omega}\;\Varid{tree}\mathrel{=}\dfrac{\FN{violationsCount}}{\FN{totalArcsCount}}\;\mathkw{where}{}\<[E]%
 \\
 \>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\FN{totalArcs}{}\<[17]%
-\>[17]{}\mathrel{=}\FN{length}\;\FN{edges}{}\<[E]%
+\>[5]{}\FN{edges}{}\<[22]%
+\>[22]{}\mathrel{=}\FN{allEdges}\;\Varid{tree}{}\<[E]%
 \\
 \>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\FN{violations}{}\<[17]%
-\>[17]{}\mathrel{=}\FN{fromIntegral}\;(\FN{edgeViolations}\;\FN{edges}){}\<[E]%
+\>[5]{}\FN{violationsCount}{}\<[22]%
+\>[22]{}\mathrel{=}\FN{fromIntegral}\;(\FN{edgeViolations}\;\FN{edges}){}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\FN{totalArcsCount}{}\<[22]%
+\>[22]{}\mathrel{=}\FN{length}\;\FN{edges}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 
@@ -901,7 +903,7 @@ Edges are the content of the \lstinline{head} attribute paired with that of the
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[3]{}\FN{edgeFromWord}\ConSym{::}\mathsf{Read}\;\VarSym{\alpha}\Rightarrow \mathsf{Word}\to \mathsf{Maybe}\;(\mathsf{Edge}\;\VarSym{\alpha}){}\<[E]%
+\>[3]{}\FN{edgeFromWord}\ConSym{::}\mathsf{Word}\to \mathsf{Maybe}\;(\mathsf{Edge}\;\mathbb{Z}){}\<[E]%
 \\
 \>[3]{}\FN{edgeFromWord}\;(\mathsf{Word}\;\Varid{w})\mathrel{=}\llbracket\;(\FN{readAttr}\;\Char{\char34 head\char34}\;\Varid{w})\;\leftrightarrow\;(\FN{readAttr}\;\Char{\char34 id\char34}\;\Varid{w})\;\rrbracket{}\<[E]%
 \ColumnHook
@@ -912,12 +914,12 @@ Thence, we can build a tree from a sentence.
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{5}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[3]{}\FN{treeFromSentence}\ConSym{::}(\mathsf{Ord}\;\VarSym{\alpha},\mathsf{Read}\;\VarSym{\alpha})\Rightarrow \mathsf{Sentence}\to \mathsf{Maybe}\;(\mathsf{Tree}\;\VarSym{\alpha}){}\<[E]%
+\>[3]{}\FN{treeFromSentence}\ConSym{::}\mathsf{Sentence}\to \mathsf{Maybe}\;(\mathsf{Tree}\;\mathbb{Z}){}\<[E]%
 \\
 \>[3]{}\FN{treeFromSentence}\mathrel{=}\FN{treeFromEdges}\circ\FN{edgesFromSentence}\;\mathkw{where}{}\<[E]%
 \\
 \>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\FN{edgesFromSentence}\ConSym{::}\mathsf{Read}\;\VarSym{\alpha}\Rightarrow \mathsf{Sentence}\to [\mskip1.5mu \mathsf{Edge}\;\VarSym{\alpha}\mskip1.5mu]{}\<[E]%
+\>[5]{}\FN{edgesFromSentence}\ConSym{::}\mathsf{Sentence}\to [\mskip1.5mu \mathsf{Edge}\;\mathbb{Z}\mskip1.5mu]{}\<[E]%
 \\
 \>[3]{}\hsindent{2}{}\<[5]%
 \>[5]{}\FN{edgesFromSentence}\;\Varid{s}\mathrel{=}\FN{catMaybes}\;\llbracket\;\FN{edgeFromWord}\;(\FN{wordsFromSentence}\;\Varid{s})\;\rrbracket\;\mathkw{where}{}\<[E]%
@@ -929,7 +931,7 @@ from an XML document:
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[3]{}\FN{treesFromXML}\ConSym{::}(\mathsf{Integral}\;\VarSym{\alpha},\mathsf{Read}\;\VarSym{\alpha})\Rightarrow \mathsf{XML}\to [\mskip1.5mu \mathsf{Tree}\;\VarSym{\alpha}\mskip1.5mu]{}\<[E]%
+\>[3]{}\FN{treesFromXML}\ConSym{::}\mathsf{XML}\to [\mskip1.5mu \mathsf{Tree}\;\mathbb{Z}\mskip1.5mu]{}\<[E]%
 \\
 \>[3]{}\FN{treesFromXML}\;\Varid{xml}\mathrel{=}\FN{catMaybes}\;\llbracket\;\FN{treeFromSentence}\;(\FN{sentencesFromXML}\;\Varid{xml})\;\rrbracket{}\<[E]%
 \ColumnHook
@@ -940,14 +942,31 @@ that XML into a series of trees.
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[3]{}\FN{treesFromFile}\ConSym{::}(\mathsf{Read}\;\VarSym{\alpha},\mathsf{Integral}\;\VarSym{\alpha})\Rightarrow \mathsf{FilePath}\to \mathsf{IO}\;[\mskip1.5mu \mathsf{Tree}\;\VarSym{\alpha}\mskip1.5mu]{}\<[E]%
+\>[3]{}\FN{treesFromFile}\ConSym{::}\mathsf{FilePath}\to \mathsf{IO}\;[\mskip1.5mu \mathsf{Tree}\;\mathbb{Z}\mskip1.5mu]{}\<[E]%
 \\
 \>[3]{}\FN{treesFromFile}\;\Varid{path}\mathrel{=}\llbracket\;(\FN{treesFromXML}\circ\mathsf{XML}\circ\FN{parseXML})\;(\FN{readFile}\;\Varid{path})\;\rrbracket{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 \section{Analysis of Data}
-to be written
 
+We compute the average \ensuremath{\FN{\omega}} of the trees contained in a file as follows:
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\FN{analyzeFile}\ConSym{::}\mathsf{FilePath}\to \mathsf{IO}\;\mathbb{Q}{}\<[E]%
+\\
+\>[3]{}\FN{analyzeFile}\;\Varid{path}\mathrel{=}\mathkw{do}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\Varid{trees}\leftarrow \FN{treesFromFile}\;\Varid{path}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\FN{return}\;(\FN{average}\;\llbracket\;\FN{\omega}\;\Varid{trees}\;\rrbracket){}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
 \section*{Appendix: Auxiliary Functions}
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -967,12 +986,25 @@ to be written
 \>[3]{}\FN{readAttr}\;\Varid{n}\mathrel{=}\FN{fmap}\;\FN{read}\circ\FN{findAttr}\;(\FN{simpleName}\;\Varid{n}){}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\FN{average}\ConSym{::}\mathsf{Fractional}\;\Varid{n}\Rightarrow [\mskip1.5mu \Varid{n}\mskip1.5mu]\to \Varid{n}{}\<[E]%
+\\
+\>[3]{}\FN{average}\;\Varid{xs}\mathrel{=}\dfrac{\FN{sum}\;\Varid{xs}}{\FN{length}\;\Varid{xs}}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
 \ignore{
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
 \>[3]{}\llbracket\;\cdot \;\cdot \;\cdot \;\rrbracket\mathrel{=}\llbracket\;\cdot \;\cdot \;\cdot \;\rrbracket{}\<[E]%
+\\
+\>[3]{}\dfrac{\cdot }{\cdot }\mathrel{=}(\mathbin{\%}){}\<[E]%
+\\
+\>[3]{}\dfrac{\cdot }{\cdot }\mathrel{=}(\mathbin{/}){}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 }

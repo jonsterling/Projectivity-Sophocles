@@ -54,6 +54,7 @@
 > import Data.Tree
 > import Data.List (genericLength, nub, findIndex, sortBy)
 > import Data.Function (on)
+> import Data.Ratio
 > import Text.XML.Light
 > import Prelude hiding (maximum, minimum, foldl, notElem, elem, concat, sum)
 
@@ -299,14 +300,14 @@ level:
 Finally, |omega| is computed for a tree as follows:
 
 %format edges = "\FN{edges}"
-%format totalArcs = "\FN{totalArcs}"
-%format violations = "\FN{violations}"
+%format totalArcsCount = "\FN{totalArcsCount}"
+%format violationsCount = "\FN{violationsCount}"
 
-> omega :: (Fractional n, Ord a) => Tree a -> n
-> omega tree = violations / totalArcs where
->   edges       = allEdges tree
->   totalArcs   = genericLength edges
->   violations  = fromIntegral (edgeViolations edges)
+> omega :: Ord a => Tree a -> Rational
+> omega tree = ratio violationsCount totalArcsCount where
+>   edges            = allEdges tree
+>   violationsCount  = fromIntegral (edgeViolations edges)
+>   totalArcsCount   = genericLength edges
 
 
 \newpage
@@ -357,30 +358,38 @@ sentence and convert them into edges.
 Edges are the content of the \lstinline{head} attribute paired with that of the
 \lstinline{id} attribute.
 
-> edgeFromWord :: Read a => Word -> Maybe (Edge a)
+> edgeFromWord :: Word -> Maybe (Edge Integer)
 > edgeFromWord (Word w) = liftOp2 (:-:) (readAttr "head" w) (readAttr "id" w)
 
 Thence, we can build a tree from a sentence.
 
-> treeFromSentence :: (Ord a, Read a) => Sentence -> Maybe (Tree a)
+> treeFromSentence :: Sentence -> Maybe (Tree Integer)
 > treeFromSentence = treeFromEdges . edgesFromSentence where
->   edgesFromSentence :: Read a => Sentence -> [Edge a]
+>   edgesFromSentence :: Sentence -> [Edge Integer]
 >   edgesFromSentence s = catMaybes (liftA edgeFromWord (wordsFromSentence s)) where
 
 By putting the pieces together, we also derive a function to read all the trees
 from an XML document:
 
-> treesFromXML :: (Integral a, Read a) => XML -> [Tree a]
+> treesFromXML :: XML -> [Tree Integer]
 > treesFromXML xml = catMaybes (liftA treeFromSentence (sentencesFromXML xml))
 
 Finally, we must read the file as a string, parse it as XML, and then convert
 that XML into a series of trees.
 
-> treesFromFile :: (Read a, Integral a) => FilePath -> IO [Tree a]
+> treesFromFile :: FilePath -> IO [Tree Integer]
 > treesFromFile path = liftA (treesFromXML . XML . parseXML) (readFile path)
 
 \section{Analysis of Data}
-to be written
+
+We compute the average |omega| of the trees contained in a file as follows:
+
+%format analyzeFile = "\FN{analyzeFile}"
+
+> analyzeFile :: FilePath -> IO Rational
+> analyzeFile path = do
+>   trees <- treesFromFile path
+>   return (average (liftA omega trees))
 
 \section*{Appendix: Auxiliary Functions}
 
@@ -390,9 +399,14 @@ to be written
 > readAttr :: Read a => String -> Element -> Maybe a
 > readAttr n = fmap read . findAttr (simpleName n)
 
+> average :: Fractional n => [n] -> n
+> average xs = divFrac (sum xs) (genericLength xs)
+
 \ignore{
 
 > liftOp2 = liftA2
+> ratio = (%)
+> divFrac = (/)
 
 }
 

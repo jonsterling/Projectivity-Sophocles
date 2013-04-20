@@ -82,7 +82,13 @@
 %format fromIntegral = "\FN{fromIntegral}"
 %format genericLength = "\FN{length}"
 
+%format average = "\FN{average}"
+
+%format ratio (x) (y) = "\dfrac{" x "}{" y "}"
+%format divFrac (x) (y) = "\dfrac{" x "}{" y "}"
+
 %format Integer = "\mathbb{Z}"
+%format Rational = "\mathbb{Q}"
 %format Bool = "\mathbb{B}"
 
 %format aux = "\FN{aux}"

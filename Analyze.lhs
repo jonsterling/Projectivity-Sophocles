@@ -6,7 +6,6 @@
 \usepackage{homework,stmaryrd,wasysym,url,upgreek,subfigure}
 \usepackage[margin=1cm]{caption}
 \usepackage{xytree}
-\DeclareMathAlphabet{\mathkw}{OT1}{cmss}{bx}{n}
 
 \begin{document}
 \setmainfont{Times New Roman}
@@ -148,6 +147,8 @@ First, we try to find the root vertex of the tree. This will be a vertex that is
 given as the head of one of the words, but does not itself appear in the
 sentence:
 
+%format heads = "\FN{heads}"
+%format deps = "\FN{deps}"
 > rootVertex :: Eq a => [Edge a] -> Maybe a
 > rootVertex es = find (`notElem` deps) heads where
 >   heads  = (\(x :-: y) -> x) <$> es
@@ -171,6 +172,9 @@ This is done recursively until the list of edges is exhausted and we have a
 complete tree structure:
 
 %format buildWithRoot = "\FN{buildWithRoot}"
+%format sortedChildren = "\FN{sortedChildren}"
+%format children = "\FN{children}"
+%format roots = "\FN{roots}"
 
 > treeFromEdges :: Ord a => [Edge a] -> Maybe (Tree a)
 > treeFromEdges es = buildWithRoot es <$> rootVertex es where
@@ -198,7 +202,7 @@ in the tree is at level |0|, and the highest node in the tree is at level |n|,
 where |n| is the tree's depth.
 
 < levels :: Tree a -> [[a]]
-< levels t = map (map getLabel) $
+< levels t = fmap (fmap getLabel) $
 <             takeWhile (not . null) $
 <             iterate (>>= getForest) [t]
 
@@ -225,7 +229,7 @@ A handy way to think of edges annotated by levels is as a representation of the
 arc itself, where the ends of the edge are the endpoints, and the level is the
 height of the arc.
 
-If on end of one arc is between the ends of another, then there is a single
+If one end of an arc is between the ends of another, then there is a single
 intersection. If one arc is higher than another and the latter is in between the
 endpoints of the former, there is no violation; but if they are at the same
 level, or if the latter is higher than the former, there is a double
@@ -255,7 +259,7 @@ level:
 > edgeViolations :: Ord a => [(Level, Edge a)] -> Violations
 > edgeViolations xs = sum $ violationsWith <$> xs where
 >   rangesBelow (l, _)  = filter (\(l', _) -> l' <= l) xs
->   violationsWith x    = sum $ (checkEdges x <$> rangesBelow x)
+>   violationsWith x    = sum (checkEdges x <$> rangesBelow x)
 
 Finally, |omega| is computed for a tree as follows:
 

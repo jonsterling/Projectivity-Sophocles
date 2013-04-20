@@ -343,6 +343,8 @@
 
 
 
+\DeclareMathAlphabet{\mathkw}{OT1}{cmss}{bx}{n}
+
 \newcommand{\FN}{\mathsf}
 \newcommand{\comment}[1]{\marginpar{#1}}
 \newcommand{\ignore}[1]{}
@@ -357,7 +359,6 @@
 \usepackage{homework,stmaryrd,wasysym,url,upgreek,subfigure}
 \usepackage[margin=1cm]{caption}
 \usepackage{xytree}
-\DeclareMathAlphabet{\mathkw}{OT1}{cmss}{bx}{n}
 
 \begin{document}
 \setmainfont{Times New Roman}
@@ -535,6 +536,7 @@ as follows:
 First, we try to find the root vertex of the tree. This will be a vertex that is
 given as the head of one of the words, but does not itself appear in the
 sentence:
+
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -543,14 +545,14 @@ sentence:
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
 \>[3]{}\FN{rootVertex}\ConSym{::}\mathsf{Eq}\;\alpha\Rightarrow [\mskip1.5mu \mathsf{Edge}\;\alpha\mskip1.5mu]\to \mathsf{Maybe}\;\alpha{}\<[E]%
 \\
-\>[3]{}\FN{rootVertex}\;\Varid{es}\mathrel{=}\FN{find}\;(\notin \Varid{deps})\;\Varid{heads}\;\mathkw{where}{}\<[E]%
+\>[3]{}\FN{rootVertex}\;\Varid{es}\mathrel{=}\FN{find}\;(\notin \FN{deps})\;\FN{heads}\;\mathkw{where}{}\<[E]%
 \\
 \>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\Varid{heads}{}\<[12]%
+\>[5]{}\FN{heads}{}\<[12]%
 \>[12]{}\mathrel{=}(\lambda (\Varid{x}\leftrightarrow\Varid{y})\to \Varid{x})\;\mathop{\langle\$\rangle}\;\Varid{es}{}\<[E]%
 \\
 \>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\Varid{deps}{}\<[12]%
+\>[5]{}\FN{deps}{}\<[12]%
 \>[12]{}\mathrel{=}(\lambda (\Varid{x}\leftrightarrow\Varid{y})\to \Varid{y})\;\mathop{\langle\$\rangle}\;\Varid{es}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
@@ -597,19 +599,19 @@ complete tree structure:
 \>[3]{}\FN{treeFromEdges}\;\Varid{es}\mathrel{=}\FN{buildWithRoot}\;\Varid{es}\;\mathop{\langle\$\rangle}\;\FN{rootVertex}\;\Varid{es}\;\mathkw{where}{}\<[E]%
 \\
 \>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\FN{buildWithRoot}\;\Varid{es}\;\Varid{root}\mathrel{=}\Varid{root}\curvearrowright\Varid{sortedChildren}\;\mathkw{where}{}\<[E]%
+\>[5]{}\FN{buildWithRoot}\;\Varid{es}\;\Varid{root}\mathrel{=}\Varid{root}\curvearrowright\FN{sortedChildren}\;\mathkw{where}{}\<[E]%
 \\
 \>[5]{}\hsindent{2}{}\<[7]%
-\>[7]{}\Varid{roots}{}\<[23]%
+\>[7]{}\FN{roots}{}\<[23]%
 \>[23]{}\mathrel{=}\FN{oppositeVertex}\;\Varid{root}\;\mathop{\langle\$\rangle}\;\FN{filter}\;(\FN{onEdge}\;\Varid{root})\;\Varid{es}{}\<[E]%
 \\
 \>[5]{}\hsindent{2}{}\<[7]%
-\>[7]{}\Varid{children}{}\<[23]%
-\>[23]{}\mathrel{=}\FN{buildWithRoot}\;(\FN{filter}\;(\neg \circ\FN{onEdge}\;\Varid{root})\;\Varid{es})\;\mathop{\langle\$\rangle}\;\Varid{roots}{}\<[E]%
+\>[7]{}\FN{children}{}\<[23]%
+\>[23]{}\mathrel{=}\FN{buildWithRoot}\;(\FN{filter}\;(\neg \circ\FN{onEdge}\;\Varid{root})\;\Varid{es})\;\mathop{\langle\$\rangle}\;\FN{roots}{}\<[E]%
 \\
 \>[5]{}\hsindent{2}{}\<[7]%
-\>[7]{}\Varid{sortedChildren}{}\<[23]%
-\>[23]{}\mathrel{=}\FN{sortBy}\;(\FN{compare}\mathbin{`\FN{on}`}\FN{getLabel})\;\Varid{children}{}\<[E]%
+\>[7]{}\FN{sortedChildren}{}\<[23]%
+\>[23]{}\mathrel{=}\FN{sortBy}\;(\FN{compare}\mathbin{`\FN{on}`}\FN{getLabel})\;\FN{children}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 
@@ -644,7 +646,7 @@ where \ensuremath{\Varid{n}} is the tree's depth.
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
 \>[3]{}\FN{levels}\ConSym{::}\mathsf{Tree}\;\alpha\to [\mskip1.5mu [\mskip1.5mu \alpha\mskip1.5mu]\mskip1.5mu]{}\<[E]%
 \\
-\>[3]{}\FN{levels}\;\Varid{t}\mathrel{=}\Varid{map}\;(\Varid{map}\;\FN{getLabel})\mathbin{\$}{}\<[E]%
+\>[3]{}\FN{levels}\;\Varid{t}\mathrel{=}\FN{fmap}\;(\FN{fmap}\;\FN{getLabel})\mathbin{\$}{}\<[E]%
 \\
 \>[3]{}\hsindent{12}{}\<[15]%
 \>[15]{}\FN{takeWhile}\;(\neg \circ\FN{null})\mathbin{\$}{}\<[E]%
@@ -707,7 +709,7 @@ A handy way to think of edges annotated by levels is as a representation of the
 arc itself, where the ends of the edge are the endpoints, and the level is the
 height of the arc.
 
-If on end of one arc is between the ends of another, then there is a single
+If one end of an arc is between the ends of another, then there is a single
 intersection. If one arc is higher than another and the latter is in between the
 endpoints of the former, there is no violation; but if they are at the same
 level, or if the latter is higher than the former, there is a double
@@ -774,7 +776,7 @@ level:
 \\
 \>[3]{}\hsindent{2}{}\<[5]%
 \>[5]{}\FN{violationsWith}\;\Varid{x}{}\<[25]%
-\>[25]{}\mathrel{=}\FN{sum}\mathbin{\$}(\FN{checkEdges}\;\Varid{x}\;\mathop{\langle\$\rangle}\;\FN{rangesBelow}\;\Varid{x}){}\<[E]%
+\>[25]{}\mathrel{=}\FN{sum}\;(\FN{checkEdges}\;\Varid{x}\;\mathop{\langle\$\rangle}\;\FN{rangesBelow}\;\Varid{x}){}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 Finally, \ensuremath{\FN{\omega}} is computed for a tree as follows:

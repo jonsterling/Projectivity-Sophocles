@@ -2,6 +2,8 @@
 %include spacing.fmt
 %include colors.fmt
 
+\DeclareMathAlphabet{\mathkw}{OT1}{cmss}{bx}{n}
+
 \newcommand{\FN}{\mathsf}
 \newcommand{\comment}[1]{\marginpar{#1}}
 \newcommand{\ignore}[1]{}

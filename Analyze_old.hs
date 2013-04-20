@@ -20,24 +20,6 @@ import Analyze
 
 draw' t = putStrLn $ drawTree $ show <$> t
 
-sortWith :: Ord β => (α -> β) -> [α] -> [α]
-sortWith f = sortBy (compare `on` f)
-
-makeTree :: Ord α => [Edge α] -> Maybe (Tree α)
-makeTree es = makeTree' es <$> (maximalPoint es)
-
-makeTree' :: Ord α => [Edge α] -> α -> Tree α
-makeTree' edges maxLabel = Node maxLabel (sortWith rootLabel children)
-    where children = makeTree' (filter (not . touches maxLabel) edges) <$> roots
-          roots = opposite maxLabel <$> filter (touches maxLabel) edges
-
-          touches :: Ord α => α -> Edge α -> Bool
-          touches i (x, y) = x == i || y == i
-
-          opposite :: Ord α => α -> Edge α -> α
-          opposite i (x,y) | x == i     = y
-                           | otherwise = x
-
 
 (<$$>) :: (Functor φ, Functor γ) => (α -> β) -> φ (γ α) -> φ (γ β)
 (<$$>) = fmap . fmap
@@ -48,16 +30,13 @@ analyzeFile name = do
     let contents = parseXML src
         sentences = onlyElems contents >>= findElements (simpleName "sentence")
         words = findChildren (simpleName "word") <$> sentences
-        edges = catMaybes <$> (mkPair . (readHead &&& readId)) <$$> words
+        edges = catMaybes <$> (mkEdge . (readHead &&& readId)) <$$> words
 
         trees :: [Tree Integer]
-        trees = catMaybes $ makeTree <$> edges
+        trees = catMaybes $ treeFromEdges <$> edges
 
-        analyzed :: [Tree (RangeState Integer)]
-        analyzed = analyzeTree <$> trees
     forM_ trees $ \t -> do
-      print $ allEdges' t
-      print $ sum $ analyzeEdges (allEdges' t)
+      print $ omega t
 
 main :: IO ()
 main = do
@@ -67,18 +46,14 @@ main = do
     let contents = parseXML src
         sentences = onlyElems contents >>= findElements (simpleName "sentence")
         words = findChildren (simpleName "word") <$> sentences
-        edges = catMaybes <$> (mkPair . (readHead &&& readId)) <$$> words
+        edges = catMaybes <$> (mkEdge . (readHead &&& readId)) <$$> words
 
         trees :: [Tree Integer]
-        trees = catMaybes $ makeTree <$> edges
-
-        analyzed :: [Tree (RangeState Integer)]
-        analyzed = analyzeTree <$> trees
+        trees = catMaybes $ treeFromEdges <$> edges
 
         --result = sum $  <$> analyzed
 
     forM_ trees draw'
-    forM_ analyzed draw'
     --putStrLn $ name ++ ": " ++ show result
 
 
@@ -93,6 +68,7 @@ readId = readAttr "id"
 readHead = readAttr "head"
 
 
-mkPair :: (Maybe a, Maybe a) -> Maybe (Edge a)
-mkPair (Just h, Just i) = Just (h, i)
-mkPair _                = Nothing
+mkEdge :: (Maybe a, Maybe a) -> Maybe (Edge a)
+mkEdge (Just h, Just i) = Just (h :-: i)
+mkEdge _                = Nothing
+

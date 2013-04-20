@@ -353,9 +353,10 @@
 
 
 
+
 \usepackage{homework,stmaryrd,wasysym,url,upgreek,subfigure}
 \usepackage[margin=1cm]{caption}
-\usepackage{tikz-dependency}
+\usepackage{xytree}
 \DeclareMathAlphabet{\mathkw}{OT1}{cmss}{bx}{n}
 
 \begin{document}
@@ -364,6 +365,7 @@
 \author{Jonathan Sterling}
 
 \title{Phrase Projectivity in Antigone}
+\date{April 2013}
 \maketitle
 
 \ignore{
@@ -386,70 +388,71 @@
 \\
 \>[3]{}\mathkw{import}\;\mathsf{\mathsf{Data}.Foldable}{}\<[E]%
 \\
-\>[3]{}\mathkw{import}\;\mathsf{\mathsf{Data}.Monoid}{}\<[E]%
+\>[3]{}\mathkw{import}\;\mathsf{\mathsf{Debug}.Trace}{}\<[E]%
+\\
+\>[3]{}\mathkw{import}\;\mathsf{\mathsf{Data}.Maybe}\;(\Varid{isJust},\FN{maybeToList}){}\<[E]%
 \\
 \>[3]{}\mathkw{import}\;\mathsf{\mathsf{Data}.Tree}{}\<[E]%
 \\
-\>[3]{}\mathkw{import}\;\mathsf{\mathsf{Data}.List}\;(\Varid{genericLength}){}\<[E]%
+\>[3]{}\mathkw{import}\;\mathsf{\mathsf{Data}.List}\;(\FN{genericLength},\Varid{nub},\Varid{findIndex},\FN{sortBy}){}\<[E]%
 \\
-\>[3]{}\mathkw{import}\;\mathsf{Prelude}\;\Varid{hiding}\;(\FN{maximum},\FN{minimum},\FN{foldl},\cdot \notin\cdot ){}\<[E]%
+\>[3]{}\mathkw{import}\;\mathsf{\mathsf{Data}.Function}\;(\FN{on}){}\<[E]%
+\\
+\>[3]{}\mathkw{import}\;\mathsf{Prelude}\;\Varid{hiding}\;(\FN{maximum},\FN{minimum},\FN{foldl},\cdot \notin\cdot ,\Varid{elem},\FN{concat},\FN{sum}){}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 }
 
-\section{Introduction}
-\label{sec:introduction}
-
-\subsection{Dependency Trees and Projectivity}
-\label{sec:introduction.dependency}
+\section{Dependency Trees and Their Projectivity}
 
 A dependency tree encodes the head-dependent relation for a string of words,
 where arcs are drawn from heads to their dependents. We consider a phrase
 \emph{projective} when these arcs do not cross each other, and
-\emph{discontinuous} inasmuch as any of the arcs do cross.
+\emph{discontinuous} to the extent that any of the arcs intersect.
 Figure~\ref{fig:dependency-trees} illustrates the various kinds of projectivity
 violations that may occur.
 
 \begin{figure}[h!]
 \centering
-\subfigure[``Full of plentiful supplies'' (Xenophon, \emph{Anabasis} 3.5.1).]{
-  \begin{dependency}[theme = simple]
-      \begin{deptext}[column sep=1em]
-          μεστῇ \& πολλῶν \& ἀγαθῶν\\
-      \end{deptext}
-      \depedge{3}{2}{ADJ}
-      \depedge{1}{3}{GEN}
-  \end{dependency}
+\subfigure[``Full of plentiful supplies'' (Xenophon, \emph{Anabasis} 3.5.1) is fully projective.]{
+  \xytext{
+    \xybarnode{μεστῇ}\xybarconnect[6]{2}&
+    \xybarnode{πολλῶν}&
+    \xybarnode{ἀγαθῶν}\xybarconnect[3]{-1}
+  }
 }
 \hspace{6pt}
-\subfigure[``Full of many good things'' (Plato, \emph{Laws} 906a).]{
-  \begin{dependency}[theme = simple]
-      \begin{deptext}[column sep=1em]
-          πολλῶν \& μεστὸν \& ἀγαθῶν\\
-      \end{deptext}
-      \depedge[edge start x offset=-6pt, arc angle=20]{3}{1}{ADJ}
-      \depedge{2}{3}{GEN}
-  \end{dependency}
+\subfigure[``Full of many good things'' (Plato, \emph{Laws} 906a) has one
+projectivity violation.]{
+  \xytext{
+    \xybarnode{πολλῶν}&
+    \xybarnode{μεστὸν}\xybarconnect[6]{1}&
+    \xybarnode{ἀγαθῶν}\xybarconnect[3]{-2}
+  }
 }
 \subfigure[``And he stood over the rooftops, gaped in a circle with murderous
-spears around the seven-gated mouth, and left.'' (Sophocles, \emph{Antigone}
-117--120).]{
-  \begin{dependency}[theme = simple]
-      \begin{deptext}[column sep=0.1em]
-        στὰς \& δ' \& ὑπὲρ \& μελάθρων \& φονώσαισιν \& ἀμφιχανὼν \& κύκλῳ \&
-λόγχαις \& ἑπτάπυλον \& στόμα \& ἔβα \\
-      \end{deptext}
-      \depedge{3}{4}{OBJ}
-      \depedge{1}{3}{ADV}
-      \depedge{6}{7}{ADV}
-      \depedge{8}{5}{ADJ}
-      \depedge{6}{8}{ADV}
-      \depedge{10}{9}{ADJ}
-      \depedge{6}{10}{OBJ}
-      \depedge{11}{6}{ADV}
-      \depedge{11}{1}{ADV}
-      \depedge{11}{2}{CONJ}
-  \end{dependency}
+spears around the seven-gated mouth, and left'' (Sophocles, \emph{Antigone}
+117--120) has five projectivity violations (note that multiple arcs may
+intersect at a point).]{
+  \xytext{
+    \xybarnode{στὰς}\xybarconnect[6]{2} &
+    \xybarnode{δ'} &
+    \xybarnode{ὑπὲρ}\xybarconnect[3]{1} &
+    \xybarnode{μελάθρων} &
+    \xybarnode{φονώσαισιν}\xybarconnect[3]{3} &
+    \xybarnode{ἀμφιχανὼν}
+      \xybarconnect[6]{1}
+      \xybarconnect[6]{2}
+      \xybarconnect[6]{4}&
+    \xybarnode{κύκλῳ} &
+    \xybarnode{λόγχαις} &
+    \xybarnode{ἐπτάπυλον} &
+    \xybarnode{στόμα}\xybarconnect[3]{-1} &
+    \xybarnode{ἔβα}
+      \xybarconnect[9]{-10}
+      \xybarconnect[9]{-9}
+      \xybarconnect[9]{-5}
+  }
 }
 
 \caption{A dependency path wrapping around itself is a projectivity violation,
@@ -458,6 +461,22 @@ as in (b); interlacing adjacent phrases also violate projectivity, as in
 \label{fig:dependency-trees}
 \end{figure}
 
+\noindent
+In this paper, we use a concrete metric of projectivity $\omega$, given by the following
+ratio:
+\[
+    \omega = \frac{\text{number of violations}}{\text{number of arcs}}
+\]
+Section~\ref{sec:algorithm} deals with the development of an algorithm to
+compute this quantity for a particular dependency tree.
+
+\section{The Algorithm}
+\label{sec:algorithm}
+
+Dependency trees are a recursive data structure
+with a head node, which may have any number of arcs drawn to further trees (this
+is called a \emph{rose tree}). We represent them as a Haskell data-type as
+follows:
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -465,6 +484,12 @@ as in (b); interlacing adjacent phrases also violate projectivity, as in
 \>[3]{}\mathkw{data}\;\mathsf{Tree}\;\alpha\mathrel{=}\alpha\curvearrowright[\mskip1.5mu \mathsf{Tree}\;\alpha\mskip1.5mu]{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
+This can be read as ``For all types \ensuremath{\alpha}, a \ensuremath{\mathsf{Tree}} of \ensuremath{\alpha} is constructed from a
+label of type \ensuremath{\alpha} and a forest of \ensuremath{\mathsf{Tree}}s of \ensuremath{\alpha},'' where brackets are a notation
+for lists.
+
+Given a tree, we can extract its root label by pattern matching on its structure
+as follows:
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -472,38 +497,23 @@ as in (b); interlacing adjacent phrases also violate projectivity, as in
 \>[3]{}\FN{getLabel}\ConSym{::}\mathsf{Tree}\;\alpha\to \alpha{}\<[E]%
 \\
 \>[3]{}\FN{getLabel}\;(\Varid{l}\curvearrowright\anonymous )\mathrel{=}\Varid{l}{}\<[E]%
+\\
+\>[3]{}\FN{getForest}\ConSym{::}\mathsf{Tree}\;\alpha\to [\mskip1.5mu \mathsf{Tree}\;\alpha\mskip1.5mu]{}\<[E]%
+\\
+\>[3]{}\FN{getForest}\;(\anonymous \curvearrowright\Varid{ts})\mathrel{=}\Varid{ts}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
-\begin{hscode}\SaveRestoreHook
-\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{21}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[3]{}\mathkw{type}\;\mathsf{Edge}\;\alpha{}\<[21]%
-\>[21]{}\mathrel{=}(\alpha,\alpha){}\<[E]%
-\\
-\>[3]{}\mathkw{data}\;\mathsf{Range}\;\alpha{}\<[21]%
-\>[21]{}\mathrel{=}\alpha\leftrightarrow\alpha\mid \FN{R_\emptyset}{}\<[E]%
-\\
-\>[3]{}\mathkw{data}\;\mathsf{RangeState}\;\alpha\mathrel{=}\mathsf{Integer}\lhd\mathsf{Range}\;\alpha{}\<[E]%
-\ColumnHook
-\end{hscode}\resethooks
+\subsection{From Edges to Trees}
+
+A sentence from the Perseus treebank is in the form of a list of words that are
+indexed their linear position, and cross-referenced by the linear position of
+their dominating head. We shall consider each index to be a \emph{vertex}, and
+each pair of vertices to be an \ensuremath{\mathsf{Edge}}, which we shall write as follows:
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[3]{}\FN{getRange}\ConSym{::}\mathsf{RangeState}\;\alpha\to \mathsf{Range}\;\alpha{}\<[E]%
-\\
-\>[3]{}\FN{getRange}\;(\anonymous \lhd\Varid{r})\mathrel{=}\Varid{r}{}\<[E]%
-\ColumnHook
-\end{hscode}\resethooks
-\begin{hscode}\SaveRestoreHook
-\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[3]{}\FN{getViolations}\ConSym{::}\mathsf{RangeState}\;\alpha\to \mathsf{Integer}{}\<[E]%
-\\
-\>[3]{}\FN{getViolations}\;(\Varid{vs}\lhd\anonymous )\mathrel{=}\Varid{vs}{}\<[E]%
+\>[3]{}\mathkw{data}\;\mathsf{Edge}\;\alpha\mathrel{=}\alpha\leftrightarrow\alpha\;\mathkw{deriving}\;\mathsf{Eq}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 \ignore{
@@ -511,217 +521,285 @@ as in (b); interlacing adjacent phrases also violate projectivity, as in
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[3]{}\mathkw{deriving}\;\mathkw{instance}\;\mathsf{Show}\;\alpha\Rightarrow \mathsf{Show}\;(\mathsf{Range}\;\alpha){}\<[E]%
-\\
-\>[3]{}\mathkw{deriving}\;\mathkw{instance}\;\mathsf{Show}\;\alpha\Rightarrow \mathsf{Show}\;(\mathsf{RangeState}\;\alpha){}\<[E]%
+\>[3]{}\mathkw{deriving}\;\mathkw{instance}\;\mathsf{Show}\;\alpha\Rightarrow \mathsf{Show}\;(\mathsf{Edge}\;\alpha){}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 }
+%
+An \ensuremath{\mathsf{Edge}\;\alpha} is given by two vertices of type \ensuremath{\alpha}; the \ensuremath{\mathkw{deriving}\;\mathsf{Eq}} statement
+generates the code that is necessary to determine whether or not two \ensuremath{\mathsf{Edge}}s are
+equal using the \ensuremath{(\equiv )} operator. In order to perform our analysis, we should wish
+to transform the raw list of edges into a tree structure. The basic procedure is
+as follows:
 
-\noindent
-A \ensuremath{\mathsf{Monoid}} is an algebraic structure which has a zero \ensuremath{\mathcal{E}} and a binary
-operation \ensuremath{\cdot \oplus\cdot }, and which satisfies some laws:
+First, we try to find the root vertex of the tree. This will be a vertex that is
+given as the head of one of the words, but does not itself appear in the
+sentence:
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{5}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{19}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{12}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[3]{}\mathkw{class}\;\mathsf{Monoid}\;\alpha\;\mathkw{where}{}\<[E]%
+\>[3]{}\FN{rootVertex}\ConSym{::}\mathsf{Eq}\;\alpha\Rightarrow [\mskip1.5mu \mathsf{Edge}\;\alpha\mskip1.5mu]\to \mathsf{Maybe}\;\alpha{}\<[E]%
+\\
+\>[3]{}\FN{rootVertex}\;\Varid{es}\mathrel{=}\FN{find}\;(\notin \Varid{deps})\;\Varid{heads}\;\mathkw{where}{}\<[E]%
 \\
 \>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\mathcal{E}\ConSym{::}\alpha{}\<[E]%
+\>[5]{}\Varid{heads}{}\<[12]%
+\>[12]{}\mathrel{=}(\lambda (\Varid{x}\leftrightarrow\Varid{y})\to \Varid{x})\;\mathop{\langle\$\rangle}\;\Varid{es}{}\<[E]%
 \\
 \>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\cdot \oplus\cdot \ConSym{::}\alpha\to \alpha\to \alpha{}\<[E]%
+\>[5]{}\Varid{deps}{}\<[12]%
+\>[12]{}\mathrel{=}(\lambda (\Varid{x}\leftrightarrow\Varid{y})\to \Varid{y})\;\mathop{\langle\$\rangle}\;\Varid{es}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+If the data that we are working with are not well-formed, there is a chance that
+we will not find a root vertex; that is why the type is given as \ensuremath{\mathsf{Maybe}}.
+
+Then, given a root vertex, we look to find all the edges that
+it touches, and try to build the subtrees that are connected with those edges.
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{18}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\FN{onEdge}\ConSym{::}\mathsf{Ord}\;\alpha\Rightarrow \alpha\to \mathsf{Edge}\;\alpha\to \mathsf{Bool}{}\<[E]%
+\\
+\>[3]{}\FN{onEdge}\;\Varid{i}\;(\Varid{x}\leftrightarrow\Varid{y})\mathrel{=}\Varid{x}\equiv \Varid{i}\mathrel{\vee}\Varid{y}\equiv \Varid{i}{}\<[E]%
 \\[\blanklineskip]%
-\>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\FN{associativity}\ConSym{::}\Varid{l}\oplus(\Varid{c}\oplus\Varid{r})\equiv (\Varid{l}\oplus\Varid{c})\oplus\Varid{r}{}\<[E]%
+\>[3]{}\FN{oppositeVertex}\ConSym{::}\mathsf{Ord}\;\alpha\Rightarrow \alpha\to \mathsf{Edge}\;\alpha\to \alpha{}\<[E]%
+\\
+\>[3]{}\FN{oppositeVertex}\;\Varid{i}\;(\Varid{x}\leftrightarrow\Varid{y}){}\<[E]%
 \\
 \>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\FN{leftIdentity}{}\<[19]%
-\>[19]{}\ConSym{::}\Varid{l}\oplus\mathcal{E}\equiv \Varid{l}{}\<[E]%
+\>[5]{}\mid \Varid{x}\equiv \Varid{i}{}\<[18]%
+\>[18]{}\mathrel{=}\Varid{y}{}\<[E]%
 \\
 \>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\FN{rightIdentity}\ConSym{::}\mathcal{E}\oplus\Varid{l}\equiv \Varid{l}{}\<[E]%
+\>[5]{}\mid \Varid{otherwise}{}\<[18]%
+\>[18]{}\mathrel{=}\Varid{x}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
-\begin{hscode}\SaveRestoreHook
-\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[3]{}\mathkw{instance}\;\mathsf{Ord}\;\alpha\Rightarrow \mathsf{Monoid}\;(\mathsf{Range}\;\alpha)\;\mathkw{where}{}\<[E]%
-\\
-\>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\mathcal{E}\mathrel{=}\FN{R_\emptyset}{}\<[E]%
-\\
-\>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}(\Varid{x}\leftrightarrow\Varid{y})\oplus(\Varid{u}\leftrightarrow\Varid{v})\mathrel{=}\FN{rangeFrom}\;[\mskip1.5mu \Varid{x},\Varid{y},\Varid{u},\Varid{v}\mskip1.5mu]{}\<[E]%
-\\
-\>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\FN{R_\emptyset}\oplus\Varid{xy}\mathrel{=}\Varid{xy}{}\<[E]%
-\\
-\>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\Varid{xy}\oplus\FN{R_\emptyset}\mathrel{=}\Varid{xy}{}\<[E]%
-\ColumnHook
-\end{hscode}\resethooks
+This is done recursively until the list of edges is exhausted and we have a
+complete tree structure:
+
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{5}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{7}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{18}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[3]{}\mathkw{instance}\;(\mathsf{Num}\;\alpha,\mathsf{Ord}\;\alpha)\Rightarrow \mathsf{Monoid}\;(\mathsf{RangeState}\;\alpha)\;\mathkw{where}{}\<[E]%
-\\
-\>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\mathcal{E}\mathrel{=}\Numeral{0}\lhd\mathcal{E}{}\<[E]%
-\\
-\>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}(\Varid{i}\lhd\Varid{xy})\oplus(\Varid{j}\lhd\Varid{uv})\mathrel{=}\Varid{count}\lhd(\Varid{xy}\oplus\Varid{uv})\;\mathkw{where}{}\<[E]%
-\\
-\>[5]{}\hsindent{2}{}\<[7]%
-\>[7]{}\Varid{count}\mathrel{=}\mathkw{if}\;\FN{rangesIntersect}\;\Varid{xy}\;\Varid{uv}{}\<[E]%
-\\
-\>[7]{}\hsindent{11}{}\<[18]%
-\>[18]{}\mathkw{then}\;\Varid{i}\VarSym{+}\Varid{j}\VarSym{+}\Numeral{1}{}\<[E]%
-\\
-\>[7]{}\hsindent{11}{}\<[18]%
-\>[18]{}\mathkw{else}\;\Varid{i}\VarSym{+}\Varid{j}{}\<[E]%
-\ColumnHook
-\end{hscode}\resethooks
-\begin{hscode}\SaveRestoreHook
-\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{29}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{39}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[3]{}\FN{rangesIntersect}\ConSym{::}\mathsf{Ord}\;\alpha\Rightarrow \mathsf{Range}\;\alpha\to \mathsf{Range}\;\alpha\to \mathsf{Bool}{}\<[E]%
-\\
-\>[3]{}\FN{rangesIntersect}\;(\Varid{x}\leftrightarrow\Varid{y})\;(\Varid{u}\leftrightarrow\Varid{v})\mathrel{=}{}\<[E]%
-\\
-\>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\neg \;((\Varid{x}\VarSym{<}\Varid{u}\mathrel{\wedge}\Varid{y}\VarSym{<}\Varid{u})\mathrel{\vee}(\Varid{u}\VarSym{<}\Varid{v}\mathrel{\wedge}\Varid{v}\VarSym{<}\Varid{x})){}\<[E]%
-\\
-\>[3]{}\FN{rangesIntersect}\;\anonymous \;{}\<[29]%
-\>[29]{}\anonymous {}\<[39]%
-\>[39]{}\mathrel{=}\mathsf{False}{}\<[E]%
-\ColumnHook
-\end{hscode}\resethooks
-\begin{hscode}\SaveRestoreHook
-\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[3]{}\FN{rangeFrom}\ConSym{::}(\mathsf{Foldable}\;\phi,\mathsf{Ord}\;\alpha)\Rightarrow \phi\;\alpha\to \mathsf{Range}\;\alpha{}\<[E]%
-\\
-\>[3]{}\FN{rangeFrom}\;\Varid{xs}\mathrel{=}\FN{minimum}\;\Varid{xs}\leftrightarrow\FN{maximum}\;\Varid{xs}{}\<[E]%
-\ColumnHook
-\end{hscode}\resethooks
-\begin{hscode}\SaveRestoreHook
-\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{23}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[3]{}\FN{analyzePath}\ConSym{::}(\mathsf{Num}\;\alpha,\mathsf{Ord}\;\alpha)\Rightarrow [\mskip1.5mu \alpha\mskip1.5mu]\to \mathsf{RangeState}\;\alpha{}\<[E]%
+\>[3]{}\FN{treeFromEdges}\ConSym{::}\mathsf{Ord}\;\alpha\Rightarrow [\mskip1.5mu \mathsf{Edge}\;\alpha\mskip1.5mu]\to \mathsf{Maybe}\;(\mathsf{Tree}\;\alpha){}\<[E]%
 \\
-\>[3]{}\FN{analyzePath}\;\Varid{path}\mathrel{=}\FN{foldl}\;\Varid{op}\;\mathcal{E}\;(\Varid{reverse}\;\Varid{path})\;\mathkw{where}{}\<[E]%
+\>[3]{}\FN{treeFromEdges}\;\Varid{es}\mathrel{=}\FN{buildWithRoot}\;\Varid{es}\;\mathop{\langle\$\rangle}\;\FN{rootVertex}\;\Varid{es}\;\mathkw{where}{}\<[E]%
 \\
 \>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\Varid{op}\;(\Varid{c}\lhd\Varid{r})\;\Varid{i}\mathrel{=}\mathkw{if}\;\FN{inRange}\;\Varid{r}\;\Varid{i}{}\<[E]%
+\>[5]{}\FN{buildWithRoot}\;\Varid{es}\;\Varid{root}\mathrel{=}\Varid{root}\curvearrowright\Varid{sortedChildren}\;\mathkw{where}{}\<[E]%
 \\
-\>[5]{}\hsindent{18}{}\<[23]%
-\>[23]{}\mathkw{then}\;(\Varid{c}\VarSym{+}\Numeral{1})\lhd\Varid{r}{}\<[E]%
+\>[5]{}\hsindent{2}{}\<[7]%
+\>[7]{}\Varid{roots}{}\<[23]%
+\>[23]{}\mathrel{=}\FN{oppositeVertex}\;\Varid{root}\;\mathop{\langle\$\rangle}\;\FN{filter}\;(\FN{onEdge}\;\Varid{root})\;\Varid{es}{}\<[E]%
 \\
-\>[5]{}\hsindent{18}{}\<[23]%
-\>[23]{}\mathkw{else}\;\Varid{c}\lhd(\FN{extend}\;\Varid{r}\;\Varid{i}){}\<[E]%
+\>[5]{}\hsindent{2}{}\<[7]%
+\>[7]{}\Varid{children}{}\<[23]%
+\>[23]{}\mathrel{=}\FN{buildWithRoot}\;(\FN{filter}\;(\neg \circ\FN{onEdge}\;\Varid{root})\;\Varid{es})\;\mathop{\langle\$\rangle}\;\Varid{roots}{}\<[E]%
+\\
+\>[5]{}\hsindent{2}{}\<[7]%
+\>[7]{}\Varid{sortedChildren}{}\<[23]%
+\>[23]{}\mathrel{=}\FN{sortBy}\;(\FN{compare}\mathbin{`\FN{on}`}\FN{getLabel})\;\Varid{children}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
+
+\subsection{Counting Violations: Computing \ensuremath{\FN{\omega}}}
+Violations are given as an integer tally:
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\mathkw{type}\;\mathsf{Violations}\mathrel{=}\mathsf{Integer}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+The basic procedure for counting projectivity violations is as follows: flatten
+down the tree into a list of edges cross-referenced by their vertical position
+in the tree; then traverse the list and see how many times these edges intersect
+each other.
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\mathkw{type}\;\mathsf{Level}\mathrel{=}\mathsf{Integer}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+The vertical position of a node in a tree is represented as its \ensuremath{\mathsf{Level}},
+counting backwards from the total depth of the tree. That is, the deepest node
+in the tree is at level \ensuremath{\Numeral{0}}, and the highest node in the tree is at level \ensuremath{\Varid{n}},
+where \ensuremath{\Varid{n}} is the tree's depth.
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{15}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\FN{levels}\ConSym{::}\mathsf{Tree}\;\alpha\to [\mskip1.5mu [\mskip1.5mu \alpha\mskip1.5mu]\mskip1.5mu]{}\<[E]%
+\\
+\>[3]{}\FN{levels}\;\Varid{t}\mathrel{=}\Varid{map}\;(\Varid{map}\;\FN{getLabel})\mathbin{\$}{}\<[E]%
+\\
+\>[3]{}\hsindent{12}{}\<[15]%
+\>[15]{}\FN{takeWhile}\;(\neg \circ\FN{null})\mathbin{\$}{}\<[E]%
+\\
+\>[3]{}\hsindent{12}{}\<[15]%
+\>[15]{}\FN{iterate}\;(\bind \FN{getForest})\;[\mskip1.5mu \Varid{t}\mskip1.5mu]{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\FN{depth}\ConSym{::}\mathsf{Tree}\;\alpha\to \mathsf{Integer}{}\<[E]%
+\\
+\>[3]{}\FN{depth}\mathrel{=}\FN{genericLength}\circ\FN{levels}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+We can now annotate each node in a tree with what level it is at:
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\FN{annotateLevels}\ConSym{::}\mathsf{Tree}\;\alpha\to \mathsf{Tree}\;(\mathsf{Level},\alpha){}\<[E]%
+\\
+\>[3]{}\FN{annotateLevels}\;\Varid{tree}\mathrel{=}\FN{aux}\;(\FN{depth}\;\Varid{tree})\;\Varid{tree}\;\mathkw{where}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\FN{aux}\;\Varid{l}\;(\Varid{x}\curvearrowright\Varid{ts})\mathrel{=}\Varid{l},\Varid{x}\curvearrowright\FN{aux}\;(\Varid{l}\VarSym{-}\Numeral{1})\;\mathop{\langle\$\rangle}\;\Varid{ts}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+Then, we fold up the tree into a list of edges and levels:
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{5}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{7}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{9}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{18}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{24}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[3]{}\FN{analyzeTree}\ConSym{::}(\mathsf{Num}\;\alpha,\mathsf{Ord}\;\alpha)\Rightarrow \mathsf{Tree}\;\alpha\to \mathsf{Tree}\;(\mathsf{RangeState}\;\alpha){}\<[E]%
+\>[3]{}\FN{allEdges}\ConSym{::}\mathsf{Ord}\;\alpha\Rightarrow \mathsf{Tree}\;\alpha\to [\mskip1.5mu (\mathsf{Level},\mathsf{Edge}\;\alpha)\mskip1.5mu]{}\<[E]%
 \\
-\>[3]{}\FN{analyzeTree}\;\Varid{tree}\mathrel{=}{}\<[E]%
+\>[3]{}\FN{allEdges}\;\Varid{tree}\mathrel{=}\FN{aux}\;(\FN{annotateLevels}\;\Varid{tree})\;\mathkw{where}{}\<[E]%
 \\
 \>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\mathkw{case}\;\FN{treeOrPath}\;\Varid{tree}\;\mathkw{of}{}\<[E]%
+\>[5]{}\FN{aux}\;(\anonymous ,\Varid{x}\curvearrowright\Varid{ts})\mathrel{=}\Varid{ts}\bind \Varid{go}\;\mathkw{where}{}\<[E]%
 \\
 \>[5]{}\hsindent{2}{}\<[7]%
-\>[7]{}\mathsf{Left}\;(\Varid{i}\curvearrowright\Varid{ts})\to \Varid{c'}\lhd\FN{extend}\;\Varid{r}\;\Varid{i}\curvearrowright\Varid{children}\;\mathkw{where}{}\<[E]%
-\\
-\>[7]{}\hsindent{2}{}\<[9]%
-\>[9]{}\Varid{children}\mathrel{=}\FN{analyzeTree}\mathop{\langle\$\rangle}\Varid{ts}{}\<[E]%
-\\
-\>[7]{}\hsindent{2}{}\<[9]%
-\>[9]{}\Varid{c}\lhd\Varid{r}{}\<[18]%
-\>[18]{}\mathrel{=}\FN{fold}\;(\FN{getLabel}\mathop{\langle\$\rangle}\Varid{children}){}\<[E]%
-\\
-\>[7]{}\hsindent{2}{}\<[9]%
-\>[9]{}\Varid{c'}\mathrel{=}\Varid{c}\VarSym{+}(\Varid{genericLength}\;(\Varid{filter}\;(\lambda \Varid{r'}\to \FN{inRange}\;\Varid{r'}\;\Varid{i})\;(\FN{getRange}\circ\FN{getLabel}\mathop{\langle\$\rangle}\Varid{children}))){}\<[E]%
-\\
-\>[5]{}\hsindent{2}{}\<[7]%
-\>[7]{}\mathsf{Right}\;\Varid{path}{}\<[24]%
-\>[24]{}\to \FN{analyzePath}\;\Varid{path}\curvearrowright[\mskip1.5mu \mskip1.5mu]{}\<[E]%
-\ColumnHook
-\end{hscode}\resethooks
-\begin{hscode}\SaveRestoreHook
-\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{27}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[3]{}\FN{treeOrPath}\ConSym{::}\mathsf{Tree}\;\alpha\to \mathsf{Either}\;(\mathsf{Tree}\;\alpha)\;[\mskip1.5mu \alpha\mskip1.5mu]{}\<[E]%
-\\
-\>[3]{}\FN{treeOrPath}\;(\Varid{i}\curvearrowright[\mskip1.5mu \mskip1.5mu]){}\<[27]%
-\>[27]{}\mathrel{=}\mathsf{Right}\;[\mskip1.5mu \Varid{i}\mskip1.5mu]{}\<[E]%
-\\
-\>[3]{}\FN{treeOrPath}\;(\Varid{i}\curvearrowright[\mskip1.5mu \Varid{x}\mskip1.5mu])\mathrel{=}(\Varid{i}\mathbin{:})\mathop{\langle\$\rangle}\FN{treeOrPath}\;\Varid{x}{}\<[E]%
-\\
-\>[3]{}\FN{treeOrPath}\;\Varid{t}{}\<[27]%
-\>[27]{}\mathrel{=}\mathsf{Left}\;\Varid{t}{}\<[E]%
+\>[7]{}\Varid{go}\;\Varid{t}\mathord{@}(\Varid{l},\Varid{y}\curvearrowright\anonymous )\mathrel{=}(\Varid{l},\FN{edgeWithRange}\;[\mskip1.5mu \Varid{x},\Varid{y}\mskip1.5mu])\mathbin{:}\FN{aux}\;\Varid{t}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[3]{}\FN{extend}\ConSym{::}\mathsf{Ord}\;\alpha\Rightarrow \mathsf{Range}\;\alpha\to \alpha\to \mathsf{Range}\;\alpha{}\<[E]%
+\>[3]{}\FN{edgeWithRange}\ConSym{::}(\mathsf{Foldable}\;\phi,\mathsf{Ord}\;\alpha)\Rightarrow \phi\;\alpha\to \mathsf{Edge}\;\alpha{}\<[E]%
 \\
-\>[3]{}\FN{extend}\;(\Varid{x}\leftrightarrow\Varid{y})\;\Varid{z}\mathrel{=}\FN{rangeFrom}\;[\mskip1.5mu \Varid{x},\Varid{y},\Varid{z}\mskip1.5mu]{}\<[E]%
-\\
-\>[3]{}\FN{extend}\;\FN{R_\emptyset}\;\Varid{z}\mathrel{=}\Varid{z}\leftrightarrow\Varid{z}{}\<[E]%
+\>[3]{}\FN{edgeWithRange}\;\Varid{xs}\mathrel{=}\FN{minimum}\;\Varid{xs}\leftrightarrow\FN{maximum}\;\Varid{xs}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
+A handy way to think of edges annotated by levels is as a representation of the
+arc itself, where the ends of the edge are the endpoints, and the level is the
+height of the arc.
+
+If on end of one arc is between the ends of another, then there is a single
+intersection. If one arc is higher than another and the latter is in between the
+endpoints of the former, there is no violation; but if they are at the same
+level, or if the latter is higher than the former, there is a double
+intersection. Otherwise, there is no intersection.
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{48}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\FN{checkEdges}\ConSym{::}\mathsf{Ord}\;\alpha\Rightarrow (\mathsf{Level},\mathsf{Edge}\;\alpha)\to (\mathsf{Level},\mathsf{Edge}\;\alpha)\to \mathsf{Violations}{}\<[E]%
+\\
+\>[3]{}\FN{checkEdges}\;(\Varid{l},\Varid{xy}\mathord{@}(\Varid{x}\leftrightarrow\Varid{y}))\;(\Varid{l'},\Varid{uv}\mathord{@}(\Varid{u}\leftrightarrow\Varid{v})){}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\mid \Varid{y}\in_R\Varid{uv}\mathrel{\wedge}\Varid{u}\in_R\Varid{xy}{}\<[48]%
+\>[48]{}\mathrel{=}\Numeral{1}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\mid \Varid{x}\in_R\Varid{uv}\mathrel{\wedge}\Varid{v}\in_R\Varid{xy}{}\<[48]%
+\>[48]{}\mathrel{=}\Numeral{1}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\mid \Varid{x}\in_R\Varid{uv}\mathrel{\wedge}\Varid{y}\in_R\Varid{uv}\mathrel{\wedge}\Varid{l}\geq \Varid{l'}{}\<[48]%
+\>[48]{}\mathrel{=}\Numeral{2}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\mid \Varid{u}\in_R\Varid{xy}\mathrel{\wedge}\Varid{v}\in_R\Varid{xy}\mathrel{\wedge}\Varid{l}\leq \Varid{l'}{}\<[48]%
+\>[48]{}\mathrel{=}\Numeral{2}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\mid \Varid{otherwise}{}\<[48]%
+\>[48]{}\mathrel{=}\Numeral{0}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+We determine whether a vertex is in the bounds of an edge using \ensuremath{\cdot \in_R\cdot }.
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[3]{}\FN{inRange}\ConSym{::}\mathsf{Ord}\;\alpha\Rightarrow \mathsf{Range}\;\alpha\to \alpha\to \mathsf{Bool}{}\<[E]%
+\>[3]{}\cdot \in_R\cdot \ConSym{::}\mathsf{Ord}\;\alpha\Rightarrow \alpha\to \mathsf{Edge}\;\alpha\to \mathsf{Bool}{}\<[E]%
 \\
-\>[3]{}\FN{inRange}\;(\Varid{x}\leftrightarrow\Varid{y})\;\Varid{z}\mathrel{=}\Varid{z}\VarSym{>}\Varid{x}\mathrel{\wedge}\Varid{z}\VarSym{<}\Varid{y}{}\<[E]%
-\\
-\>[3]{}\FN{inRange}\;\FN{R_\emptyset}\;\anonymous \mathrel{=}\mathsf{False}{}\<[E]%
+\>[3]{}\Varid{z}\in_R\Varid{x}\leftrightarrow\Varid{y}\mathrel{=}\Varid{z}\VarSym{>}\FN{minimum}\;[\mskip1.5mu \Varid{x},\Varid{y}\mskip1.5mu]\mathrel{\wedge}\Varid{z}\VarSym{<}\FN{maximum}\;[\mskip1.5mu \Varid{x},\Varid{y}\mskip1.5mu]{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
+We can now use what we've built to count the intersections that occur in a
+collection of edges. This is done by adding up the result of \ensuremath{\FN{checkEdges}} of
+combination of each edge with the subset of edges which are at or below its
+level:
+
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{4}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{25}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[3]{}\FN{maximalPoint}\ConSym{::}\mathsf{Eq}\;\alpha\Rightarrow [\mskip1.5mu \mathsf{Edge}\;\alpha\mskip1.5mu]\to \mathsf{Maybe}\;\alpha{}\<[E]%
+\>[3]{}\FN{edgeViolations}\ConSym{::}\mathsf{Ord}\;\alpha\Rightarrow [\mskip1.5mu (\mathsf{Level},\mathsf{Edge}\;\alpha)\mskip1.5mu]\to \mathsf{Violations}{}\<[E]%
 \\
-\>[3]{}\FN{maximalPoint}\;\Varid{es}\mathrel{=}{}\<[E]%
+\>[3]{}\FN{edgeViolations}\;\Varid{xs}\mathrel{=}\FN{sum}\mathbin{\$}\FN{violationsWith}\;\mathop{\langle\$\rangle}\;\Varid{xs}\;\mathkw{where}{}\<[E]%
 \\
-\>[3]{}\hsindent{1}{}\<[4]%
-\>[4]{}\FN{find}\;(\lambda \Varid{x}\to \Varid{x}\notin\FN{snd}\mathop{\langle\$\rangle}\Varid{es})\;(\FN{fst}\mathop{\langle\$\rangle}\Varid{es}){}\<[E]%
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\FN{rangesBelow}\;(\Varid{l},\anonymous ){}\<[25]%
+\>[25]{}\mathrel{=}\FN{filter}\;(\lambda (\Varid{l'},\anonymous )\to \Varid{l'}\leq \Varid{l})\;\Varid{xs}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\FN{violationsWith}\;\Varid{x}{}\<[25]%
+\>[25]{}\mathrel{=}\FN{sum}\mathbin{\$}(\FN{checkEdges}\;\Varid{x}\;\mathop{\langle\$\rangle}\;\FN{rangesBelow}\;\Varid{x}){}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+Finally, \ensuremath{\FN{\omega}} is computed for a tree as follows:
+
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{17}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\FN{\omega}\ConSym{::}(\mathsf{Fractional}\;\Varid{n},\mathsf{Ord}\;\alpha)\Rightarrow \mathsf{Tree}\;\alpha\to \Varid{n}{}\<[E]%
+\\
+\>[3]{}\FN{\omega}\;\Varid{tree}\mathrel{=}\FN{violations}\mathbin{/}\FN{totalArcs}\;\mathkw{where}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\FN{edges}{}\<[17]%
+\>[17]{}\mathrel{=}\FN{allEdges}\;\Varid{tree}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\FN{totalArcs}{}\<[17]%
+\>[17]{}\mathrel{=}\FN{genericLength}\;\FN{edges}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\FN{violations}{}\<[17]%
+\>[17]{}\mathrel{=}\FN{fromInteger}\mathbin{\$}\FN{edgeViolations}\;\FN{edges}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 \end{document}

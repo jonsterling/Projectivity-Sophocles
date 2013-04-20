@@ -1,7 +1,7 @@
 \usepackage{xcolor}
 
 % Char literal
-\colorlet{Char}{black}
+\colorlet{Char}{darkgray}
 
 % Numeral literal
 \colorlet{Numeral}{Char}
@@ -21,7 +21,7 @@
 \colorlet{ConSym}{ConId}
 
 % Type variable identifier
-\colorlet{TVarId}{green!45!black}
+\colorlet{TVarId}{gray}
 
 % Type constructor identifier
 \colorlet{TConId}{TVarId}

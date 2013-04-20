@@ -11,13 +11,17 @@
 %subst keyword a = "\mathkw{" a "}"
 %subst conid a = "\mathsf{" a "}"
 
-%format a = "\alpha"
-%format b = "\beta"
-%format phi = "\phi"
+%format a = "\VarSym{\alpha}"
+%format b = "\VarSym{\beta}"
+%format phi = "\VarSym{\phi}"
+%format gamma = "\VarSym{\gamma}"
+
 %format id = "\FN{id}"
 %format . = "\circ"
 %format <*> = "\circledast "
 %format <$> = ^^"\mathop{\langle\$\rangle}"^^
+%format fmap2 (f) (x) = f "\mathop{\langle\$\$\rangle}" x
+%format >=> = "\circ_K"
 %format pure = "\FN{pure}"
 %format traverse = "\FN{traverse}"
 %format uncurry = "\FN{uncurry}"
@@ -59,8 +63,8 @@
 %format getLabel = "\FN{getLabel}"
 %format getForest = "\FN{getForest}"
 %format RangeZero = "\FN{R_\emptyset}"
-%format Node (f) (g) = f "\curvearrowright" g
-%format inRange (a) (b) = a "\in_R" b
+%format Node x (ts) = x "\curvearrowright" ts
+%format inRange (a) (b) = a "\in_E" b
 %format allEdges = "\FN{allEdges}"
 %format analyzeEdges = "\FN{analyzeEdges}"
 %format annotateLevels = "\FN{annotateLevels}"
@@ -79,7 +83,38 @@
 %format genericLength = "\FN{length}"
 
 %format Integer = "\mathbb{Z}"
+%format Bool = "\mathbb{B}"
 
 %format aux = "\FN{aux}"
 %format omega ="\FN{\omega}"
+
+%format otherwise = "otherwise"
+
+%format (liftA f x) = "\llbracket" ^^ f ^^ x ^^ "\rrbracket"
+%format (liftA2 f x y) = "\llbracket" ^^ f ^^ x ^^ y ^^ "\rrbracket"
+%format (liftOp2 (o) x y) = "\llbracket" ^^ x ^^ o ^^ y ^^ "\rrbracket"
+
+
+
+%format parseXML = "\FN{parseXML}"
+%format treesFromFile = "\FN{treesFromFile}"
+%format readFile = "\FN{readFile}"
+%format onlyElems = "\FN{onlyElems}"
+%format findElements = "\FN{findElements}"
+%format findChildren = "\FN{findChildren}"
+%format simpleName = "\FN{simpleName}"
+
+%format treesFromXML = "\FN{treesFromXML}"
+%format findAttr = "\FN{findAttr}"
+%format readAttr = "\FN{readAttr}"
+%format catMaybes = "\FN{catMaybes}"
+%format read = "\FN{read}"
+
+%format edgeFromXML = "\FN{edgeFromXML}"
+%format edgeSentences = "\FN{edgeSentences}"
+%format sentencesFromXML = "\FN{sentencesFromXML}"
+%format wordsFromSentence = "\FN{wordsFromSentence}"
+%format edgeFromWord = "\FN{edgeFromWord}"
+%format edgesFromSentence = "\FN{edgesFromSentence}"
+%format treeFromSentence = "\FN{treeFromSentence}"
 

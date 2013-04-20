@@ -6,32 +6,59 @@
 \usepackage{homework,stmaryrd,wasysym,url,upgreek,subfigure}
 \usepackage[margin=1cm]{caption}
 \usepackage{xytree}
+\usepackage{listings}
+
+\definecolor{gray}{rgb}{0.4,0.4,0.4}
+
+\lstset{
+  basicstyle=\ttfamily,
+  columns=fullflexible,
+  showstringspaces=false,
+  commentstyle=\color{gray}\upshape
+}
+
+\lstdefinelanguage{XML}
+{
+  morestring=[b]",
+  morestring=[s]{>}{<},
+  morecomment=[s]{<?}{?>},
+  stringstyle=\color{gray},
+  identifierstyle=\color{black},
+  keywordstyle=\color{black},
+  morekeywords={xmlns,version,type}% list your attributes here
+}
+
 
 \begin{document}
 \setmainfont{Times New Roman}
 
 \author{Jonathan Sterling}
 
-\title{Phrase Projectivity in Antigone}
+\title{A Survey of Phrase Projectivity in Antigone}
 \date{April 2013}
 \maketitle
 
-\ignore{
+%if codeOnly || showModuleHeader
 
-> {-# LANGUAGE StandaloneDeriving #-}
+> {-# LANGUAGE StandaloneDeriving        #-}
+> {-# LANGUAGE NoMonomorphismRestriction #-}
 
 > module Analyze where
+
 > import Control.Applicative
+> import Control.Monad ((>=>))
 > import Control.Arrow((&&&))
 > import Data.Foldable
 > import Debug.Trace
-> import Data.Maybe (isJust, maybeToList)
+> import Data.Maybe (isJust, maybeToList, catMaybes)
 > import Data.Tree
 > import Data.List (genericLength, nub, findIndex, sortBy)
 > import Data.Function (on)
+> import Text.XML.Light
 > import Prelude hiding (maximum, minimum, foldl, notElem, elem, concat, sum)
 
-}
+%endif
+
 
 \section{Dependency Trees and Their Projectivity}
 
@@ -125,7 +152,7 @@ on its structure as follows:
 \subsection{From Edges to Trees}
 
 A sentence from the Perseus treebank is in the form of a list of words that are
-indexed their linear position, and cross-referenced by the linear position of
+indexed by their linear position, and cross-referenced by the linear position of
 their dominating head. We shall consider each index to be a \emph{vertex}, and
 each pair of vertices to be an |Edge|, which we shall write as follows:
 
@@ -147,13 +174,13 @@ First, we try to find the root vertex of the tree. This will be a vertex that is
 given as the head of one of the words, but does not itself appear in the
 sentence:
 
-%format heads = "\FN{heads}Integer"
+%format heads = "\FN{heads}"
 %format deps = "\FN{deps}"
 
 > rootVertex :: Eq a => [Edge a] -> Maybe a
 > rootVertex es = find (`notElem` deps) heads where
->   heads  = (\(x :-: y) -> x) <$> es
->   deps   = (\(x :-: y) -> y) <$> es
+>   heads  = liftA (\(x :-: y) -> x) es
+>   deps   = liftA (\(x :-: y) -> y) es
 
 If the data that we are working with are not well-formed, there is a chance that
 we will not find a root vertex; that is why the type is given as |Maybe|.
@@ -176,13 +203,17 @@ complete tree structure:
 %format sortedChildren = "\FN{sortedChildren}"
 %format children = "\FN{children}"
 %format roots = "\FN{roots}"
+%format localVertices = "\FN{localVertices}"
+%format foreignVertices = "\FN{foreignVertices}"
 
 > treeFromEdges :: Ord a => [Edge a] -> Maybe (Tree a)
-> treeFromEdges es = buildWithRoot es <$> rootVertex es where
+> treeFromEdges es = liftA (buildWithRoot es) (rootVertex es) where
 >   buildWithRoot es root = Node root sortedChildren where
->     roots           = oppositeVertex root <$> filter (onEdge root) es
->     children        = buildWithRoot (filter (not . onEdge root) es) <$> roots
->     sortedChildren  = sortBy (compare `on` getLabel) children
+>     roots            = liftA (oppositeVertex root) localVertices
+>     children         = liftA (buildWithRoot foreignVertices) roots
+>     localVertices    = filter (onEdge root) es
+>     foreignVertices  = filter (not . onEdge root) es
+>     sortedChildren   = sortBy (compare `on` getLabel) children
 
 
 \subsection{Counting Violations: Computing |omega|}
@@ -214,7 +245,7 @@ We can now annotate each node in a tree with what level it is at:
 
 > annotateLevels :: Tree a -> Tree (Level, a)
 > annotateLevels tree = aux (depth tree) tree where
->   aux l (Node x ts) = Node (l, x) (aux (l - 1) <$> ts)
+>   aux l (Node x ts) = Node (l, x) (liftA (aux (l - 1)) ts)
 
 Then, we fold up the tree into a list of edges and levels:
 
@@ -229,7 +260,7 @@ Then, we fold up the tree into a list of edges and levels:
 > edgeWithRange xs = minimum xs :-: maximum xs
 
 A handy way to think of edges annotated by levels is as a representation of the
-arc itself, where the ends of the edge are the endpoints, and the level is the
+arc itself, where the vertices of the edge are the endpoints, and the level is the
 height of the arc.
 
 If one end of an arc is between the ends of another, then there is a single
@@ -250,10 +281,10 @@ We determine whether a vertex is in the bounds of an edge using |inRange|.
 
 > inRange :: Ord a => a -> Edge a -> Bool
 > inRange z (x :-: y)  =   z > minimum   [x,y]
->                      &&  z < maximum  [x,y]
+>                      &&  z < maximum   [x,y]
 
 We can now use what we've built to count the intersections that occur in a
-collection of edges. This is done by adding up the result of |checkEdges| of
+collection of edges. This is done by adding up the result of |checkEdges| of the
 combination of each edge with the subset of edges which are at or below its
 level:
 
@@ -261,9 +292,9 @@ level:
 %format violationsWith = "\FN{violationsWith}"
 
 > edgeViolations :: Ord a => [(Level, Edge a)] -> Violations
-> edgeViolations xs = sum $ violationsWith <$> xs where
+> edgeViolations xs = sum (liftA violationsWith xs) where
 >   rangesBelow (l, _)  = filter (\(l', _) -> l' <= l) xs
->   violationsWith x    = sum (checkEdges x <$> rangesBelow x)
+>   violationsWith x    = sum (liftA (checkEdges x) (rangesBelow x))
 
 Finally, |omega| is computed for a tree as follows:
 
@@ -276,6 +307,94 @@ Finally, |omega| is computed for a tree as follows:
 >   edges       = allEdges tree
 >   totalArcs   = genericLength edges
 >   violations  = fromIntegral (edgeViolations edges)
+
+
+\newpage
+\section{Parsing the Perseus Treebank}
+
+The Persues treebank is a collection of XML files, which have data in the
+following (simplified) scheme:
+
+\lstset{
+  language=XML,
+  escapeinside=**
+}
+
+\begin{lstlisting}
+    <sentence id="2900759">
+      <word id="1" form="*\color{gray}\textrm{χρὴ}*" lemma="*\color{gray}\textrm{χρή}*" head="0" />
+      <word id="2" form="*\color{gray}\textrm{δὲ}*" lemma="*\color{gray}\textrm{δέ}*" head="1" />
+      ...
+    </sentence>
+
+    <sentence id="2900760">
+      <word id="1" form="*\color{gray}\textrm{μεγάλοι}*" lemma="*\color{gray}\textrm{μέγας}*" head="3" />
+      <word id="2" form="*\color{gray}\textrm{δὲ}*" lemma="*\color{gray}\textrm{δέ}*" head="12" />
+      ...
+    </sentence>
+\end{lstlisting}
+
+We can express the general shape of such a document as follows:
+
+> newtype XML       = XML [Content]
+> newtype Word      = Word Element
+> newtype Sentence  = Sentence Element
+
+To convert XML into trees, we must first extract the sentences from the file, and then we
+convert those into trees.
+
+> sentencesFromXML :: XML -> [Sentence]
+> sentencesFromXML (XML xml) = do
+>   elems      <- onlyElems xml
+>   liftA Sentence (findElements (simpleName "sentence") elems)
+
+To build a tree from a sentence, first we get all of the words from that
+sentence and convert them into edges.
+
+> wordsFromSentence :: Sentence -> [Word]
+> wordsFromSentence (Sentence s) = liftA Word (findChildren (simpleName "word") s)
+
+Edges are the content of the \lstinline{head} attribute paired with that of the
+\lstinline{id} attribute.
+
+> edgeFromWord :: Read a => Word -> Maybe (Edge a)
+> edgeFromWord (Word w) = liftOp2 (:-:) (readAttr "head" w) (readAttr "id" w)
+
+Thence, we can build a tree from a sentence.
+
+> treeFromSentence :: (Ord a, Read a) => Sentence -> Maybe (Tree a)
+> treeFromSentence = treeFromEdges . edgesFromSentence where
+>   edgesFromSentence :: Read a => Sentence -> [Edge a]
+>   edgesFromSentence s = catMaybes (liftA edgeFromWord (wordsFromSentence s)) where
+
+By putting the pieces together, we also derive a function to read all the trees
+from an XML document:
+
+> treesFromXML :: (Integral a, Read a) => XML -> [Tree a]
+> treesFromXML xml = catMaybes (liftA treeFromSentence (sentencesFromXML xml))
+
+Finally, we must read the file as a string, parse it as XML, and then convert
+that XML into a series of trees.
+
+> treesFromFile :: (Read a, Integral a) => FilePath -> IO [Tree a]
+> treesFromFile path = liftA (treesFromXML . XML . parseXML) (readFile path)
+
+\section{Analysis of Data}
+to be written
+
+\section*{Appendix: Auxiliary Functions}
+
+> simpleName :: String -> QName
+> simpleName s = QName s Nothing Nothing
+
+> readAttr :: Read a => String -> Element -> Maybe a
+> readAttr n = fmap read . findAttr (simpleName n)
+
+\ignore{
+
+> liftOp2 = liftA2
+
+}
 
 \end{document}
 

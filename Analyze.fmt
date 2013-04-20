@@ -75,8 +75,10 @@
 %format rootVertex = "\FN{rootVertex}"
 %format onEdge = "\FN{onEdge}"
 %format oppositeVertex = "\FN{oppositeVertex}"
-%format fromInteger = "\FN{fromInteger}"
-%format genericLength = "\FN{genericLength}"
+%format fromIntegral = "\FN{fromIntegral}"
+%format genericLength = "\FN{length}"
+
+%format Integer = "\mathbb{Z}"
 
 %format aux = "\FN{aux}"
 %format omega ="\FN{\omega}"

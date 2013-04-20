@@ -356,6 +356,7 @@
 
 
 
+
 \usepackage{homework,stmaryrd,wasysym,url,upgreek,subfigure}
 \usepackage[margin=1cm]{caption}
 \usepackage{xytree}
@@ -395,7 +396,7 @@
 \\
 \>[3]{}\mathkw{import}\;\mathsf{\mathsf{Data}.Tree}{}\<[E]%
 \\
-\>[3]{}\mathkw{import}\;\mathsf{\mathsf{Data}.List}\;(\FN{genericLength},\Varid{nub},\Varid{findIndex},\FN{sortBy}){}\<[E]%
+\>[3]{}\mathkw{import}\;\mathsf{\mathsf{Data}.List}\;(\FN{length},\Varid{nub},\Varid{findIndex},\FN{sortBy}){}\<[E]%
 \\
 \>[3]{}\mathkw{import}\;\mathsf{\mathsf{Data}.Function}\;(\FN{on}){}\<[E]%
 \\
@@ -471,7 +472,7 @@ ratio:
 Section~\ref{sec:algorithm} deals with the development of an algorithm to
 compute this quantity for a particular dependency tree.
 
-\section{The Algorithm}
+\section{Algorithm \& Data Representation}
 \label{sec:algorithm}
 
 Dependency trees are a recursive data structure
@@ -486,11 +487,11 @@ follows:
 \ColumnHook
 \end{hscode}\resethooks
 This can be read as ``For all types \ensuremath{\alpha}, a \ensuremath{\mathsf{Tree}} of \ensuremath{\alpha} is constructed from a
-label of type \ensuremath{\alpha} and a forest of \ensuremath{\mathsf{Tree}}s of \ensuremath{\alpha},'' where brackets are a notation
+\emph{label} of type \ensuremath{\alpha} and a \emph{subforest} of \ensuremath{\mathsf{Tree}}s of \ensuremath{\alpha},'' where brackets are a notation
 for lists.
 
-Given a tree, we can extract its root label by pattern matching on its structure
-as follows:
+Given a tree, we can extract its root label or its subforest by pattern matching
+on its structure as follows:
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -545,10 +546,10 @@ sentence:
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
 \>[3]{}\FN{rootVertex}\ConSym{::}\mathsf{Eq}\;\alpha\Rightarrow [\mskip1.5mu \mathsf{Edge}\;\alpha\mskip1.5mu]\to \mathsf{Maybe}\;\alpha{}\<[E]%
 \\
-\>[3]{}\FN{rootVertex}\;\Varid{es}\mathrel{=}\FN{find}\;(\notin \FN{deps})\;\FN{heads}\;\mathkw{where}{}\<[E]%
+\>[3]{}\FN{rootVertex}\;\Varid{es}\mathrel{=}\FN{find}\;(\notin \FN{deps})\;\FN{heads}Integer\;\mathkw{where}{}\<[E]%
 \\
 \>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\FN{heads}{}\<[12]%
+\>[5]{}\FN{heads}Integer{}\<[12]%
 \>[12]{}\mathrel{=}(\lambda (\Varid{x}\leftrightarrow\Varid{y})\to \Varid{x})\;\mathop{\langle\$\rangle}\;\Varid{es}{}\<[E]%
 \\
 \>[3]{}\hsindent{2}{}\<[5]%
@@ -567,11 +568,11 @@ it touches, and try to build the subtrees that are connected with those edges.
 \column{5}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{18}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[3]{}\FN{onEdge}\ConSym{::}\mathsf{Ord}\;\alpha\Rightarrow \alpha\to \mathsf{Edge}\;\alpha\to \mathsf{Bool}{}\<[E]%
+\>[3]{}\FN{onEdge}\ConSym{::}\mathsf{Eq}\;\alpha\Rightarrow \alpha\to \mathsf{Edge}\;\alpha\to \mathsf{Bool}{}\<[E]%
 \\
 \>[3]{}\FN{onEdge}\;\Varid{i}\;(\Varid{x}\leftrightarrow\Varid{y})\mathrel{=}\Varid{x}\equiv \Varid{i}\mathrel{\vee}\Varid{y}\equiv \Varid{i}{}\<[E]%
 \\[\blanklineskip]%
-\>[3]{}\FN{oppositeVertex}\ConSym{::}\mathsf{Ord}\;\alpha\Rightarrow \alpha\to \mathsf{Edge}\;\alpha\to \alpha{}\<[E]%
+\>[3]{}\FN{oppositeVertex}\ConSym{::}\mathsf{Eq}\;\alpha\Rightarrow \alpha\to \mathsf{Edge}\;\alpha\to \alpha{}\<[E]%
 \\
 \>[3]{}\FN{oppositeVertex}\;\Varid{i}\;(\Varid{x}\leftrightarrow\Varid{y}){}\<[E]%
 \\
@@ -621,7 +622,7 @@ Violations are given as an integer tally:
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[3]{}\mathkw{type}\;\mathsf{Violations}\mathrel{=}\mathsf{Integer}{}\<[E]%
+\>[3]{}\mathkw{type}\;\mathsf{Violations}\mathrel{=}\mathbb{Z}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 The basic procedure for counting projectivity violations is as follows: flatten
@@ -632,7 +633,7 @@ each other.
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[3]{}\mathkw{type}\;\mathsf{Level}\mathrel{=}\mathsf{Integer}{}\<[E]%
+\>[3]{}\mathkw{type}\;\mathsf{Level}\mathrel{=}\mathbb{Z}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 The vertical position of a node in a tree is represented as its \ensuremath{\mathsf{Level}},
@@ -659,9 +660,9 @@ where \ensuremath{\Varid{n}} is the tree's depth.
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[3]{}\FN{depth}\ConSym{::}\mathsf{Tree}\;\alpha\to \mathsf{Integer}{}\<[E]%
+\>[3]{}\FN{depth}\ConSym{::}\mathsf{Tree}\;\alpha\to \mathbb{Z}{}\<[E]%
 \\
-\>[3]{}\FN{depth}\mathrel{=}\FN{genericLength}\circ\FN{levels}{}\<[E]%
+\>[3]{}\FN{depth}\mathrel{=}\FN{length}\circ\FN{levels}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 We can now annotate each node in a tree with what level it is at:
@@ -679,6 +680,7 @@ We can now annotate each node in a tree with what level it is at:
 \ColumnHook
 \end{hscode}\resethooks
 Then, we fold up the tree into a list of edges and levels:
+
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -690,17 +692,17 @@ Then, we fold up the tree into a list of edges and levels:
 \>[3]{}\FN{allEdges}\;\Varid{tree}\mathrel{=}\FN{aux}\;(\FN{annotateLevels}\;\Varid{tree})\;\mathkw{where}{}\<[E]%
 \\
 \>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\FN{aux}\;(\anonymous ,\Varid{x}\curvearrowright\Varid{ts})\mathrel{=}\Varid{ts}\bind \Varid{go}\;\mathkw{where}{}\<[E]%
+\>[5]{}\FN{aux}\;(\anonymous ,\Varid{x}\curvearrowright\Varid{ts})\mathrel{=}\Varid{ts}\bind \FN{go}\;\mathkw{where}{}\<[E]%
 \\
 \>[5]{}\hsindent{2}{}\<[7]%
-\>[7]{}\Varid{go}\;\Varid{t}\mathord{@}(\Varid{l},\Varid{y}\curvearrowright\anonymous )\mathrel{=}(\Varid{l},\FN{edgeWithRange}\;[\mskip1.5mu \Varid{x},\Varid{y}\mskip1.5mu])\mathbin{:}\FN{aux}\;\Varid{t}{}\<[E]%
+\>[7]{}\FN{go}\;\Varid{t}\mathord{@}(\Varid{l},\Varid{y}\curvearrowright\anonymous )\mathrel{=}(\Varid{l},\FN{edgeWithRange}\;[\mskip1.5mu \Varid{x},\Varid{y}\mskip1.5mu])\mathbin{:}\FN{aux}\;\Varid{t}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[3]{}\FN{edgeWithRange}\ConSym{::}(\mathsf{Foldable}\;\phi,\mathsf{Ord}\;\alpha)\Rightarrow \phi\;\alpha\to \mathsf{Edge}\;\alpha{}\<[E]%
+\>[3]{}\FN{edgeWithRange}\ConSym{::}(\mathsf{Ord}\;\alpha)\Rightarrow [\mskip1.5mu \alpha\mskip1.5mu]\to \mathsf{Edge}\;\alpha{}\<[E]%
 \\
 \>[3]{}\FN{edgeWithRange}\;\Varid{xs}\mathrel{=}\FN{minimum}\;\Varid{xs}\leftrightarrow\FN{maximum}\;\Varid{xs}{}\<[E]%
 \ColumnHook
@@ -749,10 +751,22 @@ We determine whether a vertex is in the bounds of an edge using \ensuremath{\cdo
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{24}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{24E}{@{}l@{}}%
+\column{28}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{41}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{42}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
 \>[3]{}\cdot \in_R\cdot \ConSym{::}\mathsf{Ord}\;\alpha\Rightarrow \alpha\to \mathsf{Edge}\;\alpha\to \mathsf{Bool}{}\<[E]%
 \\
-\>[3]{}\Varid{z}\in_R\Varid{x}\leftrightarrow\Varid{y}\mathrel{=}\Varid{z}\VarSym{>}\FN{minimum}\;[\mskip1.5mu \Varid{x},\Varid{y}\mskip1.5mu]\mathrel{\wedge}\Varid{z}\VarSym{<}\FN{maximum}\;[\mskip1.5mu \Varid{x},\Varid{y}\mskip1.5mu]{}\<[E]%
+\>[3]{}\Varid{z}\in_R\Varid{x}\leftrightarrow\Varid{y}{}\<[24]%
+\>[24]{}\mathrel{=}{}\<[24E]%
+\>[28]{}\Varid{z}\VarSym{>}\FN{minimum}\;{}\<[42]%
+\>[42]{}[\mskip1.5mu \Varid{x},\Varid{y}\mskip1.5mu]{}\<[E]%
+\\
+\>[24]{}\mathrel{\wedge}{}\<[24E]%
+\>[28]{}\Varid{z}\VarSym{<}\FN{maximum}\;{}\<[41]%
+\>[41]{}[\mskip1.5mu \Varid{x},\Varid{y}\mskip1.5mu]{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 We can now use what we've built to count the intersections that occur in a
@@ -797,11 +811,11 @@ Finally, \ensuremath{\FN{\omega}} is computed for a tree as follows:
 \\
 \>[3]{}\hsindent{2}{}\<[5]%
 \>[5]{}\FN{totalArcs}{}\<[17]%
-\>[17]{}\mathrel{=}\FN{genericLength}\;\FN{edges}{}\<[E]%
+\>[17]{}\mathrel{=}\FN{length}\;\FN{edges}{}\<[E]%
 \\
 \>[3]{}\hsindent{2}{}\<[5]%
 \>[5]{}\FN{violations}{}\<[17]%
-\>[17]{}\mathrel{=}\FN{fromInteger}\mathbin{\$}\FN{edgeViolations}\;\FN{edges}{}\<[E]%
+\>[17]{}\mathrel{=}\FN{fromIntegral}\;(\FN{edgeViolations}\;\FN{edges}){}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 \end{document}

@@ -100,7 +100,7 @@ ratio:
 Section~\ref{sec:algorithm} deals with the development of an algorithm to
 compute this quantity for a particular dependency tree.
 
-\section{The Algorithm}
+\section{Algorithm \& Data Representation}
 \label{sec:algorithm}
 
 Dependency trees are a recursive data structure
@@ -111,11 +111,11 @@ follows:
 < data Tree a = Node a [Tree a]
 
 This can be read as ``For all types |a|, a |Tree| of |a| is constructed from a
-label of type |a| and a forest of |Tree|s of |a|,'' where brackets are a notation
+\emph{label} of type |a| and a \emph{subforest} of |Tree|s of |a|,'' where brackets are a notation
 for lists.
 
-Given a tree, we can extract its root label by pattern matching on its structure
-as follows:
+Given a tree, we can extract its root label or its subforest by pattern matching
+on its structure as follows:
 
 > getLabel :: Tree a -> a
 > getLabel (Node l _) = l
@@ -147,8 +147,9 @@ First, we try to find the root vertex of the tree. This will be a vertex that is
 given as the head of one of the words, but does not itself appear in the
 sentence:
 
-%format heads = "\FN{heads}"
+%format heads = "\FN{heads}Integer"
 %format deps = "\FN{deps}"
+
 > rootVertex :: Eq a => [Edge a] -> Maybe a
 > rootVertex es = find (`notElem` deps) heads where
 >   heads  = (\(x :-: y) -> x) <$> es
@@ -160,10 +161,10 @@ we will not find a root vertex; that is why the type is given as |Maybe|.
 Then, given a root vertex, we look to find all the edges that
 it touches, and try to build the subtrees that are connected with those edges.
 
-> onEdge :: Ord a => a -> Edge a -> Bool
+> onEdge :: Eq a => a -> Edge a -> Bool
 > onEdge i (x :-: y) = x == i || y == i
 >
-> oppositeVertex :: Ord a => a -> Edge a -> a
+> oppositeVertex :: Eq a => a -> Edge a -> a
 > oppositeVertex i (x :-: y)
 >   | x == i     = y
 >   | otherwise  = x
@@ -217,12 +218,14 @@ We can now annotate each node in a tree with what level it is at:
 
 Then, we fold up the tree into a list of edges and levels:
 
+%format go = "\FN{go}"
+
 > allEdges :: Ord a => Tree a -> [(Level, Edge a)]
 > allEdges tree = aux (annotateLevels tree) where
 >   aux (Node (_,x) ts) = ts >>= go where
 >     go t@(Node (l, y) _) = (l, edgeWithRange [x,y]) : aux t
 
-> edgeWithRange :: (Foldable phi, Ord a) => phi a -> Edge a
+> edgeWithRange :: (Ord a) => [a] -> Edge a
 > edgeWithRange xs = minimum xs :-: maximum xs
 
 A handy way to think of edges annotated by levels is as a representation of the
@@ -246,7 +249,8 @@ intersection. Otherwise, there is no intersection.
 We determine whether a vertex is in the bounds of an edge using |inRange|.
 
 > inRange :: Ord a => a -> Edge a -> Bool
-> inRange z (x :-: y) = z > minimum [x,y] && z < maximum [x,y]
+> inRange z (x :-: y)  =   z > minimum   [x,y]
+>                      &&  z < maximum  [x,y]
 
 We can now use what we've built to count the intersections that occur in a
 collection of edges. This is done by adding up the result of |checkEdges| of
@@ -271,7 +275,7 @@ Finally, |omega| is computed for a tree as follows:
 > omega tree = violations / totalArcs where
 >   edges       = allEdges tree
 >   totalArcs   = genericLength edges
->   violations  = fromInteger $ edgeViolations edges
+>   violations  = fromIntegral (edgeViolations edges)
 
 \end{document}
 

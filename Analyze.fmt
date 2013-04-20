@@ -36,7 +36,7 @@
 
 %format :-: = "\leftrightarrow"
 %format :| = "\lhd"
-%format getCrosses = "\FN{getCrosses}"
+%format getViolations = "\FN{getViolations}"
 %format getRange = "\FN{getRange}"
 %format getLabel = "\FN{getLabel}"
 %format RangeZero = "\FN{R_\emptyset}"

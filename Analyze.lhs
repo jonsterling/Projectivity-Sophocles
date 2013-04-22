@@ -1,12 +1,14 @@
 %!TEX encoding = UTF-8 Unicode
 
 \documentclass{article}
+
+%options ghci -fglasgow-exts
 %include Analyze.fmt
 
-\usepackage{homework,stmaryrd,wasysym,url,upgreek,subfigure}
+\usepackage{setspace,homework,stmaryrd,wasysym,url,upgreek,subfigure}
 \usepackage[margin=1cm]{caption}
-\usepackage{xytree}
-\usepackage{listings}
+\usepackage{xytree, listings}
+\usepackage[toc,page]{appendix}
 
 \definecolor{gray}{rgb}{0.4,0.4,0.4}
 
@@ -30,17 +32,19 @@
 
 
 \begin{document}
+\onehalfspacing
 \setmainfont{Times New Roman}
 
 \author{Jonathan Sterling}
 
-\title{A Survey of Phrase Projectivity in Antigone}
+\title{A Survey of Phrase Projectivity in \emph{Antigone}}
 \date{April 2013}
 \maketitle
 
 %if codeOnly || showModuleHeader
 
 > {-# LANGUAGE StandaloneDeriving        #-}
+> {-# LANGUAGE DeriveFunctor             #-}
 > {-# LANGUAGE NoMonomorphismRestriction #-}
 
 > module Analyze where
@@ -56,10 +60,17 @@
 > import Data.Function (on)
 > import Data.Ratio
 > import Text.XML.Light
+> import Text.Printf
 > import Prelude hiding (maximum, minimum, foldl, notElem, elem, concat, sum)
 
 %endif
 
+\noindent
+%
+In this paper, I will show how phrase projectivity (which corresponds to lacking
+hyperbaton) is linked to register and meter in Sophocles's \emph{Antigone}, by
+developing a quantitative metric for projectivity and comparing it across
+lyrics, trimeters and anapaests.
 
 \section{Dependency Trees and Their Projectivity}
 
@@ -120,14 +131,119 @@ as in (b); interlacing adjacent phrases also violate projectivity, as in
 \end{figure}
 
 \noindent
-In this paper, we use a concrete metric of projectivity $\omega$, given by the following
-ratio:
-\[
-    \omega = \frac{\text{number of violations}}{\text{number of arcs}}
-\]
-Section~\ref{sec:algorithm} deals with the development of an algorithm to
-compute this quantity for a particular dependency tree.
+%
+In this paper, we shall use a concrete metric of projectivity, $\omega$, given
+by the following ratio:
+%
+\[ \omega = \frac{\text{number of violations}}{\text{number of arcs}} \]
+%
+The number of violations is simply the total number of intersections that occur
+in a tree. Appendix~\ref{sec:algorithm} deals with the development of a model
+and algorithm in the programming language Haskell to compute this quantity for a
+particular dependency tree.
 
+
+\section{The Perseus Treebank}
+%
+The Perseus Ancient Greek Dependency Treebank is a massive trove of annotated
+texts that encode the all dependency relations in every sentence. The data is
+given in an XML (E\textbf{x}tensible \textbf{M}arkup \textbf{L}anguage) format
+resembling the following:
+
+\lstset{
+  language=XML,
+  escapeinside=**
+}
+
+\begin{lstlisting}
+    <sentence id="2900759">
+      <word id="1" form="*\color{gray}\textrm{χρὴ}*" lemma="*\color{gray}\textrm{χρή}*" head="0" />
+      <word id="2" form="*\color{gray}\textrm{δὲ}*" lemma="*\color{gray}\textrm{δέ}*" head="1" />
+      ...
+    </sentence>
+\end{lstlisting}
+
+\noindent
+%
+Every sentence is given a unique, sequential identifier; within each sentence,
+every word is indexed by its linear position and coreferenced with the linear
+position of its dominating head. In the case of the data for \emph{Antigone},
+the maximal head of each sentence has its own head given as \lstinline{0}.
+Appendix~\ref{sec:parsing} deals with parsing these XML representations into
+dependency trees for which we can compute |omega|.
+
+
+\section{Projectivity in Antigone}
+
+To observe the variation of projectivity within a text, then, one may make a
+selection of sentences that have something in common (such as meter), compute
+their trees and thence derive |omega|, and then average the results. Then that
+quantity may be compared with that of other selections.
+
+To that end, I have selected passages from \emph{Antigone} and organized them by
+type. Table~\ref{tab:lyrics} enumerates the lyric passages of the play, along
+with their computed mean |omega| values, and a final mean of means with the
+standard deviation of the set.  Table~\ref{tab:anapaests} does the same for
+anapaests. Lastly, Table~\ref{tab:dialogue} gives the data for dialogue (which
+is in iambic trimeters), divided between medium-to-long speeches and
+stichomythia.
+
+\begin{table}
+  \centering
+  \perform{makeTable lyrics}
+  \caption{Lyrics, including odes and kommoi.}
+  \label{tab:lyrics}
+\end{table}
+
+\begin{table}
+  \centering
+  \perform{makeTable anapaests}
+  \caption{Anapaests.}
+  \label{tab:anapaests}
+\end{table}
+
+\begin{table}
+  \centering
+  \subfigure[Speeches and Dialogue]{\perform{makeTable speeches}}
+  \vspace{6pt}
+  \subfigure[Stichomythia]{\perform{makeTable stichos}}
+  \caption{Dialogue (Trimeters)}
+  \label{tab:dialogue}
+\end{table}
+
+As can be seen from the data, lyrics have the highest degree of
+non-projectivity, followed by speeches, then anapaests, and then stichomythia.
+However, the standard deviation of the |omega| for anapaestic passages is so
+high that it may be difficult to say much of interest about them at all in
+respect to the questions that we are considering. So, let us put the anapaests
+aside for the moment and deal exclusively with lyrics, speeches and
+stichomythias.
+
+Whereas in prose, hyperbaton corresponds to \emph{strong
+focus}, which ``does not merely fill a gap in the addressee's knowledge but
+additionally evokes and excludes alternatives'' (Devine~\&~Stephens 303),
+hyperbaton in verse only entails weak focus, which emphasizes but does not
+exclude (ibid.\ 107).
+
+As a result, hyperbaton in verse may be used to evoke a kind of
+elevated style without incidentally entailing more emphasis and other pragmatic
+effects than intended. And so it should not be surprising that lyric passages,
+which reside in the most poetic and elevated register present in tragic diction,
+should have proved in \emph{Antigone} to have the highest proportion of
+projectivity violations.
+
+
+
+
+
+
+
+
+
+
+
+\newpage
+\begin{appendices}
 \section{Algorithm \& Data Representation}
 \label{sec:algorithm}
 
@@ -151,11 +267,10 @@ on its structure as follows:
 > getForest (Node _ ts) = ts
 
 \subsection{From Edges to Trees}
+\label{sec:edges-to-trees}
 
-A sentence from the Perseus treebank is in the form of a list of words that are
-indexed by their linear position, and cross-referenced by the linear position of
-their dominating head. We shall consider each index to be a \emph{vertex}, and
-each pair of vertices to be an |Edge|, which we shall write as follows:
+We shall consider each word index to be a \emph{vertex}, and each pair of
+vertices to be an |Edge|, which we shall write as follows:
 
 > data Edge a = a :-: a deriving Eq
 
@@ -304,94 +419,184 @@ Finally, |omega| is computed for a tree as follows:
 %format violationsCount = "\FN{violationsCount}"
 
 > omega :: Ord a => Tree a -> Rational
-> omega tree = ratio violationsCount totalArcsCount where
->   edges            = allEdges tree
->   violationsCount  = fromIntegral (edgeViolations edges)
->   totalArcsCount   = genericLength edges
+> omega tree = ratio (edgeViolations edges) (genericLength edges) where
+>   edges = allEdges tree
 
 
 \newpage
 \section{Parsing the Perseus Treebank}
+\label{sec:parsing}
 
-The Persues treebank is a collection of XML files, which have data in the
-following (simplified) scheme:
-
-\lstset{
-  language=XML,
-  escapeinside=**
-}
-
-\begin{lstlisting}
-    <sentence id="2900759">
-      <word id="1" form="*\color{gray}\textrm{χρὴ}*" lemma="*\color{gray}\textrm{χρή}*" head="0" />
-      <word id="2" form="*\color{gray}\textrm{δὲ}*" lemma="*\color{gray}\textrm{δέ}*" head="1" />
-      ...
-    </sentence>
-
-    <sentence id="2900760">
-      <word id="1" form="*\color{gray}\textrm{μεγάλοι}*" lemma="*\color{gray}\textrm{μέγας}*" head="3" />
-      <word id="2" form="*\color{gray}\textrm{δὲ}*" lemma="*\color{gray}\textrm{δέ}*" head="12" />
-      ...
-    </sentence>
-\end{lstlisting}
-
+\noindent
 We can express the general shape of such a document as follows:
 
-> newtype XML       = XML [Content]
-> newtype Word      = Word Element
-> newtype Sentence  = Sentence Element
+%format sequence = "\FN{sequence}"
+%format sentenceFromXML = "\FN{sentenceFromXML}"
+%format sentenceId = "\FN{sentenceId}"
+%format sentenceEdges = "\FN{sentenceEdges}"
+%format edgeFromXML = "\FN{edgeFromXML}"
+%format documentFromXML = "\FN{documentFromXML}"
+%format treesFromDocument = "\FN{treesFromDocument}"
 
-To convert XML into trees, we must first extract the sentences from the file, and then we
-convert those into trees.
+> type Document = [Sentence]
+> data Sentence = Sentence { sentenceId :: Integer, sentenceEdges :: [Edge Integer] } deriving Show
 
-> sentencesFromXML :: XML -> [Sentence]
-> sentencesFromXML (XML xml) = do
->   elems      <- onlyElems xml
->   liftA Sentence (findElements (simpleName "sentence") elems)
+To construct a |Document| from the contents of an XML file, it suffices to
+find all of the sentences.
 
-To build a tree from a sentence, first we get all of the words from that
-sentence and convert them into edges.
+%format elems = "\FN{elems}"
 
-> wordsFromSentence :: Sentence -> [Word]
-> wordsFromSentence (Sentence s) = liftA Word (findChildren (simpleName "word") s)
+> documentFromXML :: [Content] -> Document
+> documentFromXML xml = catMaybes (liftA sentenceFromXML elems) where
+>   elems = onlyElems xml >>= findElements (simpleName "sentence")
 
-Edges are the content of the \lstinline{head} attribute paired with that of the
-\lstinline{id} attribute.
+|Sentence|s are got by taking the contents of their \lstinline{id} attribute,
+and extracting edges from their children.
 
-> edgeFromWord :: Word -> Maybe (Edge Integer)
-> edgeFromWord (Word w) = liftOp2 (:-:) (readAttr "head" w) (readAttr "id" w)
+%format edges = "\FN{edges}"
 
-Thence, we can build a tree from a sentence.
+> sentenceFromXML :: Element -> Maybe Sentence
+> sentenceFromXML e = liftA2 Sentence (readAttr "id" e) (pure edges) where
+>   edges     = catMaybes (liftA edgeFromXML children)
+>   children  = findChildren (simpleName "word") e
+
+An edge is got from an element by taking the contents of its \lstinline{id}
+attribute with the contents of its \lstinline{head} attribute.
+
+> edgeFromXML :: Element -> Maybe (Edge Integer)
+> edgeFromXML e =
+>   case findAttr (simpleName "form") e of
+>      Just x | elem x [".",",",";",":"] -> Nothing
+>      otherwise -> liftOp2 (:-:) (readAttr "head" e) (readAttr "id" e)
+
+Thence, turn a sentence into a tree by its edges using the machinery from
+Section~\ref{sec:edges-to-trees}.
 
 > treeFromSentence :: Sentence -> Maybe (Tree Integer)
-> treeFromSentence = treeFromEdges . edgesFromSentence where
->   edgesFromSentence :: Sentence -> [Edge Integer]
->   edgesFromSentence s = catMaybes (liftA edgeFromWord (wordsFromSentence s)) where
+> treeFromSentence (Sentence _ ws) = treeFromEdges ws
 
-By putting the pieces together, we also derive a function to read all the trees
-from an XML document:
+By applying |treeFromSentence| to every sentence within a document, we can
+generate all the trees in a document.
 
-> treesFromXML :: XML -> [Tree Integer]
-> treesFromXML xml = catMaybes (liftA treeFromSentence (sentencesFromXML xml))
+> treesFromDocument :: Document -> [Tree Integer]
+> treesFromDocument ss = catMaybes (liftA treeFromSentence ss)
 
-Finally, we must read the file as a string, parse it as XML, and then convert
-that XML into a series of trees.
+By combining the above, we also may derive a document structure from a file on
+disk.
 
-> treesFromFile :: FilePath -> IO [Tree Integer]
-> treesFromFile path = liftA (treesFromXML . XML . parseXML) (readFile path)
+%format documentFromFile = "\FN{documentFromFile}"
+
+> documentFromFile :: FilePath -> IO Document
+> documentFromFile path = liftA (documentFromXML . parseXML) (readFile path)
 
 \section{Analysis of Data}
 
-We compute the average |omega| of the trees contained in a file as follows:
+We compute the mean |omega| of the trees contained in a document as follows:
 
-%format analyzeFile = "\FN{analyzeFile}"
+> analyzeDocument :: Document -> Rational
+> analyzeDocument doc = mean (liftA omega (treesFromDocument doc))
 
-> analyzeFile :: FilePath -> IO Rational
-> analyzeFile path = do
->   trees <- treesFromFile path
->   return (average (liftA omega trees))
+We will wish to compare the |omega| for parts of \emph{Antigone}. A section is
+given by a two sentence indices (a beginning and an end):
 
-\section*{Appendix: Auxiliary Functions}
+> data Section = MkRange Integer Integer
+
+Then, the entire document can be cut down into smaller documents by section:
+
+%format restrictDocument = "\FN{restrictDocument}"
+%format withinSection = "\FN{withinSection}"
+
+> restrictDocument :: Section -> Document -> Document
+> restrictDocument (MkRange start finish) = filter withinSection where
+>   withinSection (Sentence i _) = i >= start && i <= finish
+
+\ignore{
+
+> makeTable :: [(Section, Section, String)] -> IO UnquotedString
+> makeTable sections = do
+>   antigone <- documentFromFile "antigone.xml"
+>   let pre = "\\begin{tabular}{clc}\\toprule\\textbf{Lines}&\\textbf{}&|omega|\\\\ \\midrule"
+>   let post = "\\bottomrule\\end{tabular}"
+>   let omegas = (\(_,r,_) -> analyzeDocument $ restrictDocument r antigone) <$> sections
+>   let body = fold $ uncurry makeTableRow <$> zip sections omegas
+>   let avg = "\\midrule\\multicolumn{3}{r}{|mean omega| = |" ++ showRational (mean omegas)
+>               ++ " |, |sdev| = |" ++ showRational (sdev (fromRational <$> omegas)) ++ "|}\\\\"
+>   return . Unquote $ pre ++ body ++ avg ++ post
+
+> showRational x = printf "%.2f" ((fromInteger $ round $ x * (10^2)) / (10.0^^2) :: Float)
+
+> makeTableRow :: (Section, Section, String) -> Rational -> String
+> makeTableRow (ls, r, d) om = lines ++ "&" ++ desc ++ "&" ++ omega ++ "\\\\" where
+>   desc = "\\emph{" ++ d ++ "}"
+>   lines = "|" ++ show ls ++ "|"
+>   range = "|" ++ show r ++ "|"
+>   omega = "|" ++ showRational om ++ "|"
+
+> deriving instance Show Section
+> newtype UnquotedString = Unquote String
+> instance Show UnquotedString where
+>   show (Unquote str) = str
+
+> lyrics :: [(Section, Section, String)]
+> lyrics =  [  (MkRange 100 154,    MkRange 2900135 2900144, "First choral ode"),
+>              (MkRange 332 375,    MkRange 2900236 2900247, "Second choral ode"),
+>              (MkRange 583 625,    MkRange 2900390 2900402, "Third choral ode"),
+>              (MkRange 781 800,    MkRange 2900496 2900501, "Fourth choral ode"),
+>              (MkRange 806 816,    MkRange 2900503 2900504, "Antigone's Kommos"),
+>              (MkRange 823 833,    MkRange 2900506 2900507, "Antigone's Kommos (cntd.)"),
+>              (MkRange 839 882,    MkRange 2900511 2900526, "Antigone's Kommos (cntd.)"),
+>              (MkRange 944 987,    MkRange 2900554 2900566, "Fifth choral ode"),
+>              (MkRange 1116 1152,  MkRange 2900649 2900654, "Sixth choral ode"),
+>              (MkRange 1261 1269,  MkRange 2900714 2900716, "Kreon's Kommos"),
+>              (MkRange 1283 1292,  MkRange 2900725 2900729, "Kreon's Kommos (cntd.)"),
+>              (MkRange 1306 1311,  MkRange 2900737 2900739, "Kreon's Kommos (cntd.)"),
+>              (MkRange 1317 1325,  MkRange 2900743 2900745, "Kreon's Kommos (cntd.)"),
+>              (MkRange 1239 1246,  MkRange 2900756 2900767, "Kreon's Kommos (cntd.)")
+>           ]
+
+
+> anapaests :: [(Section, Section, String)]
+> anapaests =  [  (MkRange 155 161,    MkRange 2900145 2900145, "Kreon's Entrance"),
+>                 (MkRange 376 383,    MkRange 2900248 2900251, "Antigone's Entrance"),-- sung
+>                 (MkRange 526 530,    MkRange 2900345 2900346, "Ismene's Entrance"),
+>                 (MkRange 626 630,    MkRange 2900403 2900404, "Haimon's Entrance"),
+>                 (MkRange 801 805,    MkRange 2900502 2900502, "Antigone's Entrance"),
+>                 (MkRange 817 822,    MkRange 2900505 2900505, "Chorus to Antigone"),
+>                 (MkRange 834 838,    MkRange 2900508 2900510, "Chorus to Antigone"),
+>                 (MkRange 929 943,    MkRange 2900548 2900553, "Chorus, Kreon and Antigone"),
+>                 (MkRange 1257 1260,  MkRange 2900713 2900713, "Chorus before Kreon's Kommos"),
+>                 (MkRange 1347 1353,  MkRange 2900758 2900760, "Final anapaests of the Chorus")
+>              ]
+
+> speeches :: [(Section, Section, String)]
+> speeches =  [  (MkRange 162 210,    MkRange 2900146 2900157, "\\emph{Kreon:} ἄνδρες, τὰ μὲν δὴ..."),
+>                (MkRange 249 277,    MkRange 2900191 2900204, "\\emph{Guard:} οὐκ οἶδ'· ἐκεῖ γὰρ οὔτε..."),
+>                (MkRange 280 314,    MkRange 2900206 2900220, "\\emph{Kreon:} παῦσαι, πρὶν ὀργῆς..."),
+>                (MkRange 407 440,    MkRange 2900271 2900282, "\\emph{Guard:} τοιοῦτον ἦν τὸ πρᾶγμ'..."),
+>                (MkRange 450 470,    MkRange 2900291 2900302, "\\emph{Antigone:} οὐ γάρ τί μοι Ζεὺς..."),
+>                (MkRange 473 495,    MkRange 2900305 2900316, "\\emph{Kreon:} ἀλλ' ἴσθι τοι..."),
+>                (MkRange 639 680,    MkRange 2900410 2900427, "\\emph{Kreon:} οὕτω γὰρ, ὦ παῖ..."),
+>                (MkRange 683 723,    MkRange 2900429 2900446, "\\emph{Haimon:} πἀτερ, θεοὶ φύουσιν..."),
+>                (MkRange 891 928,    MkRange 2900531 2900547, "\\emph{Antigone:} ὦ τύμβος, ὦ νυμφεῖον..."),
+>                (MkRange 998 1032,   MkRange 2900577 2900595, "\\emph{Teiresias:} γνώσῃ, τέχνης σημεῖα..."),
+>                (MkRange 1033 1047,  MkRange 2900596 2900601, "\\emph{Kreon:} ὦ πρέσβυ, πάντες..."),
+>                (MkRange 1064 1090,  MkRange 2900621 2900628, "\\emph{Teiresias:} ἀλλ' εὖ γέ τοι..."),
+>                (MkRange 1155 1172,  MkRange 2900655 2900662, "\\emph{Messenger:} Κάδμου πάροικοι καὶ..."),
+>                (MkRange 1192 1243,  MkRange 2900681 2900703, "\\emph{Messenger:} ἐγώ, φίλη δέσποινα...") ]
+>
+
+> stichos :: [(Section, Section, String)]
+> stichos =  [  (MkRange 536 576,    MkRange 2900348 2900385, "Ismene, Antigone and Kreon"),
+>               (MkRange 728 757,    MkRange 2900450 2900480, "Haimon and Kreon"),
+>               (MkRange 991 997,    MkRange 2900569 2900576, "Kreon and Teiresias"),
+>               (MkRange 1047 1063,  MkRange 2900602 2900620, "Kreon and Teiresias"),
+>               (MkRange 1172 1179,  MkRange 2900663 2900674, "Chorus and Messenger")
+>            ]
+
+}
+
+
+\section*{Auxiliary Functions}
 
 > simpleName :: String -> QName
 > simpleName s = QName s Nothing Nothing
@@ -399,8 +604,12 @@ We compute the average |omega| of the trees contained in a file as follows:
 > readAttr :: Read a => String -> Element -> Maybe a
 > readAttr n = fmap read . findAttr (simpleName n)
 
-> average :: Fractional n => [n] -> n
-> average xs = divFrac (sum xs) (genericLength xs)
+> mean :: Fractional n => [n] -> n
+> mean =  liftOp2 (/) sum genericLength
+
+> sdev :: Floating n => [n] -> n
+> sdev xs = sqrt (divFrac (sum (liftA (\x -> power x 2) (liftA (- (mean xs) +) xs))) (genericLength xs - 1))
+
 
 \ignore{
 
@@ -408,8 +617,11 @@ We compute the average |omega| of the trees contained in a file as follows:
 > ratio = (%)
 > divFrac = (/)
 
+> power x n = x ^ n
+
 }
 
+\end{appendices}
 \end{document}
 
 

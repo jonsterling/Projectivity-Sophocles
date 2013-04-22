@@ -40,6 +40,7 @@
 %format minimum = "\FN{minimum}"
 %format maximum = "\FN{maximum}"
 %format notElem (x) (xs) = x "\notin" xs
+%format elem (x) (xs) = x "\in" xs
 %format fold = "\FN{fold}"
 %format foldl = "\FN{foldl}"
 %format fromJust = "\FN{fromJust}"
@@ -86,6 +87,7 @@
 
 %format ratio (x) (y) = "\dfrac{" x "}{" y "}"
 %format divFrac (x) (y) = "\dfrac{" x "}{" y "}"
+%format sqrt (x) = "\sqrt{" x "}"
 
 %format Integer = "\mathbb{Z}"
 %format Rational = "\mathbb{Q}"
@@ -93,8 +95,6 @@
 
 %format aux = "\FN{aux}"
 %format omega ="\FN{\omega}"
-
-%format otherwise = "otherwise"
 
 %format (liftA f x) = "\llbracket" ^^ f ^^ x ^^ "\rrbracket"
 %format (liftA2 f x y) = "\llbracket" ^^ f ^^ x ^^ y ^^ "\rrbracket"
@@ -123,4 +123,11 @@
 %format edgeFromWord = "\FN{edgeFromWord}"
 %format edgesFromSentence = "\FN{edgesFromSentence}"
 %format treeFromSentence = "\FN{treeFromSentence}"
+%format analyzeDocument = "\FN{analyzeDocument}"
+
+%format MkRange (x) (y) = x "\cdots" y
+
+%format mean = "\FN{mean}"
+%format sdev = "\FN{sdev}"
+%format power a (b)     =  "{" a "}^{" b "}"
 

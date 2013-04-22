@@ -1,4 +1,4 @@
-<sentence>
+<sentence id="123">
 <word id="1" cid="45116823" form="sta\s" lemma="i(/sthmi1" postag="t-sapamn-" head="11" relation="ADV" />
 		<word id="2" cid="45116824" form="d&apos;" lemma="de/1" postag="g--------" head="11" relation="AuxY" />
 		<word id="3" cid="45116825" form="u(pe\r" lemma="u(pe/r1" postag="r--------" head="1" relation="AuxP" />

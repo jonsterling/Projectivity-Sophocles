@@ -1,6 +1,7 @@
 %!TEX encoding = UTF-8 Unicode
 
 \documentclass{article}
+
 %% ODER: format ==         = "\mathrel{==}"
 %% ODER: format /=         = "\neq "
 %
@@ -367,10 +368,11 @@
 
 
 
-\usepackage{homework,stmaryrd,wasysym,url,upgreek,subfigure}
+
+\usepackage{setspace,homework,stmaryrd,wasysym,url,upgreek,subfigure}
 \usepackage[margin=1cm]{caption}
-\usepackage{xytree}
-\usepackage{listings}
+\usepackage{xytree, listings}
+\usepackage[toc,page]{appendix}
 
 \definecolor{gray}{rgb}{0.4,0.4,0.4}
 
@@ -394,15 +396,22 @@
 
 
 \begin{document}
+\onehalfspacing
 \setmainfont{Times New Roman}
 
 \author{Jonathan Sterling}
 
-\title{A Survey of Phrase Projectivity in Antigone}
+\title{A Survey of Phrase Projectivity in \emph{Antigone}}
 \date{April 2013}
 \maketitle
 
 
+\noindent
+%
+In this paper, I will show how phrase projectivity (which corresponds to lacking
+hyperbaton) is linked to register and meter in Sophocles's \emph{Antigone}, by
+developing a quantitative metric for projectivity and comparing it across
+lyrics, trimeters and anapaests.
 
 \section{Dependency Trees and Their Projectivity}
 
@@ -463,14 +472,127 @@ as in (b); interlacing adjacent phrases also violate projectivity, as in
 \end{figure}
 
 \noindent
-In this paper, we use a concrete metric of projectivity $\omega$, given by the following
-ratio:
-\[
-    \omega = \frac{\text{number of violations}}{\text{number of arcs}}
-\]
-Section~\ref{sec:algorithm} deals with the development of an algorithm to
-compute this quantity for a particular dependency tree.
+%
+In this paper, we shall use a concrete metric of projectivity, $\omega$, given
+by the following ratio:
+%
+\[ \omega = \frac{\text{number of violations}}{\text{number of arcs}} \]
+%
+The number of violations is simply the total number of intersections that occur
+in a tree. Appendix~\ref{sec:algorithm} deals with the development of a model
+and algorithm in the programming language Haskell to compute this quantity for a
+particular dependency tree.
 
+
+\section{The Perseus Treebank}
+%
+The Perseus Ancient Greek Dependency Treebank is a massive trove of annotated
+texts that encode the all dependency relations in every sentence. The data is
+given in an XML (E\textbf{x}tensible \textbf{M}arkup \textbf{L}anguage) format
+resembling the following:
+
+\lstset{
+  language=XML,
+  escapeinside=**
+}
+
+\begin{lstlisting}
+    <sentence id="2900759">
+      <word id="1" form="*\color{gray}\textrm{χρὴ}*" lemma="*\color{gray}\textrm{χρή}*" head="0" />
+      <word id="2" form="*\color{gray}\textrm{δὲ}*" lemma="*\color{gray}\textrm{δέ}*" head="1" />
+      ...
+    </sentence>
+\end{lstlisting}
+
+\noindent
+%
+Every sentence is given a unique, sequential identifier; within each sentence,
+every word is indexed by its linear position and coreferenced with the linear
+position of its dominating head. In the case of the data for \emph{Antigone},
+the maximal head of each sentence has its own head given as \lstinline{0}.
+Appendix~\ref{sec:parsing} deals with parsing these XML representations into
+dependency trees for which we can compute \ensuremath{\FN{\omega}}.
+
+
+\section{Projectivity in Antigone}
+
+To observe the variation of projectivity within a text, then, one may make a
+selection of sentences that have something in common (such as meter), compute
+their trees and thence derive \ensuremath{\FN{\omega}}, and then average the results. Then that
+quantity may be compared with that of other selections.
+
+To that end, I have selected passages from \emph{Antigone} and organized them by
+type. Table~\ref{tab:lyrics} enumerates the lyric passages of the play, along
+with their computed mean \ensuremath{\FN{\omega}} values, and a final mean of means with the
+standard deviation of the set.  Table~\ref{tab:anapaests} does the same for
+anapaests. Lastly, Table~\ref{tab:dialogue} gives the data for dialogue (which
+is in iambic trimeters), divided between medium-to-long speeches and
+stichomythia.
+
+\begin{table}
+  \centering
+  
+\begin{tabular}{clc}\toprule\textbf{Lines}&\textbf{}&\ensuremath{\FN{\omega}}\\ \midrule\ensuremath{\Numeral{100}\cdots\Numeral{154}}&\emph{First choral ode}&\ensuremath{\Numeral{0.64}}\\\ensuremath{\Numeral{332}\cdots\Numeral{375}}&\emph{Second choral ode}&\ensuremath{\Numeral{0.40}}\\\ensuremath{\Numeral{583}\cdots\Numeral{625}}&\emph{Third choral ode}&\ensuremath{\Numeral{0.44}}\\\ensuremath{\Numeral{781}\cdots\Numeral{800}}&\emph{Fourth choral ode}&\ensuremath{\Numeral{0.43}}\\\ensuremath{\Numeral{806}\cdots\Numeral{816}}&\emph{Antigone's Kommos}&\ensuremath{\Numeral{1.24}}\\\ensuremath{\Numeral{823}\cdots\Numeral{833}}&\emph{Antigone's Kommos (cntd.)}&\ensuremath{\Numeral{0.61}}\\\ensuremath{\Numeral{839}\cdots\Numeral{882}}&\emph{Antigone's Kommos (cntd.)}&\ensuremath{\Numeral{0.47}}\\\ensuremath{\Numeral{944}\cdots\Numeral{987}}&\emph{Fifth choral ode}&\ensuremath{\Numeral{0.34}}\\\ensuremath{\Numeral{1116}\cdots\Numeral{1152}}&\emph{Sixth choral ode}&\ensuremath{\Numeral{0.60}}\\\ensuremath{\Numeral{1261}\cdots\Numeral{1269}}&\emph{Kreon's Kommos}&\ensuremath{\Numeral{0.28}}\\\ensuremath{\Numeral{1283}\cdots\Numeral{1292}}&\emph{Kreon's Kommos (cntd.)}&\ensuremath{\Numeral{0.77}}\\\ensuremath{\Numeral{1306}\cdots\Numeral{1311}}&\emph{Kreon's Kommos (cntd.)}&\ensuremath{\Numeral{0.29}}\\\ensuremath{\Numeral{1317}\cdots\Numeral{1325}}&\emph{Kreon's Kommos (cntd.)}&\ensuremath{\Numeral{0.98}}\\\ensuremath{\Numeral{1239}\cdots\Numeral{1246}}&\emph{Kreon's Kommos (cntd.)}&\ensuremath{\Numeral{0.44}}\\\midrule\multicolumn{3}{r}{\ensuremath{\FN{mean}\;\FN{\omega}} = \ensuremath{\Numeral{0.57}}, \ensuremath{\FN{sdev}} = \ensuremath{\Numeral{0.27}}}\\\bottomrule\end{tabular}
+
+  \caption{Lyrics, including odes and kommoi.}
+  \label{tab:lyrics}
+\end{table}
+
+\begin{table}
+  \centering
+  
+\begin{tabular}{clc}\toprule\textbf{Lines}&\textbf{}&\ensuremath{\FN{\omega}}\\ \midrule\ensuremath{\Numeral{155}\cdots\Numeral{161}}&\emph{Kreon's Entrance}&\ensuremath{\Numeral{0.17}}\\\ensuremath{\Numeral{376}\cdots\Numeral{383}}&\emph{Antigone's Entrance}&\ensuremath{\Numeral{0.62}}\\\ensuremath{\Numeral{526}\cdots\Numeral{530}}&\emph{Ismene's Entrance}&\ensuremath{\Numeral{0.05}}\\\ensuremath{\Numeral{626}\cdots\Numeral{630}}&\emph{Haimon's Entrance}&\ensuremath{\Numeral{0.44}}\\\ensuremath{\Numeral{801}\cdots\Numeral{805}}&\emph{Antigone's Entrance}&\ensuremath{\Numeral{1.08}}\\\ensuremath{\Numeral{817}\cdots\Numeral{822}}&\emph{Chorus to Antigone}&\ensuremath{\Numeral{0.46}}\\\ensuremath{\Numeral{834}\cdots\Numeral{838}}&\emph{Chorus to Antigone}&\ensuremath{\Numeral{0.03}}\\\ensuremath{\Numeral{929}\cdots\Numeral{943}}&\emph{Chorus, Kreon and Antigone}&\ensuremath{\Numeral{0.25}}\\\ensuremath{\Numeral{1257}\cdots\Numeral{1260}}&\emph{Chorus before Kreon's Kommos}&\ensuremath{\Numeral{0.00}}\\\ensuremath{\Numeral{1347}\cdots\Numeral{1353}}&\emph{Final anapaests of the Chorus}&\ensuremath{\Numeral{0.36}}\\\midrule\multicolumn{3}{r}{\ensuremath{\FN{mean}\;\FN{\omega}} = \ensuremath{\Numeral{0.35}}, \ensuremath{\FN{sdev}} = \ensuremath{\Numeral{0.33}}}\\\bottomrule\end{tabular}
+
+  \caption{Anapaests.}
+  \label{tab:anapaests}
+\end{table}
+
+\begin{table}
+  \centering
+  \subfigure[Speeches and Dialogue]{
+\begin{tabular}{clc}\toprule\textbf{Lines}&\textbf{}&\ensuremath{\FN{\omega}}\\ \midrule\ensuremath{\Numeral{162}\cdots\Numeral{210}}&\emph{\emph{Kreon:} ἄνδρες, τὰ μὲν δὴ...}&\ensuremath{\Numeral{0.25}}\\\ensuremath{\Numeral{249}\cdots\Numeral{277}}&\emph{\emph{Guard:} οὐκ οἶδ'· ἐκεῖ γὰρ οὔτε...}&\ensuremath{\Numeral{0.34}}\\\ensuremath{\Numeral{280}\cdots\Numeral{314}}&\emph{\emph{Kreon:} παῦσαι, πρὶν ὀργῆς...}&\ensuremath{\Numeral{0.39}}\\\ensuremath{\Numeral{407}\cdots\Numeral{440}}&\emph{\emph{Guard:} τοιοῦτον ἦν τὸ πρᾶγμ'...}&\ensuremath{\Numeral{0.40}}\\\ensuremath{\Numeral{450}\cdots\Numeral{470}}&\emph{\emph{Antigone:} οὐ γάρ τί μοι Ζεὺς...}&\ensuremath{\Numeral{0.39}}\\\ensuremath{\Numeral{473}\cdots\Numeral{495}}&\emph{\emph{Kreon:} ἀλλ' ἴσθι τοι...}&\ensuremath{\Numeral{0.49}}\\\ensuremath{\Numeral{639}\cdots\Numeral{680}}&\emph{\emph{Kreon:} οὕτω γὰρ, ὦ παῖ...}&\ensuremath{\Numeral{0.44}}\\\ensuremath{\Numeral{683}\cdots\Numeral{723}}&\emph{\emph{Haimon:} πἀτερ, θεοὶ φύουσιν...}&\ensuremath{\Numeral{0.38}}\\\ensuremath{\Numeral{891}\cdots\Numeral{928}}&\emph{\emph{Antigone:} ὦ τύμβος, ὦ νυμφεῖον...}&\ensuremath{\Numeral{0.31}}\\\ensuremath{\Numeral{998}\cdots\Numeral{1032}}&\emph{\emph{Teiresias:} γνώσῃ, τέχνης σημεῖα...}&\ensuremath{\Numeral{0.35}}\\\ensuremath{\Numeral{1033}\cdots\Numeral{1047}}&\emph{\emph{Kreon:} ὦ πρέσβυ, πάντες...}&\ensuremath{\Numeral{0.18}}\\\ensuremath{\Numeral{1064}\cdots\Numeral{1090}}&\emph{\emph{Teiresias:} ἀλλ' εὖ γέ τοι...}&\ensuremath{\Numeral{0.64}}\\\ensuremath{\Numeral{1155}\cdots\Numeral{1172}}&\emph{\emph{Messenger:} Κάδμου πάροικοι καὶ...}&\ensuremath{\Numeral{0.35}}\\\ensuremath{\Numeral{1192}\cdots\Numeral{1243}}&\emph{\emph{Messenger:} ἐγώ, φίλη δέσποινα...}&\ensuremath{\Numeral{0.27}}\\\midrule\multicolumn{3}{r}{\ensuremath{\FN{mean}\;\FN{\omega}} = \ensuremath{\Numeral{0.37}}, \ensuremath{\FN{sdev}} = \ensuremath{\Numeral{0.11}}}\\\bottomrule\end{tabular}
+}
+  \vspace{6pt}
+  \subfigure[Stichomythia]{
+\begin{tabular}{clc}\toprule\textbf{Lines}&\textbf{}&\ensuremath{\FN{\omega}}\\ \midrule\ensuremath{\Numeral{536}\cdots\Numeral{576}}&\emph{Ismene, Antigone and Kreon}&\ensuremath{\Numeral{0.23}}\\\ensuremath{\Numeral{728}\cdots\Numeral{757}}&\emph{Haimon and Kreon}&\ensuremath{\Numeral{0.27}}\\\ensuremath{\Numeral{991}\cdots\Numeral{997}}&\emph{Kreon and Teiresias}&\ensuremath{\Numeral{0.53}}\\\ensuremath{\Numeral{1047}\cdots\Numeral{1063}}&\emph{Kreon and Teiresias}&\ensuremath{\Numeral{0.09}}\\\ensuremath{\Numeral{1172}\cdots\Numeral{1179}}&\emph{Chorus and Messenger}&\ensuremath{\Numeral{0.16}}\\\midrule\multicolumn{3}{r}{\ensuremath{\FN{mean}\;\FN{\omega}} = \ensuremath{\Numeral{0.26}}, \ensuremath{\FN{sdev}} = \ensuremath{\Numeral{0.17}}}\\\bottomrule\end{tabular}
+}
+  \caption{Dialogue (Trimeters)}
+  \label{tab:dialogue}
+\end{table}
+
+As can be seen from the data, lyrics have the highest degree of
+non-projectivity, followed by speeches, then anapaests, and then stichomythia.
+However, the standard deviation of the \ensuremath{\FN{\omega}} for anapaestic passages is so
+high that it may be difficult to say much of interest about them at all in
+respect to the questions that we are considering. So, let us put the anapaests
+aside for the moment and deal exclusively with lyrics, speeches and
+stichomythias.
+
+Whereas in prose, hyperbaton corresponds to \emph{strong
+focus}, which ``does not merely fill a gap in the addressee's knowledge but
+additionally evokes and excludes alternatives'' (Devine~\&~Stephens 303),
+hyperbaton in verse only entails weak focus, which emphasizes but does not
+exclude (ibid.\ 107).
+
+As a result, hyperbaton in verse may be used to evoke a kind of
+elevated style without incidentally entailing more emphasis and other pragmatic
+effects than intended. And so it should not be surprising that lyric passages,
+which reside in the most poetic and elevated register present in tragic diction,
+should have proved in \emph{Antigone} to have the highest proportion of
+projectivity violations.
+
+
+
+
+
+
+
+
+
+
+
+\newpage
+\begin{appendices}
 \section{Algorithm \& Data Representation}
 \label{sec:algorithm}
 
@@ -505,11 +627,10 @@ on its structure as follows:
 \ColumnHook
 \end{hscode}\resethooks
 \subsection{From Edges to Trees}
+\label{sec:edges-to-trees}
 
-A sentence from the Perseus treebank is in the form of a list of words that are
-indexed by their linear position, and cross-referenced by the linear position of
-their dominating head. We shall consider each index to be a \emph{vertex}, and
-each pair of vertices to be an \ensuremath{\mathsf{Edge}}, which we shall write as follows:
+We shall consider each word index to be a \emph{vertex}, and each pair of
+vertices to be an \ensuremath{\mathsf{Edge}}, which we shall write as follows:
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -580,7 +701,7 @@ it touches, and try to build the subtrees that are connected with those edges.
 \>[18]{}\mathrel{=}\Varid{y}{}\<[E]%
 \\
 \>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\mid otherwise{}\<[18]%
+\>[5]{}\mid \Varid{otherwise}{}\<[18]%
 \>[18]{}\mathrel{=}\Varid{x}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
@@ -750,7 +871,7 @@ intersection. Otherwise, there is no intersection.
 \>[48]{}\mathrel{=}\Numeral{2}{}\<[E]%
 \\
 \>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\mid otherwise{}\<[48]%
+\>[5]{}\mid \Varid{otherwise}{}\<[48]%
 \>[48]{}\mathrel{=}\Numeral{0}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
@@ -805,169 +926,433 @@ Finally, \ensuremath{\FN{\omega}} is computed for a tree as follows:
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{5}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{22}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
 \>[3]{}\FN{\omega}\ConSym{::}\mathsf{Ord}\;\VarSym{\alpha}\Rightarrow \mathsf{Tree}\;\VarSym{\alpha}\to \mathbb{Q}{}\<[E]%
 \\
-\>[3]{}\FN{\omega}\;\Varid{tree}\mathrel{=}\dfrac{\FN{violationsCount}}{\FN{totalArcsCount}}\;\mathkw{where}{}\<[E]%
+\>[3]{}\FN{\omega}\;\Varid{tree}\mathrel{=}\dfrac{\FN{edgeViolations}\;\FN{edges}}{\FN{length}\;\FN{edges}}\;\mathkw{where}{}\<[E]%
 \\
 \>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\FN{edges}{}\<[22]%
-\>[22]{}\mathrel{=}\FN{allEdges}\;\Varid{tree}{}\<[E]%
-\\
-\>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\FN{violationsCount}{}\<[22]%
-\>[22]{}\mathrel{=}\FN{fromIntegral}\;(\FN{edgeViolations}\;\FN{edges}){}\<[E]%
-\\
-\>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\FN{totalArcsCount}{}\<[22]%
-\>[22]{}\mathrel{=}\FN{length}\;\FN{edges}{}\<[E]%
+\>[5]{}\FN{edges}\mathrel{=}\FN{allEdges}\;\Varid{tree}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 
 \newpage
 \section{Parsing the Perseus Treebank}
+\label{sec:parsing}
 
-The Persues treebank is a collection of XML files, which have data in the
-following (simplified) scheme:
-
-\lstset{
-  language=XML,
-  escapeinside=**
-}
-
-\begin{lstlisting}
-    <sentence id="2900759">
-      <word id="1" form="*\color{gray}\textrm{χρὴ}*" lemma="*\color{gray}\textrm{χρή}*" head="0" />
-      <word id="2" form="*\color{gray}\textrm{δὲ}*" lemma="*\color{gray}\textrm{δέ}*" head="1" />
-      ...
-    </sentence>
-
-    <sentence id="2900760">
-      <word id="1" form="*\color{gray}\textrm{μεγάλοι}*" lemma="*\color{gray}\textrm{μέγας}*" head="3" />
-      <word id="2" form="*\color{gray}\textrm{δὲ}*" lemma="*\color{gray}\textrm{δέ}*" head="12" />
-      ...
-    </sentence>
-\end{lstlisting}
-
+\noindent
 We can express the general shape of such a document as follows:
+
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{21}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[3]{}\mathkw{newtype}\;\mathsf{XML}{}\<[21]%
-\>[21]{}\mathrel{=}\mathsf{XML}\;[\mskip1.5mu \mathsf{Content}\mskip1.5mu]{}\<[E]%
+\>[3]{}\mathkw{type}\;\mathsf{Document}\mathrel{=}[\mskip1.5mu \mathsf{Sentence}\mskip1.5mu]{}\<[E]%
 \\
-\>[3]{}\mathkw{newtype}\;\mathsf{Word}{}\<[21]%
-\>[21]{}\mathrel{=}\mathsf{Word}\;\mathsf{Element}{}\<[E]%
-\\
-\>[3]{}\mathkw{newtype}\;\mathsf{Sentence}{}\<[21]%
-\>[21]{}\mathrel{=}\mathsf{Sentence}\;\mathsf{Element}{}\<[E]%
+\>[3]{}\mathkw{data}\;\mathsf{Sentence}\mathrel{=}\mathsf{Sentence}\;\{\mskip1.5mu \FN{sentenceId}\ConSym{::}\mathbb{Z},\FN{sentenceEdges}\ConSym{::}[\mskip1.5mu \mathsf{Edge}\;\mathbb{Z}\mskip1.5mu]\mskip1.5mu\}\;\mathkw{deriving}\;\mathsf{Show}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
-To convert XML into trees, we must first extract the sentences from the file, and then we
-convert those into trees.
+To construct a \ensuremath{\mathsf{Document}} from the contents of an XML file, it suffices to
+find all of the sentences.
+
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{5}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{16}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[3]{}\FN{sentencesFromXML}\ConSym{::}\mathsf{XML}\to [\mskip1.5mu \mathsf{Sentence}\mskip1.5mu]{}\<[E]%
+\>[3]{}\FN{documentFromXML}\ConSym{::}[\mskip1.5mu \mathsf{Content}\mskip1.5mu]\to \mathsf{Document}{}\<[E]%
 \\
-\>[3]{}\FN{sentencesFromXML}\;(\mathsf{XML}\;\Varid{xml})\mathrel{=}\mathkw{do}{}\<[E]%
+\>[3]{}\FN{documentFromXML}\;\Varid{xml}\mathrel{=}\FN{catMaybes}\;\llbracket\;\FN{sentenceFromXML}\;\FN{elems}\;\rrbracket\;\mathkw{where}{}\<[E]%
 \\
 \>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\Varid{elems}{}\<[16]%
-\>[16]{}\leftarrow \FN{onlyElems}\;\Varid{xml}{}\<[E]%
-\\
-\>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\llbracket\;\mathsf{Sentence}\;(\FN{findElements}\;(\FN{simpleName}\;\Char{\char34 sentence\char34})\;\Varid{elems})\;\rrbracket{}\<[E]%
+\>[5]{}\FN{elems}\mathrel{=}\FN{onlyElems}\;\Varid{xml}\bind \FN{findElements}\;(\FN{simpleName}\;\Char{\char34 sentence\char34}){}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
-To build a tree from a sentence, first we get all of the words from that
-sentence and convert them into edges.
-\begin{hscode}\SaveRestoreHook
-\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[3]{}\FN{wordsFromSentence}\ConSym{::}\mathsf{Sentence}\to [\mskip1.5mu \mathsf{Word}\mskip1.5mu]{}\<[E]%
-\\
-\>[3]{}\FN{wordsFromSentence}\;(\mathsf{Sentence}\;\Varid{s})\mathrel{=}\llbracket\;\mathsf{Word}\;(\FN{findChildren}\;(\FN{simpleName}\;\Char{\char34 word\char34})\;\Varid{s})\;\rrbracket{}\<[E]%
-\ColumnHook
-\end{hscode}\resethooks
-Edges are the content of the \lstinline{head} attribute paired with that of the
-\lstinline{id} attribute.
-\begin{hscode}\SaveRestoreHook
-\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[3]{}\FN{edgeFromWord}\ConSym{::}\mathsf{Word}\to \mathsf{Maybe}\;(\mathsf{Edge}\;\mathbb{Z}){}\<[E]%
-\\
-\>[3]{}\FN{edgeFromWord}\;(\mathsf{Word}\;\Varid{w})\mathrel{=}\llbracket\;(\FN{readAttr}\;\Char{\char34 head\char34}\;\Varid{w})\;\leftrightarrow\;(\FN{readAttr}\;\Char{\char34 id\char34}\;\Varid{w})\;\rrbracket{}\<[E]%
-\ColumnHook
-\end{hscode}\resethooks
-Thence, we can build a tree from a sentence.
+\ensuremath{\mathsf{Sentence}}s are got by taking the contents of their \lstinline{id} attribute,
+and extracting edges from their children.
+
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{5}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{15}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\FN{sentenceFromXML}\ConSym{::}\mathsf{Element}\to \mathsf{Maybe}\;\mathsf{Sentence}{}\<[E]%
+\\
+\>[3]{}\FN{sentenceFromXML}\;\Varid{e}\mathrel{=}\llbracket\;\mathsf{Sentence}\;(\FN{readAttr}\;\Char{\char34 id\char34}\;\Varid{e})\;(\FN{pure}\;\FN{edges})\;\rrbracket\;\mathkw{where}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\FN{edges}{}\<[15]%
+\>[15]{}\mathrel{=}\FN{catMaybes}\;\llbracket\;\FN{edgeFromXML}\;\FN{children}\;\rrbracket{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\FN{children}{}\<[15]%
+\>[15]{}\mathrel{=}\FN{findChildren}\;(\FN{simpleName}\;\Char{\char34 word\char34})\;\Varid{e}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+An edge is got from an element by taking the contents of its \lstinline{id}
+attribute with the contents of its \lstinline{head} attribute.
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{8}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\FN{edgeFromXML}\ConSym{::}\mathsf{Element}\to \mathsf{Maybe}\;(\mathsf{Edge}\;\mathbb{Z}){}\<[E]%
+\\
+\>[3]{}\FN{edgeFromXML}\;\Varid{e}\mathrel{=}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\mathkw{case}\;\FN{findAttr}\;(\FN{simpleName}\;\Char{\char34 form\char34})\;\Varid{e}\;\mathkw{of}{}\<[E]%
+\\
+\>[5]{}\hsindent{3}{}\<[8]%
+\>[8]{}\mathsf{Just}\;\Varid{x}\mid \Varid{x}\in[\mskip1.5mu \Char{\char34 .\char34},\Char{\char34 ,\char34},\Char{\char34 ;\char34},\Char{\char34 :\char34}\mskip1.5mu]\to \mathsf{Nothing}{}\<[E]%
+\\
+\>[5]{}\hsindent{3}{}\<[8]%
+\>[8]{}\Varid{otherwise}\to \llbracket\;(\FN{readAttr}\;\Char{\char34 head\char34}\;\Varid{e})\;\leftrightarrow\;(\FN{readAttr}\;\Char{\char34 id\char34}\;\Varid{e})\;\rrbracket{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+Thence, turn a sentence into a tree by its edges using the machinery from
+Section~\ref{sec:edges-to-trees}.
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
 \>[3]{}\FN{treeFromSentence}\ConSym{::}\mathsf{Sentence}\to \mathsf{Maybe}\;(\mathsf{Tree}\;\mathbb{Z}){}\<[E]%
 \\
-\>[3]{}\FN{treeFromSentence}\mathrel{=}\FN{treeFromEdges}\circ\FN{edgesFromSentence}\;\mathkw{where}{}\<[E]%
-\\
-\>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\FN{edgesFromSentence}\ConSym{::}\mathsf{Sentence}\to [\mskip1.5mu \mathsf{Edge}\;\mathbb{Z}\mskip1.5mu]{}\<[E]%
-\\
-\>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\FN{edgesFromSentence}\;\Varid{s}\mathrel{=}\FN{catMaybes}\;\llbracket\;\FN{edgeFromWord}\;(\FN{wordsFromSentence}\;\Varid{s})\;\rrbracket\;\mathkw{where}{}\<[E]%
+\>[3]{}\FN{treeFromSentence}\;(\mathsf{Sentence}\;\anonymous \;\Varid{ws})\mathrel{=}\FN{treeFromEdges}\;\Varid{ws}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
-By putting the pieces together, we also derive a function to read all the trees
-from an XML document:
+By applying \ensuremath{\FN{treeFromSentence}} to every sentence within a document, we can
+generate all the trees in a document.
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[3]{}\FN{treesFromXML}\ConSym{::}\mathsf{XML}\to [\mskip1.5mu \mathsf{Tree}\;\mathbb{Z}\mskip1.5mu]{}\<[E]%
+\>[3]{}\FN{treesFromDocument}\ConSym{::}\mathsf{Document}\to [\mskip1.5mu \mathsf{Tree}\;\mathbb{Z}\mskip1.5mu]{}\<[E]%
 \\
-\>[3]{}\FN{treesFromXML}\;\Varid{xml}\mathrel{=}\FN{catMaybes}\;\llbracket\;\FN{treeFromSentence}\;(\FN{sentencesFromXML}\;\Varid{xml})\;\rrbracket{}\<[E]%
+\>[3]{}\FN{treesFromDocument}\;\Varid{ss}\mathrel{=}\FN{catMaybes}\;\llbracket\;\FN{treeFromSentence}\;\Varid{ss}\;\rrbracket{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
-Finally, we must read the file as a string, parse it as XML, and then convert
-that XML into a series of trees.
+By combining the above, we also may derive a document structure from a file on
+disk.
+
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[3]{}\FN{treesFromFile}\ConSym{::}\mathsf{FilePath}\to \mathsf{IO}\;[\mskip1.5mu \mathsf{Tree}\;\mathbb{Z}\mskip1.5mu]{}\<[E]%
+\>[3]{}\FN{documentFromFile}\ConSym{::}\mathsf{FilePath}\to \mathsf{IO}\;\mathsf{Document}{}\<[E]%
 \\
-\>[3]{}\FN{treesFromFile}\;\Varid{path}\mathrel{=}\llbracket\;(\FN{treesFromXML}\circ\mathsf{XML}\circ\FN{parseXML})\;(\FN{readFile}\;\Varid{path})\;\rrbracket{}\<[E]%
+\>[3]{}\FN{documentFromFile}\;\Varid{path}\mathrel{=}\llbracket\;(\FN{documentFromXML}\circ\FN{parseXML})\;(\FN{readFile}\;\Varid{path})\;\rrbracket{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 \section{Analysis of Data}
 
-We compute the average \ensuremath{\FN{\omega}} of the trees contained in a file as follows:
+We compute the mean \ensuremath{\FN{\omega}} of the trees contained in a document as follows:
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\FN{analyzeDocument}\ConSym{::}\mathsf{Document}\to \mathbb{Q}{}\<[E]%
+\\
+\>[3]{}\FN{analyzeDocument}\;\Varid{doc}\mathrel{=}\FN{mean}\;\llbracket\;\FN{\omega}\;(\FN{treesFromDocument}\;\Varid{doc})\;\rrbracket{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+We will wish to compare the \ensuremath{\FN{\omega}} for parts of \emph{Antigone}. A section is
+given by a two sentence indices (a beginning and an end):
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\mathkw{data}\;\mathsf{Section}\mathrel{=}\mathbb{Z}\cdots\mathbb{Z}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+Then, the entire document can be cut down into smaller documents by section:
 
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{5}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[3]{}\FN{analyzeFile}\ConSym{::}\mathsf{FilePath}\to \mathsf{IO}\;\mathbb{Q}{}\<[E]%
+\>[3]{}\FN{restrictDocument}\ConSym{::}\mathsf{Section}\to \mathsf{Document}\to \mathsf{Document}{}\<[E]%
 \\
-\>[3]{}\FN{analyzeFile}\;\Varid{path}\mathrel{=}\mathkw{do}{}\<[E]%
-\\
-\>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\Varid{trees}\leftarrow \FN{treesFromFile}\;\Varid{path}{}\<[E]%
+\>[3]{}\FN{restrictDocument}\;(\Varid{start}\cdots\Varid{finish})\mathrel{=}\FN{filter}\;\FN{withinSection}\;\mathkw{where}{}\<[E]%
 \\
 \>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\FN{return}\;(\FN{average}\;\llbracket\;\FN{\omega}\;\Varid{trees}\;\rrbracket){}\<[E]%
+\>[5]{}\FN{withinSection}\;(\mathsf{Sentence}\;\Varid{i}\;\anonymous )\mathrel{=}\Varid{i}\geq \Varid{start}\mathrel{\wedge}\Varid{i}\leq \Varid{finish}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
-\section*{Appendix: Auxiliary Functions}
+\ignore{
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{17}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\Varid{makeTable}\ConSym{::}[\mskip1.5mu (\mathsf{Section},\mathsf{Section},\mathsf{String})\mskip1.5mu]\to \mathsf{IO}\;\mathsf{UnquotedString}{}\<[E]%
+\\
+\>[3]{}\Varid{makeTable}\;\Varid{sections}\mathrel{=}\mathkw{do}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\Varid{antigone}\leftarrow \FN{documentFromFile}\;\Char{\char34 antigone.xml\char34}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\mathkw{let}\;\Varid{pre}\mathrel{=}\Char{\char34 \char92 \char92 begin\char123 tabular\char125 \char123 clc\char125 \char92 \char92 toprule\char92 \char92 textbf\char123 Lines\char125 \&\char92 \char92 textbf\char123 \char125 \&|omega|\char92 \char92 \char92 \char92 ~\char92 \char92 midrule\char34}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\mathkw{let}\;\Varid{post}\mathrel{=}\Char{\char34 \char92 \char92 bottomrule\char92 \char92 end\char123 tabular\char125 \char34}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\mathkw{let}\;\Varid{omegas}\mathrel{=}(\lambda (\anonymous ,\Varid{r},\anonymous )\to \FN{analyzeDocument}\mathbin{\$}\FN{restrictDocument}\;\Varid{r}\;\Varid{antigone})\;\mathop{\langle\$\rangle}\;\Varid{sections}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\mathkw{let}\;\Varid{body}\mathrel{=}\FN{fold}\mathbin{\$}\FN{uncurry}\;\Varid{makeTableRow}\;\mathop{\langle\$\rangle}\;\Varid{zip}\;\Varid{sections}\;\Varid{omegas}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\mathkw{let}\;\Varid{avg}\mathrel{=}\Char{\char34 \char92 \char92 midrule\char92 \char92 multicolumn\char123 3\char125 \char123 r\char125 \char123 |mean~omega|~=~|\char34}\plus \Varid{showRational}\;(\FN{mean}\;\Varid{omegas}){}\<[E]%
+\\
+\>[5]{}\hsindent{12}{}\<[17]%
+\>[17]{}\plus \Char{\char34 ~|,~|sdev|~=~|\char34}\plus \Varid{showRational}\;(\FN{sdev}\;(\Varid{fromRational}\;\mathop{\langle\$\rangle}\;\Varid{omegas}))\plus \Char{\char34 |\char125 \char92 \char92 \char92 \char92 \char34}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\FN{return}\circ\mathsf{Unquote}\mathbin{\$}\Varid{pre}\plus \Varid{body}\plus \Varid{avg}\plus \Varid{post}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\Varid{showRational}\;\Varid{x}\mathrel{=}\Varid{printf}\;\Char{\char34 \%.2f\char34}\;((\Varid{fromInteger}\mathbin{\$}\Varid{round}\mathbin{\$}\Varid{x}\VarSym{*}(\Numeral{10} \Numeral{2}))\mathbin{/}(\Numeral{10.0}\;\Numeral{2})\ConSym{::}\mathsf{Float}){}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\Varid{makeTableRow}\ConSym{::}(\mathsf{Section},\mathsf{Section},\mathsf{String})\to \mathbb{Q}\to \mathsf{String}{}\<[E]%
+\\
+\>[3]{}\Varid{makeTableRow}\;(\Varid{ls},\Varid{r},\Varid{d})\;\Varid{om}\mathrel{=}\Varid{lines}\plus \Char{\char34 \&\char34}\plus \Varid{desc}\plus \Char{\char34 \&\char34}\plus \FN{\omega}\plus \Char{\char34 \char92 \char92 \char92 \char92 \char34}\;\mathkw{where}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\Varid{desc}\mathrel{=}\Char{\char34 \char92 \char92 emph\char123 \char34}\plus \Varid{d}\plus \Char{\char34 \char125 \char34}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\Varid{lines}\mathrel{=}\Char{\char34 |\char34}\plus \Varid{show}\;\Varid{ls}\plus \Char{\char34 |\char34}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\Varid{range}\mathrel{=}\Char{\char34 |\char34}\plus \Varid{show}\;\Varid{r}\plus \Char{\char34 |\char34}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\FN{\omega}\mathrel{=}\Char{\char34 |\char34}\plus \Varid{showRational}\;\Varid{om}\plus \Char{\char34 |\char34}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{5}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\mathkw{deriving}\;\mathkw{instance}\;\mathsf{Show}\;\mathsf{Section}{}\<[E]%
+\\
+\>[3]{}\mathkw{newtype}\;\mathsf{UnquotedString}\mathrel{=}\mathsf{Unquote}\;\mathsf{String}{}\<[E]%
+\\
+\>[3]{}\mathkw{instance}\;\mathsf{Show}\;\mathsf{UnquotedString}\;\mathkw{where}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\Varid{show}\;(\mathsf{Unquote}\;\Varid{str})\mathrel{=}\Varid{str}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{13}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{13E}{@{}l@{}}%
+\column{16}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{37}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\Varid{lyrics}\ConSym{::}[\mskip1.5mu (\mathsf{Section},\mathsf{Section},\mathsf{String})\mskip1.5mu]{}\<[E]%
+\\
+\>[3]{}\Varid{lyrics}\mathrel{=}{}\<[13]%
+\>[13]{}[\mskip1.5mu {}\<[13E]%
+\>[16]{}(\Numeral{100}\cdots\Numeral{154},{}\<[37]%
+\>[37]{}\Numeral{2900135}\cdots\Numeral{2900144},\Char{\char34 First~choral~ode\char34}),{}\<[E]%
+\\
+\>[16]{}(\Numeral{332}\cdots\Numeral{375},{}\<[37]%
+\>[37]{}\Numeral{2900236}\cdots\Numeral{2900247},\Char{\char34 Second~choral~ode\char34}),{}\<[E]%
+\\
+\>[16]{}(\Numeral{583}\cdots\Numeral{625},{}\<[37]%
+\>[37]{}\Numeral{2900390}\cdots\Numeral{2900402},\Char{\char34 Third~choral~ode\char34}),{}\<[E]%
+\\
+\>[16]{}(\Numeral{781}\cdots\Numeral{800},{}\<[37]%
+\>[37]{}\Numeral{2900496}\cdots\Numeral{2900501},\Char{\char34 Fourth~choral~ode\char34}),{}\<[E]%
+\\
+\>[16]{}(\Numeral{806}\cdots\Numeral{816},{}\<[37]%
+\>[37]{}\Numeral{2900503}\cdots\Numeral{2900504},\Char{\char34 Antigone's~Kommos\char34}),{}\<[E]%
+\\
+\>[16]{}(\Numeral{823}\cdots\Numeral{833},{}\<[37]%
+\>[37]{}\Numeral{2900506}\cdots\Numeral{2900507},\Char{\char34 Antigone's~Kommos~(cntd.)\char34}),{}\<[E]%
+\\
+\>[16]{}(\Numeral{839}\cdots\Numeral{882},{}\<[37]%
+\>[37]{}\Numeral{2900511}\cdots\Numeral{2900526},\Char{\char34 Antigone's~Kommos~(cntd.)\char34}),{}\<[E]%
+\\
+\>[16]{}(\Numeral{944}\cdots\Numeral{987},{}\<[37]%
+\>[37]{}\Numeral{2900554}\cdots\Numeral{2900566},\Char{\char34 Fifth~choral~ode\char34}),{}\<[E]%
+\\
+\>[16]{}(\Numeral{1116}\cdots\Numeral{1152},{}\<[37]%
+\>[37]{}\Numeral{2900649}\cdots\Numeral{2900654},\Char{\char34 Sixth~choral~ode\char34}),{}\<[E]%
+\\
+\>[16]{}(\Numeral{1261}\cdots\Numeral{1269},{}\<[37]%
+\>[37]{}\Numeral{2900714}\cdots\Numeral{2900716},\Char{\char34 Kreon's~Kommos\char34}),{}\<[E]%
+\\
+\>[16]{}(\Numeral{1283}\cdots\Numeral{1292},{}\<[37]%
+\>[37]{}\Numeral{2900725}\cdots\Numeral{2900729},\Char{\char34 Kreon's~Kommos~(cntd.)\char34}),{}\<[E]%
+\\
+\>[16]{}(\Numeral{1306}\cdots\Numeral{1311},{}\<[37]%
+\>[37]{}\Numeral{2900737}\cdots\Numeral{2900739},\Char{\char34 Kreon's~Kommos~(cntd.)\char34}),{}\<[E]%
+\\
+\>[16]{}(\Numeral{1317}\cdots\Numeral{1325},{}\<[37]%
+\>[37]{}\Numeral{2900743}\cdots\Numeral{2900745},\Char{\char34 Kreon's~Kommos~(cntd.)\char34}),{}\<[E]%
+\\
+\>[16]{}(\Numeral{1239}\cdots\Numeral{1246},{}\<[37]%
+\>[37]{}\Numeral{2900756}\cdots\Numeral{2900767},\Char{\char34 Kreon's~Kommos~(cntd.)\char34}){}\<[E]%
+\\
+\>[13]{}\mskip1.5mu]{}\<[13E]%
+\ColumnHook
+\end{hscode}\resethooks
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{16}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{16E}{@{}l@{}}%
+\column{19}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{40}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\Varid{anapaests}\ConSym{::}[\mskip1.5mu (\mathsf{Section},\mathsf{Section},\mathsf{String})\mskip1.5mu]{}\<[E]%
+\\
+\>[3]{}\Varid{anapaests}\mathrel{=}{}\<[16]%
+\>[16]{}[\mskip1.5mu {}\<[16E]%
+\>[19]{}(\Numeral{155}\cdots\Numeral{161},{}\<[40]%
+\>[40]{}\Numeral{2900145}\cdots\Numeral{2900145},\Char{\char34 Kreon's~Entrance\char34}),{}\<[E]%
+\\
+\>[19]{}(\Numeral{376}\cdots\Numeral{383},{}\<[40]%
+\>[40]{}\Numeral{2900248}\cdots\Numeral{2900251},\Char{\char34 Antigone's~Entrance\char34}),\Comment{-{}-\enskip sung}{}\<[E]%
+\\
+\>[19]{}(\Numeral{526}\cdots\Numeral{530},{}\<[40]%
+\>[40]{}\Numeral{2900345}\cdots\Numeral{2900346},\Char{\char34 Ismene's~Entrance\char34}),{}\<[E]%
+\\
+\>[19]{}(\Numeral{626}\cdots\Numeral{630},{}\<[40]%
+\>[40]{}\Numeral{2900403}\cdots\Numeral{2900404},\Char{\char34 Haimon's~Entrance\char34}),{}\<[E]%
+\\
+\>[19]{}(\Numeral{801}\cdots\Numeral{805},{}\<[40]%
+\>[40]{}\Numeral{2900502}\cdots\Numeral{2900502},\Char{\char34 Antigone's~Entrance\char34}),{}\<[E]%
+\\
+\>[19]{}(\Numeral{817}\cdots\Numeral{822},{}\<[40]%
+\>[40]{}\Numeral{2900505}\cdots\Numeral{2900505},\Char{\char34 Chorus~to~Antigone\char34}),{}\<[E]%
+\\
+\>[19]{}(\Numeral{834}\cdots\Numeral{838},{}\<[40]%
+\>[40]{}\Numeral{2900508}\cdots\Numeral{2900510},\Char{\char34 Chorus~to~Antigone\char34}),{}\<[E]%
+\\
+\>[19]{}(\Numeral{929}\cdots\Numeral{943},{}\<[40]%
+\>[40]{}\Numeral{2900548}\cdots\Numeral{2900553},\Char{\char34 Chorus,~Kreon~and~Antigone\char34}),{}\<[E]%
+\\
+\>[19]{}(\Numeral{1257}\cdots\Numeral{1260},{}\<[40]%
+\>[40]{}\Numeral{2900713}\cdots\Numeral{2900713},\Char{\char34 Chorus~before~Kreon's~Kommos\char34}),{}\<[E]%
+\\
+\>[19]{}(\Numeral{1347}\cdots\Numeral{1353},{}\<[40]%
+\>[40]{}\Numeral{2900758}\cdots\Numeral{2900760},\Char{\char34 Final~anapaests~of~the~Chorus\char34}){}\<[E]%
+\\
+\>[16]{}\mskip1.5mu]{}\<[16E]%
+\ColumnHook
+\end{hscode}\resethooks
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{15}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{15E}{@{}l@{}}%
+\column{18}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{39}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\Varid{speeches}\ConSym{::}[\mskip1.5mu (\mathsf{Section},\mathsf{Section},\mathsf{String})\mskip1.5mu]{}\<[E]%
+\\
+\>[3]{}\Varid{speeches}\mathrel{=}{}\<[15]%
+\>[15]{}[\mskip1.5mu {}\<[15E]%
+\>[18]{}(\Numeral{162}\cdots\Numeral{210},{}\<[39]%
+\>[39]{}\Numeral{2900146}\cdots\Numeral{2900157},\Char{\char34 \char92 \char92 emph\char123 Kreon:\char125 ~ἄνδρες,~τὰ~μὲν~δὴ...\char34}),{}\<[E]%
+\\
+\>[18]{}(\Numeral{249}\cdots\Numeral{277},{}\<[39]%
+\>[39]{}\Numeral{2900191}\cdots\Numeral{2900204},\Char{\char34 \char92 \char92 emph\char123 Guard:\char125 ~οὐκ~οἶδ'·~ἐκεῖ~γὰρ~οὔτε...\char34}),{}\<[E]%
+\\
+\>[18]{}(\Numeral{280}\cdots\Numeral{314},{}\<[39]%
+\>[39]{}\Numeral{2900206}\cdots\Numeral{2900220},\Char{\char34 \char92 \char92 emph\char123 Kreon:\char125 ~παῦσαι,~πρὶν~ὀργῆς...\char34}),{}\<[E]%
+\\
+\>[18]{}(\Numeral{407}\cdots\Numeral{440},{}\<[39]%
+\>[39]{}\Numeral{2900271}\cdots\Numeral{2900282},\Char{\char34 \char92 \char92 emph\char123 Guard:\char125 ~τοιοῦτον~ἦν~τὸ~πρᾶγμ'...\char34}),{}\<[E]%
+\\
+\>[18]{}(\Numeral{450}\cdots\Numeral{470},{}\<[39]%
+\>[39]{}\Numeral{2900291}\cdots\Numeral{2900302},\Char{\char34 \char92 \char92 emph\char123 Antigone:\char125 ~οὐ~γάρ~τί~μοι~Ζεὺς...\char34}),{}\<[E]%
+\\
+\>[18]{}(\Numeral{473}\cdots\Numeral{495},{}\<[39]%
+\>[39]{}\Numeral{2900305}\cdots\Numeral{2900316},\Char{\char34 \char92 \char92 emph\char123 Kreon:\char125 ~ἀλλ'~ἴσθι~τοι...\char34}),{}\<[E]%
+\\
+\>[18]{}(\Numeral{639}\cdots\Numeral{680},{}\<[39]%
+\>[39]{}\Numeral{2900410}\cdots\Numeral{2900427},\Char{\char34 \char92 \char92 emph\char123 Kreon:\char125 ~οὕτω~γὰρ,~ὦ~παῖ...\char34}),{}\<[E]%
+\\
+\>[18]{}(\Numeral{683}\cdots\Numeral{723},{}\<[39]%
+\>[39]{}\Numeral{2900429}\cdots\Numeral{2900446},\Char{\char34 \char92 \char92 emph\char123 Haimon:\char125 ~πἀτερ,~θεοὶ~φύουσιν...\char34}),{}\<[E]%
+\\
+\>[18]{}(\Numeral{891}\cdots\Numeral{928},{}\<[39]%
+\>[39]{}\Numeral{2900531}\cdots\Numeral{2900547},\Char{\char34 \char92 \char92 emph\char123 Antigone:\char125 ~ὦ~τύμβος,~ὦ~νυμφεῖον...\char34}),{}\<[E]%
+\\
+\>[18]{}(\Numeral{998}\cdots\Numeral{1032},{}\<[39]%
+\>[39]{}\Numeral{2900577}\cdots\Numeral{2900595},\Char{\char34 \char92 \char92 emph\char123 Teiresias:\char125 ~γνώσῃ,~τέχνης~σημεῖα...\char34}),{}\<[E]%
+\\
+\>[18]{}(\Numeral{1033}\cdots\Numeral{1047},{}\<[39]%
+\>[39]{}\Numeral{2900596}\cdots\Numeral{2900601},\Char{\char34 \char92 \char92 emph\char123 Kreon:\char125 ~ὦ~πρέσβυ,~πάντες...\char34}),{}\<[E]%
+\\
+\>[18]{}(\Numeral{1064}\cdots\Numeral{1090},{}\<[39]%
+\>[39]{}\Numeral{2900621}\cdots\Numeral{2900628},\Char{\char34 \char92 \char92 emph\char123 Teiresias:\char125 ~ἀλλ'~εὖ~γέ~τοι...\char34}),{}\<[E]%
+\\
+\>[18]{}(\Numeral{1155}\cdots\Numeral{1172},{}\<[39]%
+\>[39]{}\Numeral{2900655}\cdots\Numeral{2900662},\Char{\char34 \char92 \char92 emph\char123 Messenger:\char125 ~Κάδμου~πάροικοι~καὶ...\char34}),{}\<[E]%
+\\
+\>[18]{}(\Numeral{1192}\cdots\Numeral{1243},{}\<[39]%
+\>[39]{}\Numeral{2900681}\cdots\Numeral{2900703},\Char{\char34 \char92 \char92 emph\char123 Messenger:\char125 ~ἐγώ,~φίλη~δέσποινα...\char34})\mskip1.5mu]{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{14}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{14E}{@{}l@{}}%
+\column{17}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{38}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\Varid{stichos}\ConSym{::}[\mskip1.5mu (\mathsf{Section},\mathsf{Section},\mathsf{String})\mskip1.5mu]{}\<[E]%
+\\
+\>[3]{}\Varid{stichos}\mathrel{=}{}\<[14]%
+\>[14]{}[\mskip1.5mu {}\<[14E]%
+\>[17]{}(\Numeral{536}\cdots\Numeral{576},{}\<[38]%
+\>[38]{}\Numeral{2900348}\cdots\Numeral{2900385},\Char{\char34 Ismene,~Antigone~and~Kreon\char34}),{}\<[E]%
+\\
+\>[17]{}(\Numeral{728}\cdots\Numeral{757},{}\<[38]%
+\>[38]{}\Numeral{2900450}\cdots\Numeral{2900480},\Char{\char34 Haimon~and~Kreon\char34}),{}\<[E]%
+\\
+\>[17]{}(\Numeral{991}\cdots\Numeral{997},{}\<[38]%
+\>[38]{}\Numeral{2900569}\cdots\Numeral{2900576},\Char{\char34 Kreon~and~Teiresias\char34}),{}\<[E]%
+\\
+\>[17]{}(\Numeral{1047}\cdots\Numeral{1063},{}\<[38]%
+\>[38]{}\Numeral{2900602}\cdots\Numeral{2900620},\Char{\char34 Kreon~and~Teiresias\char34}),{}\<[E]%
+\\
+\>[17]{}(\Numeral{1172}\cdots\Numeral{1179},{}\<[38]%
+\>[38]{}\Numeral{2900663}\cdots\Numeral{2900674},\Char{\char34 Chorus~and~Messenger\char34}){}\<[E]%
+\\
+\>[14]{}\mskip1.5mu]{}\<[14E]%
+\ColumnHook
+\end{hscode}\resethooks
+}
+
+
+\section*{Auxiliary Functions}
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -989,12 +1374,24 @@ We compute the average \ensuremath{\FN{\omega}} of the trees contained in a file
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{11}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[3]{}\FN{average}\ConSym{::}\mathsf{Fractional}\;\Varid{n}\Rightarrow [\mskip1.5mu \Varid{n}\mskip1.5mu]\to \Varid{n}{}\<[E]%
+\>[3]{}\FN{mean}\ConSym{::}\mathsf{Fractional}\;\Varid{n}\Rightarrow [\mskip1.5mu \Varid{n}\mskip1.5mu]\to \Varid{n}{}\<[E]%
 \\
-\>[3]{}\FN{average}\;\Varid{xs}\mathrel{=}\dfrac{\FN{sum}\;\Varid{xs}}{\FN{length}\;\Varid{xs}}{}\<[E]%
+\>[3]{}\FN{mean}\mathrel{=}{}\<[11]%
+\>[11]{}\llbracket\;\FN{sum}\;\mathbin{/}\;\FN{length}\;\rrbracket{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\FN{sdev}\ConSym{::}\mathsf{Floating}\;\Varid{n}\Rightarrow [\mskip1.5mu \Varid{n}\mskip1.5mu]\to \Varid{n}{}\<[E]%
+\\
+\>[3]{}\FN{sdev}\;\Varid{xs}\mathrel{=}\sqrt{\dfrac{\FN{sum}\;\llbracket\;(\lambda \Varid{x}\to {\Varid{x}}^{\Numeral{2}})\;\llbracket\;(\VarSym{-}(\FN{mean}\;\Varid{xs})\VarSym{+})\;\Varid{xs}\;\rrbracket\;\rrbracket}{\FN{length}\;\Varid{xs}\VarSym{-}\Numeral{1}}}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+
 \ignore{
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -1007,8 +1404,16 @@ We compute the average \ensuremath{\FN{\omega}} of the trees contained in a file
 \>[3]{}\dfrac{\cdot }{\cdot }\mathrel{=}(\mathbin{/}){}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}{\Varid{x}}^{\Varid{n}}\mathrel{=}\Varid{x} \Varid{n}{}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
 }
 
+\end{appendices}
 \end{document}
 
 

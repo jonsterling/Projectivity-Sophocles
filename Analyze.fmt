@@ -66,6 +66,7 @@
 %format RangeZero = "\FN{R_\emptyset}"
 %format Node x (ts) = x "\curvearrowright" ts
 %format inRange (a) (b) = a "\in_E" b
+%format notInRange (a) (b) = a "\notin_E" b
 %format allEdges = "\FN{allEdges}"
 %format analyzeEdges = "\FN{analyzeEdges}"
 %format annotateLevels = "\FN{annotateLevels}"

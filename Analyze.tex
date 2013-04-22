@@ -371,7 +371,7 @@
 
 \usepackage{setspace,homework,stmaryrd,wasysym,url,upgreek,subfigure}
 \usepackage[margin=1cm]{caption}
-\usepackage{xytree, listings}
+\usepackage{xytree, listings, linguex, qtree}
 \usepackage[toc,page]{appendix}
 
 \definecolor{gray}{rgb}{0.4,0.4,0.4}
@@ -407,9 +407,11 @@
 
 
 \noindent
-%
-In this paper, I will show how phrase projectivity (which corresponds to lacking
-hyperbaton) is linked to register and meter in Sophocles's \emph{Antigone}, by
+\textbf{THIS IS A DRAFT. It is currently lacking a bibliography, and the
+analysis is a bit shallow currently.}
+
+In this paper, I will show how (and to what degree) phrase projectivity
+corresponds with register and meter in Sophocles's \emph{Antigone}, by
 developing a quantitative metric for projectivity and comparing it across
 lyrics, trimeters and anapaests.
 
@@ -419,16 +421,17 @@ A dependency tree encodes the head-dependent relation for a string of words,
 where arcs are drawn from heads to their dependents. We consider a phrase
 \emph{projective} when these arcs do not cross each other, and
 \emph{discontinuous} to the extent that any of the arcs intersect.
-Figure~\ref{fig:dependency-trees} illustrates the various kinds of projectivity
-violations that may occur.
+Figure~\ref{fig:dependency-trees1} is a minimal pair that demonstrates how
+hyperbaton introduces a projectivity violation; in this case, a path of
+dependency ``wraps around itself''.
 
 \begin{figure}[h!]
 \centering
 \subfigure[``Full of plentiful supplies'' (Xenophon, \emph{Anabasis} 3.5.1) is fully projective.]{
   \xytext{
-    \xybarnode{μεστῇ}\xybarconnect[6]{2}&
+    \xybarnode{μεστῇ}\xybarconnect[6](U,U){2}&
     \xybarnode{πολλῶν}&
-    \xybarnode{ἀγαθῶν}\xybarconnect[3]{-1}
+    \xybarnode{ἀγαθῶν}\xybarconnect[3](UL,U){-1}
   }
 }
 \hspace{6pt}
@@ -437,52 +440,181 @@ projectivity violation.]{
   \xytext{
     \xybarnode{πολλῶν}&
     \xybarnode{μεστὸν}\xybarconnect[6]{1}&
-    \xybarnode{ἀγαθῶν}\xybarconnect[3]{-2}
-  }
-}
-\subfigure[``And he stood over the rooftops, gaped in a circle with murderous
-spears around the seven-gated mouth, and left'' (Sophocles, \emph{Antigone}
-117--120) has five projectivity violations (note that multiple arcs may
-intersect at a point).]{
-  \xytext{
-    \xybarnode{στὰς}\xybarconnect[6]{2} &
-    \xybarnode{δ'} &
-    \xybarnode{ὑπὲρ}\xybarconnect[3]{1} &
-    \xybarnode{μελάθρων} &
-    \xybarnode{φονώσαισιν}\xybarconnect[3]{3} &
-    \xybarnode{ἀμφιχανὼν}
-      \xybarconnect[6]{1}
-      \xybarconnect[6]{2}
-      \xybarconnect[6]{4}&
-    \xybarnode{κύκλῳ} &
-    \xybarnode{λόγχαις} &
-    \xybarnode{ἐπτάπυλον} &
-    \xybarnode{στόμα}\xybarconnect[3]{-1} &
-    \xybarnode{ἔβα}
-      \xybarconnect[9]{-10}
-      \xybarconnect[9]{-9}
-      \xybarconnect[9]{-5}
+    \xybarnode{ἀγαθῶν}\xybarconnect[3](UL,U){-2}
   }
 }
 
-\caption{A dependency path wrapping around itself is a projectivity violation,
-as in (b); interlacing adjacent phrases also violate projectivity, as in
-(c). Examples (a--b) drawn from Devine~\&~Stephens.}
-\label{fig:dependency-trees}
+\caption{Examples drawn from Devine~\&~Stephens.}
+\label{fig:dependency-trees1}
 \end{figure}
 
+In addition to the above, adjacent phrases (that is, phrases at the same level
+in the tree) may interlace, causing projectivity violations. This is commonly
+introduced by Wackernagel's Law, as in Figure~\ref{fig:wackernagel}, where the
+placement of μὲν δὴ interlaces with the τὰ...πόλεος phrase.
+
+\begin{figure}[h!]
+\centering
+\xytext{
+    \xybarnode{τὰ}&
+    \xybarnode{μὲν}\xybarconnect[3](UR,U){1}&
+    \xybarnode{δὴ}&
+    \xybarnode{πόλεος}\xybarconnect[6](UL,U){-3}&
+    \xybarnode{...}&
+    \xybarnode{ὤρθησαν}\xybarconnect[9]{-2}\xybarconnect[9](UR,U){-4}
+}
+\caption{``[The gods] righted the matters of the city...'' (\emph{Antigone}
+162--163) has
+one projectivity violation, due to the μὲν δὴ falling in Wackernagel's Position.}
+\label{fig:wackernagel}
+\end{figure}
+
+We consider a violation to have occured for each and every intersection of lines
+on such a drawing; thus, the hyperbaton of one word may introduce multiple
+violations. Consider, for instance, Figure~\ref{fig:stas-tree}, in which five
+violations are brought about by the displacement of φονώσαισιν. In this way, the
+number of intersections is a good heuristic for judging the severity of
+hyperbata.
+
+\begin{figure}[h!]
+\centering
+\xytext{
+  \xybarnode{στὰς}\xybarconnect[6]{2} &
+  \xybarnode{δ'} &
+  \xybarnode{ὑπὲρ}\xybarconnect[3](UR,U){1} &
+  \xybarnode{μελάθρων} &
+  \xybarnode{φονώσαισιν} &
+  \xybarnode{ἀμφι}
+    \xybarconnect[6](U,U){3} &
+  \xybarnode{\!\!\!χανὼν}
+    \xybarconnect[6](U,U){1}
+    \xybarconnect[6](UL,U){4}&
+  \xybarnode{κύκλῳ} &
+  \xybarnode{λόγχαις}\xybarconnect[3](UL,U){-4} &
+  \xybarnode{ἑπτάπυλον} &
+  \xybarnode{στόμα}\xybarconnect[3](UL,U){-1} &
+  \xybarnode{ἔβα}
+    \xybarconnect[9](UL,UL){-11}
+    \xybarconnect[9](U,U){-10}
+    \xybarconnect[9](UR,UL){-6}
+}
+\caption{``And he stood over the rooftops, gaped in a circle with murderous
+spears around the seven-gated mouth, and left'' (\emph{Antigone}
+117--120) has six projectivity violations.}
+\label{fig:stas-tree}
+\end{figure}
+
+\subsection{Counting Violations}
+
+Drawing trees and counting intersections is time-consuming and error-prone,
+especially since the number of intersections may vary if one is not consistent
+with the relative height of arcs. It is clear, then, that a computer ought to be
+able to do the job faster and more accurately than a human, given at least the
+head-dependent relations for a corpus.
+
+The formal algorithm for counting the number of intersections is given in
+Appendix~\ref{sec:algorithm}, but I shall reproduce an informal and mostly
+nontechnical version of it here. First, we index each word in the sentence by
+its linear position, and cross-reference it with the linear position of its
+head:
+
+\begin{quote}
+\gll στὰς δ' ὑπὲρ μελάθρων φονώσαισιν ἀμφικανὼν κύκλῳ λόγχαις ἑπτάπυλον στόμα
+ἔβα\\
+      1:11  2:11 3:1 4:3 5:8 6:11 7:6 8:6 9:10 10:6 11:\_\\
+\end{quote}
+
 \noindent
-%
-In this paper, we shall use a concrete metric of projectivity, $\omega$, given
-by the following ratio:
+Next, arrange the dependencies into a tree as in Figure~\ref{fig:rose-tree}.
+Then, counting upwards from the lowest edges (i.e.\ the lines) in the tree up to
+the topmost ones, make a list of edges indexed by vertical level as in
+Table~\ref{tab:edges}.
+
+\begin{figure}
+  \Tree
+  [.11
+    [.1 [.3 4 ] ]
+    2
+    [.6
+      7
+      [.8 5 ]
+      [.10 9 ]
+    ]
+  ]
+\caption{The dependency relations arranged in a non-linear tree.}
+\label{fig:rose-tree}
+\end{figure}
+
+\begin{table}
+\centering
+  \begin{tabular}{cl}
+  \toprule
+  \emph{level} & \emph{edges}\\
+  \midrule
+  1 & \ensuremath{\Numeral{3}\leftrightarrow\Numeral{4},\Numeral{5}\leftrightarrow\Numeral{8},\Numeral{9}\leftrightarrow\Numeral{10}}\\
+  2 & \ensuremath{\Numeral{1}\leftrightarrow\Numeral{3},\Numeral{6}\leftrightarrow\Numeral{7},\Numeral{6}\leftrightarrow\Numeral{8},\Numeral{6}\leftrightarrow\Numeral{10}}\\
+  3 & \ensuremath{\Numeral{1}\leftrightarrow\Numeral{11},\Numeral{2}\leftrightarrow\Numeral{11},\Numeral{6}\leftrightarrow\Numeral{11}}
+  \\
+  \bottomrule
+  \end{tabular}
+  \caption{Edges of the tree in Figure~\ref{fig:rose-tree} arranged by level.}
+  \label{tab:edges}
+\end{table}
+
+Then, each edge in our table must be checked for violations against all the
+other edges in the table except those which are in a level higher than it. The
+level of the edge corresponds with the height at which we drew the arcs; this
+condition arises out of the fact that an arc cannot cross an arc that is above
+it, rather, only one that is below it.
+
+Next, we must figure out all the possible ways for an arc to intersect another
+at given levels. These are enumerated in detail in the function \ensuremath{\FN{checkEdges}} in
+Appendix~\ref{sec:counting}, but suffice it to say that they fall into a few
+main categories:
+
+\begin{enumerate}
+\item Both vertices of the higher edge are within the bounds of the lower edge.
+This is a double violation, as both sides of an arc will extrude through
+another.
+\item One vertex of the higher edge is within the bounds of the lower edge, and
+the other vertex is not; this vertex is allowed to be equal to the second vertex
+of the lower edge. In either case, this is a single violation, as just one
+intersection occurs.
+\item The edges are at the same level, and one vertex of the higher edge is
+neither within bounds of the other, nor equal to any of the vertices of the
+other.
+\end{enumerate}
+
+\noindent
+Using this procedure, we shall have found the edge violations which are listed
+in Table~\ref{tab:violations}, which are \ensuremath{\Numeral{6}} in total.
+
+\begin{table}
+\centering
+\begin{tabular}{ccc}
+\toprule
+\ensuremath{\Numeral{2}\leftrightarrow\Numeral{11}} & \ensuremath{\Numeral{1}\leftrightarrow\Numeral{3}} & 1\\
+\ensuremath{\Numeral{6}\leftrightarrow\Numeral{11}} & \ensuremath{\Numeral{5}\leftrightarrow\Numeral{8}} & 1\\
+\ensuremath{\Numeral{6}\leftrightarrow\Numeral{7}}  & \ensuremath{\Numeral{5}\leftrightarrow\Numeral{8}} & 2\\
+\ensuremath{\Numeral{6}\leftrightarrow\Numeral{8}}  & \ensuremath{\Numeral{5}\leftrightarrow\Numeral{8}} & 1\\
+\ensuremath{\Numeral{6}\leftrightarrow\Numeral{10}} & \ensuremath{\Numeral{5}\leftrightarrow\Numeral{8}}  & 1\\
+\midrule
+\multicolumn{3}{r}{$\FN{total}$ \ensuremath{\mathrel{=}\Numeral{6}}}\\
+\bottomrule
+\end{tabular}
+\caption{Projectivity violations which arise from the edges in
+Table~\ref{tab:edges}.}
+\label{tab:violations}
+\end{table}
+
+\subsection{\ensuremath{\FN{\omega}}: a metric of projectivity}
+
+In order for our view of a text's overall projectivity to not be skewed by its
+length, we must have a ratio. For the purposes of this paper, we shall call this
+metric $\omega$, as given by the following ratio:
 %
 \[ \omega = \frac{\text{number of violations}}{\text{number of arcs}} \]
 %
-The number of violations is simply the total number of intersections that occur
-in a tree. Appendix~\ref{sec:algorithm} deals with the development of a model
-and algorithm in the programming language Haskell to compute this quantity for a
-particular dependency tree.
-
 
 \section{The Perseus Treebank}
 %
@@ -517,31 +649,39 @@ dependency trees for which we can compute \ensuremath{\FN{\omega}}.
 \section{Projectivity in Antigone}
 
 To observe the variation of projectivity within a text, then, one may make a
-selection of sentences that have something in common (such as meter), compute
-their trees and thence derive \ensuremath{\FN{\omega}}, and then average the results. Then that
-quantity may be compared with that of other selections.
+selection of sentences that have something in common, compute their trees and
+thence derive \ensuremath{\FN{\omega}}, and then average the results. Then that quantity may be
+compared with that of other selections.
+
+I have chosen to compare projectivity in lyrics, anapaests and trimeters. Lyrics
+I have divided into two categories: choral odes and laments, whereas I divide
+trimeters into medium-to-long speeches and stichomythia.
 
 To that end, I have selected passages from \emph{Antigone} and organized them by
 type. Table~\ref{tab:lyrics} enumerates the lyric passages of the play, along
 with their computed mean \ensuremath{\FN{\omega}} values, and a final mean of means with the
 standard deviation of the set.  Table~\ref{tab:anapaests} does the same for
-anapaests. Lastly, Table~\ref{tab:dialogue} gives the data for dialogue (which
+anapaests. Lastly, Table~\ref{tab:dialogue} gives selections of dialogue (which
 is in iambic trimeters), divided between medium-to-long speeches and
 stichomythia.
 
 \begin{table}
   \centering
-  
-\begin{tabular}{clc}\toprule\textbf{Lines}&\textbf{}&\ensuremath{\FN{\omega}}\\ \midrule\ensuremath{\Numeral{100}\cdots\Numeral{154}}&\emph{First choral ode}&\ensuremath{\Numeral{0.64}}\\\ensuremath{\Numeral{332}\cdots\Numeral{375}}&\emph{Second choral ode}&\ensuremath{\Numeral{0.40}}\\\ensuremath{\Numeral{583}\cdots\Numeral{625}}&\emph{Third choral ode}&\ensuremath{\Numeral{0.44}}\\\ensuremath{\Numeral{781}\cdots\Numeral{800}}&\emph{Fourth choral ode}&\ensuremath{\Numeral{0.43}}\\\ensuremath{\Numeral{806}\cdots\Numeral{816}}&\emph{Antigone's Kommos}&\ensuremath{\Numeral{1.24}}\\\ensuremath{\Numeral{823}\cdots\Numeral{833}}&\emph{Antigone's Kommos (cntd.)}&\ensuremath{\Numeral{0.61}}\\\ensuremath{\Numeral{839}\cdots\Numeral{882}}&\emph{Antigone's Kommos (cntd.)}&\ensuremath{\Numeral{0.47}}\\\ensuremath{\Numeral{944}\cdots\Numeral{987}}&\emph{Fifth choral ode}&\ensuremath{\Numeral{0.34}}\\\ensuremath{\Numeral{1116}\cdots\Numeral{1152}}&\emph{Sixth choral ode}&\ensuremath{\Numeral{0.60}}\\\ensuremath{\Numeral{1261}\cdots\Numeral{1269}}&\emph{Kreon's Kommos}&\ensuremath{\Numeral{0.28}}\\\ensuremath{\Numeral{1283}\cdots\Numeral{1292}}&\emph{Kreon's Kommos (cntd.)}&\ensuremath{\Numeral{0.77}}\\\ensuremath{\Numeral{1306}\cdots\Numeral{1311}}&\emph{Kreon's Kommos (cntd.)}&\ensuremath{\Numeral{0.29}}\\\ensuremath{\Numeral{1317}\cdots\Numeral{1325}}&\emph{Kreon's Kommos (cntd.)}&\ensuremath{\Numeral{0.98}}\\\ensuremath{\Numeral{1239}\cdots\Numeral{1246}}&\emph{Kreon's Kommos (cntd.)}&\ensuremath{\Numeral{0.44}}\\\midrule\multicolumn{3}{r}{\ensuremath{\FN{mean}\;\FN{\omega}} = \ensuremath{\Numeral{0.57}}, \ensuremath{\FN{sdev}} = \ensuremath{\Numeral{0.27}}}\\\bottomrule\end{tabular}
-
-  \caption{Lyrics, including odes and kommoi.}
+  \subtable[Choral Odes]{
+\begin{tabular}{clc}\toprule\textbf{Lines}&\textbf{}&\ensuremath{\FN{\omega}}\\ \midrule\ensuremath{\Numeral{100}\cdots\Numeral{154}}&\emph{First choral ode}&\ensuremath{\Numeral{0.77}}\\\ensuremath{\Numeral{332}\cdots\Numeral{375}}&\emph{Second choral ode}&\ensuremath{\Numeral{0.47}}\\\ensuremath{\Numeral{583}\cdots\Numeral{625}}&\emph{Third choral ode}&\ensuremath{\Numeral{0.53}}\\\ensuremath{\Numeral{781}\cdots\Numeral{800}}&\emph{Fourth choral ode}&\ensuremath{\Numeral{0.47}}\\\ensuremath{\Numeral{944}\cdots\Numeral{987}}&\emph{Fifth choral ode}&\ensuremath{\Numeral{0.41}}\\\ensuremath{\Numeral{1116}\cdots\Numeral{1152}}&\emph{Sixth choral ode}&\ensuremath{\Numeral{0.75}}\\\midrule\multicolumn{3}{r}{\ensuremath{\FN{mean}\;\FN{\omega}} = \ensuremath{\Numeral{0.57}}, \ensuremath{\FN{sdev}} = \ensuremath{\Numeral{0.15}}}\\\bottomrule\end{tabular}
+}
+  \vspace{6pt}
+  \subtable[Laments]{
+\begin{tabular}{clc}\toprule\textbf{Lines}&\textbf{}&\ensuremath{\FN{\omega}}\\ \midrule\ensuremath{\Numeral{806}\cdots\Numeral{816}}&\emph{Antigone's Lament}&\ensuremath{\Numeral{1.29}}\\\ensuremath{\Numeral{823}\cdots\Numeral{833}}&\emph{Antigone's Lament (cntd.)}&\ensuremath{\Numeral{0.79}}\\\ensuremath{\Numeral{839}\cdots\Numeral{882}}&\emph{Antigone's Lament (cntd.)}&\ensuremath{\Numeral{0.54}}\\\ensuremath{\Numeral{1261}\cdots\Numeral{1269}}&\emph{Kreon's Lament}&\ensuremath{\Numeral{0.52}}\\\ensuremath{\Numeral{1283}\cdots\Numeral{1292}}&\emph{Kreon's Lament (cntd.)}&\ensuremath{\Numeral{0.88}}\\\ensuremath{\Numeral{1306}\cdots\Numeral{1311}}&\emph{Kreon's Lament (cntd.)}&\ensuremath{\Numeral{0.33}}\\\ensuremath{\Numeral{1317}\cdots\Numeral{1325}}&\emph{Kreon's Lament (cntd.)}&\ensuremath{\Numeral{1.08}}\\\ensuremath{\Numeral{1239}\cdots\Numeral{1246}}&\emph{Kreon's Lament (cntd.)}&\ensuremath{\Numeral{0.47}}\\\midrule\multicolumn{3}{r}{\ensuremath{\FN{mean}\;\FN{\omega}} = \ensuremath{\Numeral{0.74}}, \ensuremath{\FN{sdev}} = \ensuremath{\Numeral{0.33}}}\\\bottomrule\end{tabular}
+}
+  \caption{Lyrics}
   \label{tab:lyrics}
 \end{table}
 
 \begin{table}
   \centering
   
-\begin{tabular}{clc}\toprule\textbf{Lines}&\textbf{}&\ensuremath{\FN{\omega}}\\ \midrule\ensuremath{\Numeral{155}\cdots\Numeral{161}}&\emph{Kreon's Entrance}&\ensuremath{\Numeral{0.17}}\\\ensuremath{\Numeral{376}\cdots\Numeral{383}}&\emph{Antigone's Entrance}&\ensuremath{\Numeral{0.62}}\\\ensuremath{\Numeral{526}\cdots\Numeral{530}}&\emph{Ismene's Entrance}&\ensuremath{\Numeral{0.05}}\\\ensuremath{\Numeral{626}\cdots\Numeral{630}}&\emph{Haimon's Entrance}&\ensuremath{\Numeral{0.44}}\\\ensuremath{\Numeral{801}\cdots\Numeral{805}}&\emph{Antigone's Entrance}&\ensuremath{\Numeral{1.08}}\\\ensuremath{\Numeral{817}\cdots\Numeral{822}}&\emph{Chorus to Antigone}&\ensuremath{\Numeral{0.46}}\\\ensuremath{\Numeral{834}\cdots\Numeral{838}}&\emph{Chorus to Antigone}&\ensuremath{\Numeral{0.03}}\\\ensuremath{\Numeral{929}\cdots\Numeral{943}}&\emph{Chorus, Kreon and Antigone}&\ensuremath{\Numeral{0.25}}\\\ensuremath{\Numeral{1257}\cdots\Numeral{1260}}&\emph{Chorus before Kreon's Kommos}&\ensuremath{\Numeral{0.00}}\\\ensuremath{\Numeral{1347}\cdots\Numeral{1353}}&\emph{Final anapaests of the Chorus}&\ensuremath{\Numeral{0.36}}\\\midrule\multicolumn{3}{r}{\ensuremath{\FN{mean}\;\FN{\omega}} = \ensuremath{\Numeral{0.35}}, \ensuremath{\FN{sdev}} = \ensuremath{\Numeral{0.33}}}\\\bottomrule\end{tabular}
+\begin{tabular}{clc}\toprule\textbf{Lines}&\textbf{}&\ensuremath{\FN{\omega}}\\ \midrule\ensuremath{\Numeral{155}\cdots\Numeral{161}}&\emph{Kreon's Entrance}&\ensuremath{\Numeral{0.33}}\\\ensuremath{\Numeral{376}\cdots\Numeral{383}}&\emph{Antigone's Entrance}&\ensuremath{\Numeral{0.64}}\\\ensuremath{\Numeral{526}\cdots\Numeral{530}}&\emph{Ismene's Entrance}&\ensuremath{\Numeral{0.05}}\\\ensuremath{\Numeral{626}\cdots\Numeral{630}}&\emph{Haimon's Entrance}&\ensuremath{\Numeral{0.56}}\\\ensuremath{\Numeral{801}\cdots\Numeral{805}}&\emph{Antigone's Entrance}&\ensuremath{\Numeral{1.16}}\\\ensuremath{\Numeral{817}\cdots\Numeral{822}}&\emph{Chorus to Antigone}&\ensuremath{\Numeral{0.57}}\\\ensuremath{\Numeral{834}\cdots\Numeral{838}}&\emph{Chorus to Antigone}&\ensuremath{\Numeral{0.03}}\\\ensuremath{\Numeral{929}\cdots\Numeral{943}}&\emph{Chorus, Kreon and Antigone}&\ensuremath{\Numeral{0.27}}\\\ensuremath{\Numeral{1257}\cdots\Numeral{1260}}&\emph{Chorus before Kreon's Kommos}&\ensuremath{\Numeral{0.00}}\\\ensuremath{\Numeral{1347}\cdots\Numeral{1353}}&\emph{Final anapaests of the Chorus}&\ensuremath{\Numeral{0.36}}\\\midrule\multicolumn{3}{r}{\ensuremath{\FN{mean}\;\FN{\omega}} = \ensuremath{\Numeral{0.40}}, \ensuremath{\FN{sdev}} = \ensuremath{\Numeral{0.35}}}\\\bottomrule\end{tabular}
 
   \caption{Anapaests.}
   \label{tab:anapaests}
@@ -550,11 +690,11 @@ stichomythia.
 \begin{table}
   \centering
   \subfigure[Speeches and Dialogue]{
-\begin{tabular}{clc}\toprule\textbf{Lines}&\textbf{}&\ensuremath{\FN{\omega}}\\ \midrule\ensuremath{\Numeral{162}\cdots\Numeral{210}}&\emph{\emph{Kreon:} ἄνδρες, τὰ μὲν δὴ...}&\ensuremath{\Numeral{0.25}}\\\ensuremath{\Numeral{249}\cdots\Numeral{277}}&\emph{\emph{Guard:} οὐκ οἶδ'· ἐκεῖ γὰρ οὔτε...}&\ensuremath{\Numeral{0.34}}\\\ensuremath{\Numeral{280}\cdots\Numeral{314}}&\emph{\emph{Kreon:} παῦσαι, πρὶν ὀργῆς...}&\ensuremath{\Numeral{0.39}}\\\ensuremath{\Numeral{407}\cdots\Numeral{440}}&\emph{\emph{Guard:} τοιοῦτον ἦν τὸ πρᾶγμ'...}&\ensuremath{\Numeral{0.40}}\\\ensuremath{\Numeral{450}\cdots\Numeral{470}}&\emph{\emph{Antigone:} οὐ γάρ τί μοι Ζεὺς...}&\ensuremath{\Numeral{0.39}}\\\ensuremath{\Numeral{473}\cdots\Numeral{495}}&\emph{\emph{Kreon:} ἀλλ' ἴσθι τοι...}&\ensuremath{\Numeral{0.49}}\\\ensuremath{\Numeral{639}\cdots\Numeral{680}}&\emph{\emph{Kreon:} οὕτω γὰρ, ὦ παῖ...}&\ensuremath{\Numeral{0.44}}\\\ensuremath{\Numeral{683}\cdots\Numeral{723}}&\emph{\emph{Haimon:} πἀτερ, θεοὶ φύουσιν...}&\ensuremath{\Numeral{0.38}}\\\ensuremath{\Numeral{891}\cdots\Numeral{928}}&\emph{\emph{Antigone:} ὦ τύμβος, ὦ νυμφεῖον...}&\ensuremath{\Numeral{0.31}}\\\ensuremath{\Numeral{998}\cdots\Numeral{1032}}&\emph{\emph{Teiresias:} γνώσῃ, τέχνης σημεῖα...}&\ensuremath{\Numeral{0.35}}\\\ensuremath{\Numeral{1033}\cdots\Numeral{1047}}&\emph{\emph{Kreon:} ὦ πρέσβυ, πάντες...}&\ensuremath{\Numeral{0.18}}\\\ensuremath{\Numeral{1064}\cdots\Numeral{1090}}&\emph{\emph{Teiresias:} ἀλλ' εὖ γέ τοι...}&\ensuremath{\Numeral{0.64}}\\\ensuremath{\Numeral{1155}\cdots\Numeral{1172}}&\emph{\emph{Messenger:} Κάδμου πάροικοι καὶ...}&\ensuremath{\Numeral{0.35}}\\\ensuremath{\Numeral{1192}\cdots\Numeral{1243}}&\emph{\emph{Messenger:} ἐγώ, φίλη δέσποινα...}&\ensuremath{\Numeral{0.27}}\\\midrule\multicolumn{3}{r}{\ensuremath{\FN{mean}\;\FN{\omega}} = \ensuremath{\Numeral{0.37}}, \ensuremath{\FN{sdev}} = \ensuremath{\Numeral{0.11}}}\\\bottomrule\end{tabular}
+\begin{tabular}{clc}\toprule\textbf{Lines}&\textbf{}&\ensuremath{\FN{\omega}}\\ \midrule\ensuremath{\Numeral{162}\cdots\Numeral{210}}&\emph{\emph{Kreon:} ἄνδρες, τὰ μὲν δὴ...}&\ensuremath{\Numeral{0.31}}\\\ensuremath{\Numeral{249}\cdots\Numeral{277}}&\emph{\emph{Guard:} οὐκ οἶδ'· ἐκεῖ γὰρ οὔτε...}&\ensuremath{\Numeral{0.42}}\\\ensuremath{\Numeral{280}\cdots\Numeral{314}}&\emph{\emph{Kreon:} παῦσαι, πρὶν ὀργῆς...}&\ensuremath{\Numeral{0.45}}\\\ensuremath{\Numeral{407}\cdots\Numeral{440}}&\emph{\emph{Guard:} τοιοῦτον ἦν τὸ πρᾶγμ'...}&\ensuremath{\Numeral{0.50}}\\\ensuremath{\Numeral{450}\cdots\Numeral{470}}&\emph{\emph{Antigone:} οὐ γάρ τί μοι Ζεὺς...}&\ensuremath{\Numeral{0.43}}\\\ensuremath{\Numeral{473}\cdots\Numeral{495}}&\emph{\emph{Kreon:} ἀλλ' ἴσθι τοι...}&\ensuremath{\Numeral{0.56}}\\\ensuremath{\Numeral{639}\cdots\Numeral{680}}&\emph{\emph{Kreon:} οὕτω γὰρ, ὦ παῖ...}&\ensuremath{\Numeral{0.50}}\\\ensuremath{\Numeral{683}\cdots\Numeral{723}}&\emph{\emph{Haimon:} πἀτερ, θεοὶ φύουσιν...}&\ensuremath{\Numeral{0.43}}\\\ensuremath{\Numeral{891}\cdots\Numeral{928}}&\emph{\emph{Antigone:} ὦ τύμβος, ὦ νυμφεῖον...}&\ensuremath{\Numeral{0.37}}\\\ensuremath{\Numeral{998}\cdots\Numeral{1032}}&\emph{\emph{Teiresias:} γνώσῃ, τέχνης σημεῖα...}&\ensuremath{\Numeral{0.42}}\\\ensuremath{\Numeral{1033}\cdots\Numeral{1047}}&\emph{\emph{Kreon:} ὦ πρέσβυ, πάντες...}&\ensuremath{\Numeral{0.22}}\\\ensuremath{\Numeral{1064}\cdots\Numeral{1090}}&\emph{\emph{Teiresias:} ἀλλ' εὖ γέ τοι...}&\ensuremath{\Numeral{0.77}}\\\ensuremath{\Numeral{1155}\cdots\Numeral{1172}}&\emph{\emph{Messenger:} Κάδμου πάροικοι καὶ...}&\ensuremath{\Numeral{0.40}}\\\ensuremath{\Numeral{1192}\cdots\Numeral{1243}}&\emph{\emph{Messenger:} ἐγώ, φίλη δέσποινα...}&\ensuremath{\Numeral{0.34}}\\\midrule\multicolumn{3}{r}{\ensuremath{\FN{mean}\;\FN{\omega}} = \ensuremath{\Numeral{0.44}}, \ensuremath{\FN{sdev}} = \ensuremath{\Numeral{0.13}}}\\\bottomrule\end{tabular}
 }
   \vspace{6pt}
   \subfigure[Stichomythia]{
-\begin{tabular}{clc}\toprule\textbf{Lines}&\textbf{}&\ensuremath{\FN{\omega}}\\ \midrule\ensuremath{\Numeral{536}\cdots\Numeral{576}}&\emph{Ismene, Antigone and Kreon}&\ensuremath{\Numeral{0.23}}\\\ensuremath{\Numeral{728}\cdots\Numeral{757}}&\emph{Haimon and Kreon}&\ensuremath{\Numeral{0.27}}\\\ensuremath{\Numeral{991}\cdots\Numeral{997}}&\emph{Kreon and Teiresias}&\ensuremath{\Numeral{0.53}}\\\ensuremath{\Numeral{1047}\cdots\Numeral{1063}}&\emph{Kreon and Teiresias}&\ensuremath{\Numeral{0.09}}\\\ensuremath{\Numeral{1172}\cdots\Numeral{1179}}&\emph{Chorus and Messenger}&\ensuremath{\Numeral{0.16}}\\\midrule\multicolumn{3}{r}{\ensuremath{\FN{mean}\;\FN{\omega}} = \ensuremath{\Numeral{0.26}}, \ensuremath{\FN{sdev}} = \ensuremath{\Numeral{0.17}}}\\\bottomrule\end{tabular}
+\begin{tabular}{clc}\toprule\textbf{Lines}&\textbf{}&\ensuremath{\FN{\omega}}\\ \midrule\ensuremath{\Numeral{536}\cdots\Numeral{576}}&\emph{Ismene, Antigone and Kreon}&\ensuremath{\Numeral{0.26}}\\\ensuremath{\Numeral{728}\cdots\Numeral{757}}&\emph{Haimon and Kreon}&\ensuremath{\Numeral{0.33}}\\\ensuremath{\Numeral{991}\cdots\Numeral{997}}&\emph{Kreon and Teiresias}&\ensuremath{\Numeral{0.63}}\\\ensuremath{\Numeral{1047}\cdots\Numeral{1063}}&\emph{Kreon and Teiresias}&\ensuremath{\Numeral{0.10}}\\\ensuremath{\Numeral{1172}\cdots\Numeral{1179}}&\emph{Chorus and Messenger}&\ensuremath{\Numeral{0.21}}\\\midrule\multicolumn{3}{r}{\ensuremath{\FN{mean}\;\FN{\omega}} = \ensuremath{\Numeral{0.31}}, \ensuremath{\FN{sdev}} = \ensuremath{\Numeral{0.20}}}\\\bottomrule\end{tabular}
 }
   \caption{Dialogue (Trimeters)}
   \label{tab:dialogue}
@@ -562,44 +702,70 @@ stichomythia.
 
 As can be seen from the data, lyrics have the highest degree of
 non-projectivity, followed by speeches, then anapaests, and then stichomythia.
-However, the standard deviation of the \ensuremath{\FN{\omega}} for anapaestic passages is so
-high that it may be difficult to say much of interest about them at all in
-respect to the questions that we are considering. So, let us put the anapaests
-aside for the moment and deal exclusively with lyrics, speeches and
-stichomythias.
+To try and understand why this is the case, it will be useful to discuss Greek
+hyperbaton in my general terms.
 
-Whereas in prose, hyperbaton corresponds to \emph{strong
-focus}, which ``does not merely fill a gap in the addressee's knowledge but
-additionally evokes and excludes alternatives'' (Devine~\&~Stephens 303),
-hyperbaton in verse only entails weak focus, which emphasizes but does not
-exclude (ibid.\ 107).
+Whereas in prose, hyperbaton corresponds to \emph{strong focus}, which ``does
+not merely fill a gap in the addressee's knowledge but additionally evokes and
+excludes alternatives'' (Devine~\&~Stephens 303), hyperbaton in verse only
+entails weak focus, which emphasizes but does not exclude (ibid.\ 107).
 
-As a result, hyperbaton in verse may be used to evoke a kind of
-elevated style without incidentally entailing more emphasis and other pragmatic
-effects than intended. And so it should not be surprising that lyric passages,
-which reside in the most poetic and elevated register present in tragic diction,
-should have proved in \emph{Antigone} to have the highest proportion of
-projectivity violations.
+As a result, hyperbaton in verse may be used to evoke a kind of elevated style
+without incidentally entailing more emphasis and other pragmatic effects than
+intended. And so it should not be surprising that lyric passages, which reside
+in the most poetic and elevated register present in tragic diction, should have
+proved in \emph{Antigone} to have the highest proportion of projectivity
+violations.
 
+Within the lyric passages, the laments appear to have consistently higher
+\ensuremath{\FN{\omega}}s than the choral odes, which may stem from their being much more emotive
+and personal in nature. It should be noted that, whilst the odes are very
+tightly centered around the mean, there is a fair degree of
+variation in the \ensuremath{\FN{\omega}} for the laments.
 
+Likewise, the anapaests vary so wildly in their \ensuremath{\FN{\omega}}s that it may be difficult
+to say very much about them that is relevant to the questions we are
+considering.
 
+As for dialog, longer-form speeches are tightly wrapped around their mean, with
+stichomythias varying a bit more. Speeches are a somewhat less projective than
+the stichmythias, being typically more eloquent and long-winded than their
+argumentative, choppy counterparts.
 
+So far, the most surprising thing about the data is the degree to which certain
+passages vary in \ensuremath{\FN{\omega}} (or, if you like, the degree to which some passages
+\emph{don't} vary in \ensuremath{\FN{\omega}}). The data draw us, then, to the following
+conclusions:
 
+\begin{enumerate}
+\item Non-projectivity varies within a single metrical type: that is,
+though lyric passages are in general less projective than anything else, some
+laments reach a degree of non-projectivity that exceeds the most elliptical
+odes in \emph{Antigone}. Further, within the iambic trimeters, speeches are less
+projective than stichomythias.
 
+\item Certain registers seem to be more conventionalized with respect to frequency
+of hyperbaton than others; that is, choral odes and speeches do not vary greatly
+amongst themselves, but laments and anapaests do.
+\end{enumerate}
 
-
-
-
+\noindent
+It would then seem that meter itself is not a primary factor for predicting
+incidence of hyperbaton, but rather a secondary one only. That is to say, we
+know for a fact that passages in lyric meters have greater \ensuremath{\FN{\omega}} than passages
+in other meters. Yet, the variation of \ensuremath{\FN{\omega}} within that very meter indicates
+that there is some other factor involved, which very likely has to do with
+register along two different dimensions, which is to say, relative dignity and
+emotive force.
 
 \newpage
 \begin{appendices}
 \section{Algorithm \& Data Representation}
 \label{sec:algorithm}
 
-Dependency trees are a recursive data structure
-with a head node, which may have any number of arcs drawn to further trees (this
-is called a \emph{rose tree}). We represent them as a Haskell data-type as
-follows:
+Dependency trees are a recursive data structure with a head node, which may have
+any number of arcs drawn to further trees (this is called a \emph{rose tree}).
+We represent them as a Haskell data-type as follows:
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -644,6 +810,8 @@ vertices to be an \ensuremath{\mathsf{Edge}}, which we shall write as follows:
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
 \>[3]{}\mathkw{deriving}\;\mathkw{instance}\;\mathsf{Show}\;\VarSym{\alpha}\Rightarrow \mathsf{Show}\;(\mathsf{Edge}\;\VarSym{\alpha}){}\<[E]%
+\\
+\>[3]{}\mathkw{deriving}\;\mathkw{instance}\;\mathsf{Show}\;\mathsf{Sentence}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 }
@@ -745,6 +913,8 @@ complete tree structure:
 \end{hscode}\resethooks
 
 \subsection{Counting Violations: Computing \ensuremath{\FN{\omega}}}
+\label{sec:counting}
+
 Violations are given as an integer tally:
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -830,49 +1000,51 @@ Then, we fold up the tree into a list of edges and levels:
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[3]{}\FN{edgeWithRange}\ConSym{::}(\mathsf{Ord}\;\VarSym{\alpha})\Rightarrow [\mskip1.5mu \VarSym{\alpha}\mskip1.5mu]\to \mathsf{Edge}\;\VarSym{\alpha}{}\<[E]%
+\>[3]{}\FN{edgeWithRange}\ConSym{::}\mathsf{Ord}\;\VarSym{\alpha}\Rightarrow [\mskip1.5mu \VarSym{\alpha}\mskip1.5mu]\to \mathsf{Edge}\;\VarSym{\alpha}{}\<[E]%
 \\
 \>[3]{}\FN{edgeWithRange}\;\Varid{xs}\mathrel{=}\FN{minimum}\;\Varid{xs}\leftrightarrow\FN{maximum}\;\Varid{xs}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 A handy way to think of edges annotated by levels is as a representation of the
 arc itself, where the vertices of the edge are the endpoints, and the level is the
-height of the arc.
-
-If one end of an arc is between the ends of another, then there is a single
-intersection. If one arc is higher than another and the latter is in between the
-endpoints of the former, there is no violation; but if they are at the same
-level, or if the latter is higher than the former, there is a double
-intersection. Otherwise, there is no intersection.
+height of the arc. Now, we can count the violations that occur between two arcs.
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{5}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{48}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{54}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
 \>[3]{}\FN{checkEdges}\ConSym{::}\mathsf{Ord}\;\VarSym{\alpha}\Rightarrow (\mathsf{Level},\mathsf{Edge}\;\VarSym{\alpha})\to (\mathsf{Level},\mathsf{Edge}\;\VarSym{\alpha})\to \mathsf{Violations}{}\<[E]%
 \\
 \>[3]{}\FN{checkEdges}\;(\Varid{l},\Varid{xy}\mathord{@}(\Varid{x}\leftrightarrow\Varid{y}))\;(\Varid{l'},\Varid{uv}\mathord{@}(\Varid{u}\leftrightarrow\Varid{v})){}\<[E]%
 \\
 \>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\mid \Varid{y}\in_E\Varid{uv}\mathrel{\wedge}\Varid{u}\in_E\Varid{xy}{}\<[48]%
-\>[48]{}\mathrel{=}\Numeral{1}{}\<[E]%
+\>[5]{}\mid \Varid{x}\in_E\Varid{uv}\mathrel{\wedge}((\Varid{y}\geq \Varid{v}\mathrel{\wedge}\Varid{l}\VarSym{>}\Varid{l'})\mathrel{\vee}\Varid{y}\VarSym{>}\Varid{v}){}\<[54]%
+\>[54]{}\mathrel{=}\Numeral{1}{}\<[E]%
 \\
 \>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\mid \Varid{x}\in_E\Varid{uv}\mathrel{\wedge}\Varid{v}\in_E\Varid{xy}{}\<[48]%
-\>[48]{}\mathrel{=}\Numeral{1}{}\<[E]%
+\>[5]{}\mid \Varid{y}\in_E\Varid{uv}\mathrel{\wedge}((\Varid{x}\leq \Varid{u}\mathrel{\wedge}\Varid{l}\VarSym{>}\Varid{l'})\mathrel{\vee}\Varid{u}\VarSym{<}\Varid{u}){}\<[54]%
+\>[54]{}\mathrel{=}\Numeral{1}{}\<[E]%
 \\
 \>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\mid \Varid{x}\in_E\Varid{uv}\mathrel{\wedge}\Varid{y}\in_E\Varid{uv}\mathrel{\wedge}\Varid{l}\geq \Varid{l'}{}\<[48]%
-\>[48]{}\mathrel{=}\Numeral{2}{}\<[E]%
+\>[5]{}\mid \Varid{u}\in_E\Varid{xy}\mathrel{\wedge}((\Varid{v}\geq \Varid{y}\mathrel{\wedge}\Varid{l}\VarSym{<}\Varid{l'})\mathrel{\vee}\Varid{v}\VarSym{>}\Varid{y}){}\<[54]%
+\>[54]{}\mathrel{=}\Numeral{1}{}\<[E]%
 \\
 \>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\mid \Varid{u}\in_E\Varid{xy}\mathrel{\wedge}\Varid{v}\in_E\Varid{xy}\mathrel{\wedge}\Varid{l}\leq \Varid{l'}{}\<[48]%
-\>[48]{}\mathrel{=}\Numeral{2}{}\<[E]%
+\>[5]{}\mid \Varid{v}\in_E\Varid{xy}\mathrel{\wedge}((\Varid{u}\leq \Varid{x}\mathrel{\wedge}\Varid{l}\VarSym{<}\Varid{l'})\mathrel{\vee}\Varid{u}\VarSym{<}\Varid{x}){}\<[54]%
+\>[54]{}\mathrel{=}\Numeral{1}{}\<[E]%
 \\
 \>[3]{}\hsindent{2}{}\<[5]%
-\>[5]{}\mid \Varid{otherwise}{}\<[48]%
-\>[48]{}\mathrel{=}\Numeral{0}{}\<[E]%
+\>[5]{}\mid \Varid{x}\in_E\Varid{uv}\mathrel{\wedge}\Varid{y}\in_E\Varid{uv}\mathrel{\wedge}\Varid{l}\geq \Varid{l'}{}\<[54]%
+\>[54]{}\mathrel{=}\Numeral{2}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\mid \Varid{u}\in_E\Varid{xy}\mathrel{\wedge}\Varid{v}\in_E\Varid{xy}\mathrel{\wedge}\Varid{l}\leq \Varid{l'}{}\<[54]%
+\>[54]{}\mathrel{=}\Numeral{2}{}\<[E]%
+\\
+\>[3]{}\hsindent{2}{}\<[5]%
+\>[5]{}\mid \Varid{otherwise}{}\<[54]%
+\>[54]{}\mathrel{=}\Numeral{0}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 We determine whether a vertex is in the bounds of an edge using \ensuremath{\cdot \in_E\cdot }.
@@ -896,6 +1068,16 @@ We determine whether a vertex is in the bounds of an edge using \ensuremath{\cdo
 \>[42]{}[\mskip1.5mu \Varid{x},\Varid{y}\mskip1.5mu]{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
+\ignore{
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\Varid{x}\notin_E\Varid{xy}\mathrel{=}\neg \;(\Varid{x}\in_E\Varid{xy}){}\<[E]%
+\ColumnHook
+\end{hscode}\resethooks
+}
+%
 We can now use what we've built to count the intersections that occur in a
 collection of edges. This is done by adding up the result of \ensuremath{\FN{checkEdges}} of the
 combination of each edge with the subset of edges which are at or below its
@@ -936,12 +1118,11 @@ Finally, \ensuremath{\FN{\omega}} is computed for a tree as follows:
 \ColumnHook
 \end{hscode}\resethooks
 
-\newpage
 \section{Parsing the Perseus Treebank}
 \label{sec:parsing}
 
 \noindent
-We can express the general shape of such a document as follows:
+We can express the general shape of a treebank document as follows:
 
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -949,7 +1130,7 @@ We can express the general shape of such a document as follows:
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
 \>[3]{}\mathkw{type}\;\mathsf{Document}\mathrel{=}[\mskip1.5mu \mathsf{Sentence}\mskip1.5mu]{}\<[E]%
 \\
-\>[3]{}\mathkw{data}\;\mathsf{Sentence}\mathrel{=}\mathsf{Sentence}\;\{\mskip1.5mu \FN{sentenceId}\ConSym{::}\mathbb{Z},\FN{sentenceEdges}\ConSym{::}[\mskip1.5mu \mathsf{Edge}\;\mathbb{Z}\mskip1.5mu]\mskip1.5mu\}\;\mathkw{deriving}\;\mathsf{Show}{}\<[E]%
+\>[3]{}\mathkw{data}\;\mathsf{Sentence}\mathrel{=}\mathsf{Sentence}\;\{\mskip1.5mu \FN{sentenceId}\ConSym{::}\mathbb{Z},\FN{sentenceEdges}\ConSym{::}[\mskip1.5mu \mathsf{Edge}\;\mathbb{Z}\mskip1.5mu]\mskip1.5mu\}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 To construct a \ensuremath{\mathsf{Document}} from the contents of an XML file, it suffices to
@@ -1165,58 +1346,80 @@ Then, the entire document can be cut down into smaller documents by section:
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{13}{@{}>{\hspre}c<{\hspost}@{}}%
-\column{13E}{@{}l@{}}%
-\column{16}{@{}>{\hspre}l<{\hspost}@{}}%
-\column{37}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{11}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{11E}{@{}l@{}}%
+\column{14}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{35}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[3]{}\Varid{lyrics}\ConSym{::}[\mskip1.5mu (\mathsf{Section},\mathsf{Section},\mathsf{String})\mskip1.5mu]{}\<[E]%
+\>[3]{}\Varid{odes}\ConSym{::}[\mskip1.5mu (\mathsf{Section},\mathsf{Section},\mathsf{String})\mskip1.5mu]{}\<[E]%
 \\
-\>[3]{}\Varid{lyrics}\mathrel{=}{}\<[13]%
-\>[13]{}[\mskip1.5mu {}\<[13E]%
-\>[16]{}(\Numeral{100}\cdots\Numeral{154},{}\<[37]%
-\>[37]{}\Numeral{2900135}\cdots\Numeral{2900144},\Char{\char34 First~choral~ode\char34}),{}\<[E]%
+\>[3]{}\Varid{odes}\mathrel{=}{}\<[11]%
+\>[11]{}[\mskip1.5mu {}\<[11E]%
+\>[14]{}(\Numeral{100}\cdots\Numeral{154},{}\<[35]%
+\>[35]{}\Numeral{2900135}\cdots\Numeral{2900144},\Char{\char34 First~choral~ode\char34}),{}\<[E]%
 \\
-\>[16]{}(\Numeral{332}\cdots\Numeral{375},{}\<[37]%
-\>[37]{}\Numeral{2900236}\cdots\Numeral{2900247},\Char{\char34 Second~choral~ode\char34}),{}\<[E]%
+\>[14]{}(\Numeral{332}\cdots\Numeral{375},{}\<[35]%
+\>[35]{}\Numeral{2900236}\cdots\Numeral{2900247},\Char{\char34 Second~choral~ode\char34}),{}\<[E]%
 \\
-\>[16]{}(\Numeral{583}\cdots\Numeral{625},{}\<[37]%
-\>[37]{}\Numeral{2900390}\cdots\Numeral{2900402},\Char{\char34 Third~choral~ode\char34}),{}\<[E]%
+\>[14]{}(\Numeral{583}\cdots\Numeral{625},{}\<[35]%
+\>[35]{}\Numeral{2900390}\cdots\Numeral{2900402},\Char{\char34 Third~choral~ode\char34}),{}\<[E]%
 \\
-\>[16]{}(\Numeral{781}\cdots\Numeral{800},{}\<[37]%
-\>[37]{}\Numeral{2900496}\cdots\Numeral{2900501},\Char{\char34 Fourth~choral~ode\char34}),{}\<[E]%
+\>[14]{}(\Numeral{781}\cdots\Numeral{800},{}\<[35]%
+\>[35]{}\Numeral{2900496}\cdots\Numeral{2900501},\Char{\char34 Fourth~choral~ode\char34}),{}\<[E]%
 \\
-\>[16]{}(\Numeral{806}\cdots\Numeral{816},{}\<[37]%
-\>[37]{}\Numeral{2900503}\cdots\Numeral{2900504},\Char{\char34 Antigone's~Kommos\char34}),{}\<[E]%
+\>[14]{}(\Numeral{944}\cdots\Numeral{987},{}\<[35]%
+\>[35]{}\Numeral{2900554}\cdots\Numeral{2900566},\Char{\char34 Fifth~choral~ode\char34}),{}\<[E]%
 \\
-\>[16]{}(\Numeral{823}\cdots\Numeral{833},{}\<[37]%
-\>[37]{}\Numeral{2900506}\cdots\Numeral{2900507},\Char{\char34 Antigone's~Kommos~(cntd.)\char34}),{}\<[E]%
+\>[14]{}(\Numeral{1116}\cdots\Numeral{1152},{}\<[35]%
+\>[35]{}\Numeral{2900649}\cdots\Numeral{2900654},\Char{\char34 Sixth~choral~ode\char34}){}\<[E]%
 \\
-\>[16]{}(\Numeral{839}\cdots\Numeral{882},{}\<[37]%
-\>[37]{}\Numeral{2900511}\cdots\Numeral{2900526},\Char{\char34 Antigone's~Kommos~(cntd.)\char34}),{}\<[E]%
+\>[11]{}\mskip1.5mu]{}\<[11E]%
+\ColumnHook
+\end{hscode}\resethooks
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{12}{@{}>{\hspre}c<{\hspost}@{}}%
+\column{12E}{@{}l@{}}%
+\column{14}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{35}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
+\>[3]{}\Varid{kommoi}\mathrel{=}[\mskip1.5mu {}\<[E]%
 \\
-\>[16]{}(\Numeral{944}\cdots\Numeral{987},{}\<[37]%
-\>[37]{}\Numeral{2900554}\cdots\Numeral{2900566},\Char{\char34 Fifth~choral~ode\char34}),{}\<[E]%
+\>[3]{}\hsindent{11}{}\<[14]%
+\>[14]{}(\Numeral{806}\cdots\Numeral{816},{}\<[35]%
+\>[35]{}\Numeral{2900503}\cdots\Numeral{2900504},\Char{\char34 Antigone's~Lament\char34}),{}\<[E]%
 \\
-\>[16]{}(\Numeral{1116}\cdots\Numeral{1152},{}\<[37]%
-\>[37]{}\Numeral{2900649}\cdots\Numeral{2900654},\Char{\char34 Sixth~choral~ode\char34}),{}\<[E]%
+\>[3]{}\hsindent{11}{}\<[14]%
+\>[14]{}(\Numeral{823}\cdots\Numeral{833},{}\<[35]%
+\>[35]{}\Numeral{2900506}\cdots\Numeral{2900507},\Char{\char34 Antigone's~Lament~(cntd.)\char34}),{}\<[E]%
 \\
-\>[16]{}(\Numeral{1261}\cdots\Numeral{1269},{}\<[37]%
-\>[37]{}\Numeral{2900714}\cdots\Numeral{2900716},\Char{\char34 Kreon's~Kommos\char34}),{}\<[E]%
+\>[3]{}\hsindent{11}{}\<[14]%
+\>[14]{}(\Numeral{839}\cdots\Numeral{882},{}\<[35]%
+\>[35]{}\Numeral{2900511}\cdots\Numeral{2900526},\Char{\char34 Antigone's~Lament~(cntd.)\char34}),{}\<[E]%
 \\
-\>[16]{}(\Numeral{1283}\cdots\Numeral{1292},{}\<[37]%
-\>[37]{}\Numeral{2900725}\cdots\Numeral{2900729},\Char{\char34 Kreon's~Kommos~(cntd.)\char34}),{}\<[E]%
+\>[3]{}\hsindent{11}{}\<[14]%
+\>[14]{}(\Numeral{1261}\cdots\Numeral{1269},{}\<[35]%
+\>[35]{}\Numeral{2900714}\cdots\Numeral{2900716},\Char{\char34 Kreon's~Lament\char34}),{}\<[E]%
 \\
-\>[16]{}(\Numeral{1306}\cdots\Numeral{1311},{}\<[37]%
-\>[37]{}\Numeral{2900737}\cdots\Numeral{2900739},\Char{\char34 Kreon's~Kommos~(cntd.)\char34}),{}\<[E]%
+\>[3]{}\hsindent{11}{}\<[14]%
+\>[14]{}(\Numeral{1283}\cdots\Numeral{1292},{}\<[35]%
+\>[35]{}\Numeral{2900725}\cdots\Numeral{2900729},\Char{\char34 Kreon's~Lament~(cntd.)\char34}),{}\<[E]%
 \\
-\>[16]{}(\Numeral{1317}\cdots\Numeral{1325},{}\<[37]%
-\>[37]{}\Numeral{2900743}\cdots\Numeral{2900745},\Char{\char34 Kreon's~Kommos~(cntd.)\char34}),{}\<[E]%
+\>[3]{}\hsindent{11}{}\<[14]%
+\>[14]{}(\Numeral{1306}\cdots\Numeral{1311},{}\<[35]%
+\>[35]{}\Numeral{2900737}\cdots\Numeral{2900739},\Char{\char34 Kreon's~Lament~(cntd.)\char34}),{}\<[E]%
 \\
-\>[16]{}(\Numeral{1239}\cdots\Numeral{1246},{}\<[37]%
-\>[37]{}\Numeral{2900756}\cdots\Numeral{2900767},\Char{\char34 Kreon's~Kommos~(cntd.)\char34}){}\<[E]%
+\>[3]{}\hsindent{11}{}\<[14]%
+\>[14]{}(\Numeral{1317}\cdots\Numeral{1325},{}\<[35]%
+\>[35]{}\Numeral{2900743}\cdots\Numeral{2900745},\Char{\char34 Kreon's~Lament~(cntd.)\char34}),{}\<[E]%
 \\
-\>[13]{}\mskip1.5mu]{}\<[13E]%
+\>[3]{}\hsindent{11}{}\<[14]%
+\>[14]{}(\Numeral{1239}\cdots\Numeral{1246},{}\<[35]%
+\>[35]{}\Numeral{2900756}\cdots\Numeral{2900767},\Char{\char34 Kreon's~Lament~(cntd.)\char34}){}\<[E]%
+\\
+\>[3]{}\hsindent{9}{}\<[12]%
+\>[12]{}\mskip1.5mu]{}\<[12E]%
 \ColumnHook
 \end{hscode}\resethooks
 \begin{hscode}\SaveRestoreHook

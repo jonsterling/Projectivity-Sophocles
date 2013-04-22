@@ -7,7 +7,7 @@
 
 \usepackage{setspace,homework,stmaryrd,wasysym,url,upgreek,subfigure}
 \usepackage[margin=1cm]{caption}
-\usepackage{xytree, listings}
+\usepackage{xytree, listings, linguex, qtree}
 \usepackage[toc,page]{appendix}
 
 \definecolor{gray}{rgb}{0.4,0.4,0.4}
@@ -63,12 +63,15 @@
 > import Text.Printf
 > import Prelude hiding (maximum, minimum, foldl, notElem, elem, concat, sum)
 
+
 %endif
 
 \noindent
-%
-In this paper, I will show how phrase projectivity (which corresponds to lacking
-hyperbaton) is linked to register and meter in Sophocles's \emph{Antigone}, by
+\textbf{THIS IS A DRAFT. It is currently lacking a bibliography, and the
+analysis is a bit shallow currently.}
+
+In this paper, I will show how (and to what degree) phrase projectivity
+corresponds with register and meter in Sophocles's \emph{Antigone}, by
 developing a quantitative metric for projectivity and comparing it across
 lyrics, trimeters and anapaests.
 
@@ -78,16 +81,17 @@ A dependency tree encodes the head-dependent relation for a string of words,
 where arcs are drawn from heads to their dependents. We consider a phrase
 \emph{projective} when these arcs do not cross each other, and
 \emph{discontinuous} to the extent that any of the arcs intersect.
-Figure~\ref{fig:dependency-trees} illustrates the various kinds of projectivity
-violations that may occur.
+Figure~\ref{fig:dependency-trees1} is a minimal pair that demonstrates how
+hyperbaton introduces a projectivity violation; in this case, a path of
+dependency ``wraps around itself''.
 
 \begin{figure}[h!]
 \centering
 \subfigure[``Full of plentiful supplies'' (Xenophon, \emph{Anabasis} 3.5.1) is fully projective.]{
   \xytext{
-    \xybarnode{μεστῇ}\xybarconnect[6]{2}&
+    \xybarnode{μεστῇ}\xybarconnect[6](U,U){2}&
     \xybarnode{πολλῶν}&
-    \xybarnode{ἀγαθῶν}\xybarconnect[3]{-1}
+    \xybarnode{ἀγαθῶν}\xybarconnect[3](UL,U){-1}
   }
 }
 \hspace{6pt}
@@ -96,52 +100,181 @@ projectivity violation.]{
   \xytext{
     \xybarnode{πολλῶν}&
     \xybarnode{μεστὸν}\xybarconnect[6]{1}&
-    \xybarnode{ἀγαθῶν}\xybarconnect[3]{-2}
-  }
-}
-\subfigure[``And he stood over the rooftops, gaped in a circle with murderous
-spears around the seven-gated mouth, and left'' (Sophocles, \emph{Antigone}
-117--120) has five projectivity violations (note that multiple arcs may
-intersect at a point).]{
-  \xytext{
-    \xybarnode{στὰς}\xybarconnect[6]{2} &
-    \xybarnode{δ'} &
-    \xybarnode{ὑπὲρ}\xybarconnect[3]{1} &
-    \xybarnode{μελάθρων} &
-    \xybarnode{φονώσαισιν}\xybarconnect[3]{3} &
-    \xybarnode{ἀμφιχανὼν}
-      \xybarconnect[6]{1}
-      \xybarconnect[6]{2}
-      \xybarconnect[6]{4}&
-    \xybarnode{κύκλῳ} &
-    \xybarnode{λόγχαις} &
-    \xybarnode{ἐπτάπυλον} &
-    \xybarnode{στόμα}\xybarconnect[3]{-1} &
-    \xybarnode{ἔβα}
-      \xybarconnect[9]{-10}
-      \xybarconnect[9]{-9}
-      \xybarconnect[9]{-5}
+    \xybarnode{ἀγαθῶν}\xybarconnect[3](UL,U){-2}
   }
 }
 
-\caption{A dependency path wrapping around itself is a projectivity violation,
-as in (b); interlacing adjacent phrases also violate projectivity, as in
-(c). Examples (a--b) drawn from Devine~\&~Stephens.}
-\label{fig:dependency-trees}
+\caption{Examples drawn from Devine~\&~Stephens.}
+\label{fig:dependency-trees1}
 \end{figure}
 
+In addition to the above, adjacent phrases (that is, phrases at the same level
+in the tree) may interlace, causing projectivity violations. This is commonly
+introduced by Wackernagel's Law, as in Figure~\ref{fig:wackernagel}, where the
+placement of μὲν δὴ interlaces with the τὰ...πόλεος phrase.
+
+\begin{figure}[h!]
+\centering
+\xytext{
+    \xybarnode{τὰ}&
+    \xybarnode{μὲν}\xybarconnect[3](UR,U){1}&
+    \xybarnode{δὴ}&
+    \xybarnode{πόλεος}\xybarconnect[6](UL,U){-3}&
+    \xybarnode{...}&
+    \xybarnode{ὤρθησαν}\xybarconnect[9]{-2}\xybarconnect[9](UR,U){-4}
+}
+\caption{``[The gods] righted the matters of the city...'' (\emph{Antigone}
+162--163) has
+one projectivity violation, due to the μὲν δὴ falling in Wackernagel's Position.}
+\label{fig:wackernagel}
+\end{figure}
+
+We consider a violation to have occured for each and every intersection of lines
+on such a drawing; thus, the hyperbaton of one word may introduce multiple
+violations. Consider, for instance, Figure~\ref{fig:stas-tree}, in which five
+violations are brought about by the displacement of φονώσαισιν. In this way, the
+number of intersections is a good heuristic for judging the severity of
+hyperbata.
+
+\begin{figure}[h!]
+\centering
+\xytext{
+  \xybarnode{στὰς}\xybarconnect[6]{2} &
+  \xybarnode{δ'} &
+  \xybarnode{ὑπὲρ}\xybarconnect[3](UR,U){1} &
+  \xybarnode{μελάθρων} &
+  \xybarnode{φονώσαισιν} &
+  \xybarnode{ἀμφι}
+    \xybarconnect[6](U,U){3} &
+  \xybarnode{\!\!\!χανὼν}
+    \xybarconnect[6](U,U){1}
+    \xybarconnect[6](UL,U){4}&
+  \xybarnode{κύκλῳ} &
+  \xybarnode{λόγχαις}\xybarconnect[3](UL,U){-4} &
+  \xybarnode{ἑπτάπυλον} &
+  \xybarnode{στόμα}\xybarconnect[3](UL,U){-1} &
+  \xybarnode{ἔβα}
+    \xybarconnect[9](UL,UL){-11}
+    \xybarconnect[9](U,U){-10}
+    \xybarconnect[9](UR,UL){-6}
+}
+\caption{``And he stood over the rooftops, gaped in a circle with murderous
+spears around the seven-gated mouth, and left'' (\emph{Antigone}
+117--120) has six projectivity violations.}
+\label{fig:stas-tree}
+\end{figure}
+
+\subsection{Counting Violations}
+
+Drawing trees and counting intersections is time-consuming and error-prone,
+especially since the number of intersections may vary if one is not consistent
+with the relative height of arcs. It is clear, then, that a computer ought to be
+able to do the job faster and more accurately than a human, given at least the
+head-dependent relations for a corpus.
+
+The formal algorithm for counting the number of intersections is given in
+Appendix~\ref{sec:algorithm}, but I shall reproduce an informal and mostly
+nontechnical version of it here. First, we index each word in the sentence by
+its linear position, and cross-reference it with the linear position of its
+head:
+
+\begin{quote}
+\gll στὰς δ' ὑπὲρ μελάθρων φονώσαισιν ἀμφικανὼν κύκλῳ λόγχαις ἑπτάπυλον στόμα
+ἔβα\\
+      1:11  2:11 3:1 4:3 5:8 6:11 7:6 8:6 9:10 10:6 11:\_\\
+\end{quote}
+
 \noindent
-%
-In this paper, we shall use a concrete metric of projectivity, $\omega$, given
-by the following ratio:
+Next, arrange the dependencies into a tree as in Figure~\ref{fig:rose-tree}.
+Then, counting upwards from the lowest edges (i.e.\ the lines) in the tree up to
+the topmost ones, make a list of edges indexed by vertical level as in
+Table~\ref{tab:edges}.
+
+\begin{figure}
+  \Tree
+  [.11
+    [.1 [.3 4 ] ]
+    2
+    [.6
+      7
+      [.8 5 ]
+      [.10 9 ]
+    ]
+  ]
+\caption{The dependency relations arranged in a non-linear tree.}
+\label{fig:rose-tree}
+\end{figure}
+
+\begin{table}
+\centering
+  \begin{tabular}{cl}
+  \toprule
+  \emph{level} & \emph{edges}\\
+  \midrule
+  1 & |3:-:4, 5:-:8, 9:-:10|\\
+  2 & |1:-:3, 6:-:7, 6:-:8, 6:-:10|\\
+  3 & |1:-:11, 2:-:11, 6:-:11|
+  \\
+  \bottomrule
+  \end{tabular}
+  \caption{Edges of the tree in Figure~\ref{fig:rose-tree} arranged by level.}
+  \label{tab:edges}
+\end{table}
+
+Then, each edge in our table must be checked for violations against all the
+other edges in the table except those which are in a level higher than it. The
+level of the edge corresponds with the height at which we drew the arcs; this
+condition arises out of the fact that an arc cannot cross an arc that is above
+it, rather, only one that is below it.
+
+Next, we must figure out all the possible ways for an arc to intersect another
+at given levels. These are enumerated in detail in the function |checkEdges| in
+Appendix~\ref{sec:counting}, but suffice it to say that they fall into a few
+main categories:
+
+\begin{enumerate}
+\item Both vertices of the higher edge are within the bounds of the lower edge.
+This is a double violation, as both sides of an arc will extrude through
+another.
+\item One vertex of the higher edge is within the bounds of the lower edge, and
+the other vertex is not; this vertex is allowed to be equal to the second vertex
+of the lower edge. In either case, this is a single violation, as just one
+intersection occurs.
+\item The edges are at the same level, and one vertex of the higher edge is
+neither within bounds of the other, nor equal to any of the vertices of the
+other.
+\end{enumerate}
+
+\noindent
+Using this procedure, we shall have found the edge violations which are listed
+in Table~\ref{tab:violations}, which are |6| in total.
+
+\begin{table}
+\centering
+\begin{tabular}{ccc}
+\toprule
+|2:-:11| & |1:-:3| & 1\\
+|6:-:11| & |5:-:8| & 1\\
+|6:-:7|  & |5:-:8| & 2\\
+|6:-:8|  & |5:-:8| & 1\\
+|6:-:10| & |5:-:8|  & 1\\
+\midrule
+\multicolumn{3}{r}{$\FN{total}$ | = 6|}\\
+\bottomrule
+\end{tabular}
+\caption{Projectivity violations which arise from the edges in
+Table~\ref{tab:edges}.}
+\label{tab:violations}
+\end{table}
+
+\subsection{|omega|: a metric of projectivity}
+
+In order for our view of a text's overall projectivity to not be skewed by its
+length, we must have a ratio. For the purposes of this paper, we shall call this
+metric $\omega$, as given by the following ratio:
 %
 \[ \omega = \frac{\text{number of violations}}{\text{number of arcs}} \]
 %
-The number of violations is simply the total number of intersections that occur
-in a tree. Appendix~\ref{sec:algorithm} deals with the development of a model
-and algorithm in the programming language Haskell to compute this quantity for a
-particular dependency tree.
-
 
 \section{The Perseus Treebank}
 %
@@ -176,22 +309,28 @@ dependency trees for which we can compute |omega|.
 \section{Projectivity in Antigone}
 
 To observe the variation of projectivity within a text, then, one may make a
-selection of sentences that have something in common (such as meter), compute
-their trees and thence derive |omega|, and then average the results. Then that
-quantity may be compared with that of other selections.
+selection of sentences that have something in common, compute their trees and
+thence derive |omega|, and then average the results. Then that quantity may be
+compared with that of other selections.
+
+I have chosen to compare projectivity in lyrics, anapaests and trimeters. Lyrics
+I have divided into two categories: choral odes and laments, whereas I divide
+trimeters into medium-to-long speeches and stichomythia.
 
 To that end, I have selected passages from \emph{Antigone} and organized them by
 type. Table~\ref{tab:lyrics} enumerates the lyric passages of the play, along
 with their computed mean |omega| values, and a final mean of means with the
 standard deviation of the set.  Table~\ref{tab:anapaests} does the same for
-anapaests. Lastly, Table~\ref{tab:dialogue} gives the data for dialogue (which
+anapaests. Lastly, Table~\ref{tab:dialogue} gives selections of dialogue (which
 is in iambic trimeters), divided between medium-to-long speeches and
 stichomythia.
 
 \begin{table}
   \centering
-  \perform{makeTable lyrics}
-  \caption{Lyrics, including odes and kommoi.}
+  \subtable[Choral Odes]{\perform{makeTable odes}}
+  \vspace{6pt}
+  \subtable[Laments]{\perform{makeTable kommoi}}
+  \caption{Lyrics}
   \label{tab:lyrics}
 \end{table}
 
@@ -213,44 +352,70 @@ stichomythia.
 
 As can be seen from the data, lyrics have the highest degree of
 non-projectivity, followed by speeches, then anapaests, and then stichomythia.
-However, the standard deviation of the |omega| for anapaestic passages is so
-high that it may be difficult to say much of interest about them at all in
-respect to the questions that we are considering. So, let us put the anapaests
-aside for the moment and deal exclusively with lyrics, speeches and
-stichomythias.
+To try and understand why this is the case, it will be useful to discuss Greek
+hyperbaton in my general terms.
 
-Whereas in prose, hyperbaton corresponds to \emph{strong
-focus}, which ``does not merely fill a gap in the addressee's knowledge but
-additionally evokes and excludes alternatives'' (Devine~\&~Stephens 303),
-hyperbaton in verse only entails weak focus, which emphasizes but does not
-exclude (ibid.\ 107).
+Whereas in prose, hyperbaton corresponds to \emph{strong focus}, which ``does
+not merely fill a gap in the addressee's knowledge but additionally evokes and
+excludes alternatives'' (Devine~\&~Stephens 303), hyperbaton in verse only
+entails weak focus, which emphasizes but does not exclude (ibid.\ 107).
 
-As a result, hyperbaton in verse may be used to evoke a kind of
-elevated style without incidentally entailing more emphasis and other pragmatic
-effects than intended. And so it should not be surprising that lyric passages,
-which reside in the most poetic and elevated register present in tragic diction,
-should have proved in \emph{Antigone} to have the highest proportion of
-projectivity violations.
+As a result, hyperbaton in verse may be used to evoke a kind of elevated style
+without incidentally entailing more emphasis and other pragmatic effects than
+intended. And so it should not be surprising that lyric passages, which reside
+in the most poetic and elevated register present in tragic diction, should have
+proved in \emph{Antigone} to have the highest proportion of projectivity
+violations.
 
+Within the lyric passages, the laments appear to have consistently higher
+|omega|s than the choral odes, which may stem from their being much more emotive
+and personal in nature. It should be noted that, whilst the odes are very
+tightly centered around the mean, there is a fair degree of
+variation in the |omega| for the laments.
 
+Likewise, the anapaests vary so wildly in their |omega|s that it may be difficult
+to say very much about them that is relevant to the questions we are
+considering.
 
+As for dialog, longer-form speeches are tightly wrapped around their mean, with
+stichomythias varying a bit more. Speeches are a somewhat less projective than
+the stichmythias, being typically more eloquent and long-winded than their
+argumentative, choppy counterparts.
 
+So far, the most surprising thing about the data is the degree to which certain
+passages vary in |omega| (or, if you like, the degree to which some passages
+\emph{don't} vary in |omega|). The data draw us, then, to the following
+conclusions:
 
+\begin{enumerate}
+\item Non-projectivity varies within a single metrical type: that is,
+though lyric passages are in general less projective than anything else, some
+laments reach a degree of non-projectivity that exceeds the most elliptical
+odes in \emph{Antigone}. Further, within the iambic trimeters, speeches are less
+projective than stichomythias.
 
+\item Certain registers seem to be more conventionalized with respect to frequency
+of hyperbaton than others; that is, choral odes and speeches do not vary greatly
+amongst themselves, but laments and anapaests do.
+\end{enumerate}
 
-
-
-
+\noindent
+It would then seem that meter itself is not a primary factor for predicting
+incidence of hyperbaton, but rather a secondary one only. That is to say, we
+know for a fact that passages in lyric meters have greater |omega| than passages
+in other meters. Yet, the variation of |omega| within that very meter indicates
+that there is some other factor involved, which very likely has to do with
+register along two different dimensions, which is to say, relative dignity and
+emotive force.
 
 \newpage
 \begin{appendices}
 \section{Algorithm \& Data Representation}
 \label{sec:algorithm}
 
-Dependency trees are a recursive data structure
-with a head node, which may have any number of arcs drawn to further trees (this
-is called a \emph{rose tree}). We represent them as a Haskell data-type as
-follows:
+Dependency trees are a recursive data structure with a head node, which may have
+any number of arcs drawn to further trees (this is called a \emph{rose tree}).
+We represent them as a Haskell data-type as follows:
 
 < data Tree a = Node a [Tree a]
 
@@ -277,6 +442,7 @@ vertices to be an |Edge|, which we shall write as follows:
 \ignore{
 
 > deriving instance Show a => Show (Edge a)
+> deriving instance Show Sentence
 
 }
 %
@@ -333,6 +499,8 @@ complete tree structure:
 
 
 \subsection{Counting Violations: Computing |omega|}
+\label{sec:counting}
+
 Violations are given as an integer tally:
 
 > type Violations = Integer
@@ -372,26 +540,22 @@ Then, we fold up the tree into a list of edges and levels:
 >   aux (Node (_,x) ts) = ts >>= go where
 >     go t@(Node (l, y) _) = (l, edgeWithRange [x,y]) : aux t
 
-> edgeWithRange :: (Ord a) => [a] -> Edge a
+> edgeWithRange :: Ord a => [a] -> Edge a
 > edgeWithRange xs = minimum xs :-: maximum xs
 
 A handy way to think of edges annotated by levels is as a representation of the
 arc itself, where the vertices of the edge are the endpoints, and the level is the
-height of the arc.
-
-If one end of an arc is between the ends of another, then there is a single
-intersection. If one arc is higher than another and the latter is in between the
-endpoints of the former, there is no violation; but if they are at the same
-level, or if the latter is higher than the former, there is a double
-intersection. Otherwise, there is no intersection.
+height of the arc. Now, we can count the violations that occur between two arcs.
 
 > checkEdges :: Ord a => (Level, Edge a) -> (Level, Edge a) -> Violations
 > checkEdges (l, xy@(x :-: y)) (l', uv@(u :-: v))
->   | inRange y uv && inRange u xy             = 1
->   | inRange x uv && inRange v xy             = 1
->   | inRange x uv && inRange y uv && l >= l'  = 2
->   | inRange u xy && inRange v xy && l <= l'  = 2
->   | otherwise                                = 0
+>   | inRange x uv && ((y >= v && l > l') || y > v)  = 1
+>   | inRange y uv && ((x <= u && l > l') || u < u)  = 1
+>   | inRange u xy && ((v >= y && l < l') || v > y)  = 1
+>   | inRange v xy && ((u <= x && l < l') || u < x)  = 1
+>   | inRange x uv && inRange y uv && l >= l'        = 2
+>   | inRange u xy && inRange v xy && l <= l'        = 2
+>   | otherwise                                      = 0
 
 We determine whether a vertex is in the bounds of an edge using |inRange|.
 
@@ -399,6 +563,12 @@ We determine whether a vertex is in the bounds of an edge using |inRange|.
 > inRange z (x :-: y)  =   z > minimum   [x,y]
 >                      &&  z < maximum   [x,y]
 
+\ignore{
+
+> notInRange x xy = not (inRange x xy)
+
+}
+%
 We can now use what we've built to count the intersections that occur in a
 collection of edges. This is done by adding up the result of |checkEdges| of the
 combination of each edge with the subset of edges which are at or below its
@@ -423,12 +593,11 @@ Finally, |omega| is computed for a tree as follows:
 >   edges = allEdges tree
 
 
-\newpage
 \section{Parsing the Perseus Treebank}
 \label{sec:parsing}
 
 \noindent
-We can express the general shape of such a document as follows:
+We can express the general shape of a treebank document as follows:
 
 %format sequence = "\FN{sequence}"
 %format sentenceFromXML = "\FN{sentenceFromXML}"
@@ -439,7 +608,7 @@ We can express the general shape of such a document as follows:
 %format treesFromDocument = "\FN{treesFromDocument}"
 
 > type Document = [Sentence]
-> data Sentence = Sentence { sentenceId :: Integer, sentenceEdges :: [Edge Integer] } deriving Show
+> data Sentence = Sentence { sentenceId :: Integer, sentenceEdges :: [Edge Integer] }
 
 To construct a |Document| from the contents of an XML file, it suffices to
 find all of the sentences.
@@ -537,22 +706,25 @@ Then, the entire document can be cut down into smaller documents by section:
 > instance Show UnquotedString where
 >   show (Unquote str) = str
 
-> lyrics :: [(Section, Section, String)]
-> lyrics =  [  (MkRange 100 154,    MkRange 2900135 2900144, "First choral ode"),
->              (MkRange 332 375,    MkRange 2900236 2900247, "Second choral ode"),
->              (MkRange 583 625,    MkRange 2900390 2900402, "Third choral ode"),
->              (MkRange 781 800,    MkRange 2900496 2900501, "Fourth choral ode"),
->              (MkRange 806 816,    MkRange 2900503 2900504, "Antigone's Kommos"),
->              (MkRange 823 833,    MkRange 2900506 2900507, "Antigone's Kommos (cntd.)"),
->              (MkRange 839 882,    MkRange 2900511 2900526, "Antigone's Kommos (cntd.)"),
->              (MkRange 944 987,    MkRange 2900554 2900566, "Fifth choral ode"),
->              (MkRange 1116 1152,  MkRange 2900649 2900654, "Sixth choral ode"),
->              (MkRange 1261 1269,  MkRange 2900714 2900716, "Kreon's Kommos"),
->              (MkRange 1283 1292,  MkRange 2900725 2900729, "Kreon's Kommos (cntd.)"),
->              (MkRange 1306 1311,  MkRange 2900737 2900739, "Kreon's Kommos (cntd.)"),
->              (MkRange 1317 1325,  MkRange 2900743 2900745, "Kreon's Kommos (cntd.)"),
->              (MkRange 1239 1246,  MkRange 2900756 2900767, "Kreon's Kommos (cntd.)")
->           ]
+> odes :: [(Section, Section, String)]
+> odes =  [  (MkRange 100 154,    MkRange 2900135 2900144, "First choral ode"),
+>            (MkRange 332 375,    MkRange 2900236 2900247, "Second choral ode"),
+>            (MkRange 583 625,    MkRange 2900390 2900402, "Third choral ode"),
+>            (MkRange 781 800,    MkRange 2900496 2900501, "Fourth choral ode"),
+>            (MkRange 944 987,    MkRange 2900554 2900566, "Fifth choral ode"),
+>            (MkRange 1116 1152,  MkRange 2900649 2900654, "Sixth choral ode")
+>         ]
+
+> kommoi = [
+>            (MkRange 806 816,    MkRange 2900503 2900504, "Antigone's Lament"),
+>            (MkRange 823 833,    MkRange 2900506 2900507, "Antigone's Lament (cntd.)"),
+>            (MkRange 839 882,    MkRange 2900511 2900526, "Antigone's Lament (cntd.)"),
+>            (MkRange 1261 1269,  MkRange 2900714 2900716, "Kreon's Lament"),
+>            (MkRange 1283 1292,  MkRange 2900725 2900729, "Kreon's Lament (cntd.)"),
+>            (MkRange 1306 1311,  MkRange 2900737 2900739, "Kreon's Lament (cntd.)"),
+>            (MkRange 1317 1325,  MkRange 2900743 2900745, "Kreon's Lament (cntd.)"),
+>            (MkRange 1239 1246,  MkRange 2900756 2900767, "Kreon's Lament (cntd.)")
+>          ]
 
 
 > anapaests :: [(Section, Section, String)]

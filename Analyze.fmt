@@ -96,11 +96,13 @@
 
 %format aux = "\FN{aux}"
 %format omega ="\FN{\omega}"
+%format Omega ="\FN{\Omega}"
+%format computeOmega = "\FN{compute_\omega}"
 
 %format (liftA f x) = "\llbracket" ^^ f ^^ x ^^ "\rrbracket"
 %format (liftA2 f x y) = "\llbracket" ^^ f ^^ x ^^ y ^^ "\rrbracket"
 %format (liftOp2 (o) x y) = "\llbracket" ^^ x ^^ o ^^ y ^^ "\rrbracket"
-
+%format mconcat = "\FN{mconcat}"
 
 
 %format parseXML = "\FN{parseXML}"
@@ -131,4 +133,4 @@
 %format mean = "\FN{mean}"
 %format sdev = "\FN{sdev}"
 %format power a (b)     =  "{" a "}^{" b "}"
-
+%format cumulative = "\FN{cumulative}"

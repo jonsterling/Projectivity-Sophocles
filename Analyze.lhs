@@ -37,7 +37,7 @@
 
 \author{Jonathan Sterling}
 
-\title{A Survey of Phrase Projectivity in \emph{Antigone}}
+\title{A Survey of Phrase Projectivity in the \emph{Antigone}}
 \date{April 2013}
 \maketitle
 
@@ -52,6 +52,7 @@
 > import Control.Applicative
 > import Control.Monad ((>=>))
 > import Control.Arrow((&&&))
+> import Data.Monoid
 > import Data.Foldable
 > import Debug.Trace
 > import Data.Maybe (isJust, maybeToList, catMaybes)
@@ -66,14 +67,17 @@
 
 %endif
 
-\noindent
-\textbf{THIS IS A DRAFT. It is currently lacking a bibliography, and the
-analysis is a bit shallow currently.}
+\noindent \textbf{THIS IS A DRAFT.} It is currently lacking a bibliography, and
+the analysis is a bit just-so, I'm afraid. I also intend to add a section about
+how specific choices made about data representation by annotators can affect
+such an analysis as I have given here.
 
-In this paper, I will show how (and to what degree) phrase projectivity
+In this paper, I will show how, and to what degree, phrase projectivity
 corresponds with register and meter in Sophocles's \emph{Antigone}, by
 developing a quantitative metric for projectivity and comparing it across
-lyrics, trimeters and anapaests.
+lyrics, trimeters and anapaests using the data provided by the Perseus Ancient
+Greek Dependency Treebank. In the appendices, the formal algorithm for the
+computations done herein is developed in the programming language Haskell.
 
 \section{Dependency Trees and Their Projectivity}
 
@@ -168,12 +172,12 @@ spears around the seven-gated mouth, and left'' (\emph{Antigone}
 
 Drawing trees and counting intersections is time-consuming and error-prone,
 especially since the number of intersections may vary if one is not consistent
-with the relative height of arcs. It is clear, then, that a computer ought to be
-able to do the job faster and more accurately than a human, given at least the
-head-dependent relations for a corpus.
+with the relative height of arcs and placement of endpoints. It is clear, then,
+that a computer ought to be able to do the job faster and more accurately than a
+human, given at least the head-dependent relations for a corpus.
 
 The formal algorithm for counting the number of intersections is given in
-Appendix~\ref{sec:algorithm}, but I shall reproduce an informal and mostly
+Appendix~\ref{sec:counting}, but I shall reproduce an informal and mostly
 nontechnical version of it here. First, we index each word in the sentence by
 its linear position, and cross-reference it with the linear position of its
 head:
@@ -242,7 +246,7 @@ of the lower edge. In either case, this is a single violation, as just one
 intersection occurs.
 \item The edges are at the same level, and one vertex of the higher edge is
 neither within bounds of the other, nor equal to any of the vertices of the
-other.
+other. This is a single violation.
 \end{enumerate}
 
 \noindent
@@ -275,6 +279,10 @@ metric $\omega$, as given by the following ratio:
 %
 \[ \omega = \frac{\text{number of violations}}{\text{number of arcs}} \]
 %
+Now, this metric applies just as much to a single sentence as it does to a
+larger body of text. So, averages of |omega| should not be taken; rather, total
+numbers of violations and total numbers of arcs should be accumulated until
+omega may be computed for the entire body of text being examined.
 
 \section{The Perseus Treebank}
 %
@@ -300,30 +308,35 @@ resembling the following:
 %
 Every sentence is given a unique, sequential identifier; within each sentence,
 every word is indexed by its linear position and coreferenced with the linear
-position of its dominating head. In the case of the data for \emph{Antigone},
+position of its dominating head. In the case of the data for the \emph{Antigone},
 the maximal head of each sentence has its own head given as \lstinline{0}.
 Appendix~\ref{sec:parsing} deals with parsing these XML representations into
 dependency trees for which we can compute |omega|.
 
+The Perseus data also includes punctuation in the dependency trees, which we
+must of course filter out; a comma, for instance, may induce a technical
+hyperbaton, simply by virtue of what the Perseus editors have chosen to mark as
+its ``head'', to the extent that it means anything at all for a punctuation mark
+to have a head.
 
-\section{Projectivity in Antigone}
+
+\section{Projectivity in the Antigone}
 
 To observe the variation of projectivity within a text, then, one may make a
 selection of sentences that have something in common, compute their trees and
-thence derive |omega|, and then average the results. Then that quantity may be
-compared with that of other selections.
+thence derive a cumulative |omega| for the entire selection. Then that figure
+may be compared with that of other selections.
 
 I have chosen to compare projectivity in lyrics, anapaests and trimeters. Lyrics
 I have divided into two categories: choral odes and laments, whereas I divide
 trimeters into medium-to-long speeches and stichomythia.
 
-To that end, I have selected passages from \emph{Antigone} and organized them by
-type. Table~\ref{tab:lyrics} enumerates the lyric passages of the play, along
-with their computed mean |omega| values, and a final mean of means with the
-standard deviation of the set.  Table~\ref{tab:anapaests} does the same for
-anapaests. Lastly, Table~\ref{tab:dialogue} gives selections of dialogue (which
-is in iambic trimeters), divided between medium-to-long speeches and
-stichomythia.
+To that end, I have selected passages from the \emph{Antigone} and organized
+them by type. Table~\ref{tab:lyrics} enumerates the lyric passages of the play,
+along with their computed |omega| values, and a cumulative |omega| value for the
+entire set. Table~\ref{tab:anapaests} does the same for anapaests. Lastly,
+Table~\ref{tab:dialogue} gives selections of dialogue (which is in iambic
+trimeters), divided between medium-to-long speeches and stichomythia.
 
 \begin{table}
   \centering
@@ -353,7 +366,7 @@ stichomythia.
 As can be seen from the data, lyrics have the highest degree of
 non-projectivity, followed by speeches, then anapaests, and then stichomythia.
 To try and understand why this is the case, it will be useful to discuss Greek
-hyperbaton in my general terms.
+hyperbaton in more general terms.
 
 Whereas in prose, hyperbaton corresponds to \emph{strong focus}, which ``does
 not merely fill a gap in the addressee's knowledge but additionally evokes and
@@ -364,52 +377,73 @@ As a result, hyperbaton in verse may be used to evoke a kind of elevated style
 without incidentally entailing more emphasis and other pragmatic effects than
 intended. And so it should not be surprising that lyric passages, which reside
 in the most poetic and elevated register present in tragic diction, should have
-proved in \emph{Antigone} to have the highest proportion of projectivity
+proved in the \emph{Antigone} to have the highest proportion of projectivity
 violations.
 
 Within the lyric passages, the laments appear to have consistently higher
 |omega|s than the choral odes, which may stem from their being much more emotive
-and personal in nature. It should be noted that, whilst the odes are very
-tightly centered around the mean, there is a fair degree of
-variation in the |omega| for the laments.
+and personal in nature. It should be noted that, whilst the individual odes
+conform tightly to the cumulative |omega| of their category, there is a fair
+degree of variation among the laments. Likewise, the anapaests vary so wildly in
+their |omega|s that it may be difficult to say very much about them that is
+relevant to the questions we are considering.
 
-Likewise, the anapaests vary so wildly in their |omega|s that it may be difficult
-to say very much about them that is relevant to the questions we are
-considering.
-
-As for dialog, longer-form speeches are tightly wrapped around their mean, with
-stichomythias varying a bit more. Speeches are a somewhat less projective than
-the stichmythias, being typically more eloquent and long-winded than their
+As for dialog, longer-form speeches are largely conformant in their |omega|,
+with stichomythias varying a bit more. Speeches are a somewhat less projective
+than the stichmythias, being typically more eloquent and long-winded than their
 argumentative, choppy counterparts.
 
 So far, the most surprising thing about the data is the degree to which certain
-passages vary in |omega| (or, if you like, the degree to which some passages
-\emph{don't} vary in |omega|). The data draw us, then, to the following
-conclusions:
+verse-types vary in |omega| (or, if you like, the degree to which other types
+\emph{don't}). The data draw us, then, to the following conclusions:
 
 \begin{enumerate}
-\item Non-projectivity varies within a single metrical type: that is,
-though lyric passages are in general less projective than anything else, some
-laments reach a degree of non-projectivity that exceeds the most elliptical
-odes in \emph{Antigone}. Further, within the iambic trimeters, speeches are less
-projective than stichomythias.
+\item Non-projectivity varies within a single metrical type (lyrics, iambic trimeters,
+anapaests).
 
-\item Certain registers seem to be more conventionalized with respect to frequency
-of hyperbaton than others; that is, choral odes and speeches do not vary greatly
-amongst themselves, but laments and anapaests do.
+\item Certain registers seem to be more conventionalized with respect to |omega|
+than others; that is, choral odes and speeches do not vary greatly amongst
+themselves, but laments and anapaests do.
 \end{enumerate}
 
 \noindent
-It would then seem that meter itself is not a primary factor for predicting
-incidence of hyperbaton, but rather a secondary one only. That is to say, we
-know for a fact that passages in lyric meters have greater |omega| than passages
-in other meters. Yet, the variation of |omega| within that very meter indicates
-that there is some other factor involved, which very likely has to do with
-register along two different dimensions, which is to say, relative dignity and
-emotive force.
+%
+Lyric passages are in general less projective than anything else, but some
+laments reach a degree of non-projectivity that exceeds the most elliptical odes
+in the \emph{Antigone}. Further, within the trimeters, speeches are less projective
+than stichomythias. From these things, then, we can say that that meter itself
+would not seem to be a primary factor for predicting incidence and severity of
+hyperbaton, but rather a secondary one at best.
+
+That is to say, we know for a fact that passages in lyric meters have greater
+|omega| than passages in other meters. Yet, the variation of |omega| within that
+very meter indicates that there is some other factor involved, which very likely
+has to do with register along two different dimensions, which is to say,
+relative ``dignity of style'' and emotive force.
+
+With regard to the very low |omega| found in the stichomythias, I suggest that
+it is the necessary shortness of each utterance which is at fault here. That is,
+the maximum ``damage'' that a hyperbaton can do is greatly lessened, when the
+ultimate depth of the phrase structure is limited by its length (whence, for
+instance, it is unlikely for a single hyperbaton to cause more than a few
+projectivity violations).
 
 \newpage
 \begin{appendices}
+
+The functions used in parsing and computing the data for this paper are
+developed here in the programming language Haskell. Haskell is a typed lambda
+calculus with inductive data types and type classes; the listings below use
+standard Haskell syntax with the exception of some infix operators to improve
+readability, and the addition of so-called ``idiom brackets'', which allow a
+more syntactically clean presentation of function application within a
+context; thus, the following two lines are equivalent:
+
+%format traditional = "\FN{traditional}"
+%format idiomBrackets = "\FN{idiomBrackets}"
+< traditional    =  (*) <$> [1,2,3] <*> [5,6,7]
+< idiomBrackets  =  liftOp2 (*) [1,2,3] [5,6,7]
+
 \section{Algorithm \& Data Representation}
 \label{sec:algorithm}
 
@@ -498,12 +532,8 @@ complete tree structure:
 >     sortedChildren   = sortBy (compare `on` getLabel) children
 
 
-\subsection{Counting Violations: Computing |omega|}
+\subsection{Counting Violations}
 \label{sec:counting}
-
-Violations are given as an integer tally:
-
-> type Violations = Integer
 
 The basic procedure for counting projectivity violations is as follows: flatten
 down the tree into a list of edges cross-referenced by their vertical position
@@ -541,13 +571,13 @@ Then, we fold up the tree into a list of edges and levels:
 >     go t@(Node (l, y) _) = (l, edgeWithRange [x,y]) : aux t
 
 > edgeWithRange :: Ord a => [a] -> Edge a
-> edgeWithRange xs = minimum xs :-: maximum xs
+> edgeWithRange = liftOp2 (:-:) minimum maximum
 
 A handy way to think of edges annotated by levels is as a representation of the
 arc itself, where the vertices of the edge are the endpoints, and the level is the
 height of the arc. Now, we can count the violations that occur between two arcs.
 
-> checkEdges :: Ord a => (Level, Edge a) -> (Level, Edge a) -> Violations
+> checkEdges :: Ord a => (Level, Edge a) -> (Level, Edge a) -> Integer
 > checkEdges (l, xy@(x :-: y)) (l', uv@(u :-: v))
 >   | inRange x uv && ((y >= v && l > l') || y > v)  = 1
 >   | inRange y uv && ((x <= u && l > l') || u < u)  = 1
@@ -577,23 +607,42 @@ level:
 %format rangesBelow = "\FN{rangesBelow}"
 %format violationsWith = "\FN{violationsWith}"
 
-> edgeViolations :: Ord a => [(Level, Edge a)] -> Violations
+> edgeViolations :: Ord a => [(Level, Edge a)] -> Integer
 > edgeViolations xs = sum (liftA violationsWith xs) where
 >   rangesBelow (l, _)  = filter (\(l', _) -> l' <= l) xs
 >   violationsWith x    = sum (liftA (checkEdges x) (rangesBelow x))
 
-Finally, |omega| is computed for a tree as follows:
+\subsection{Computing |omega|}
+\label{sec:computing-omega}
+
+We introduce a data type |Omega| of integer-to-integer ratios which may be
+computed into a rational.
 
 %format edges = "\FN{edges}"
 %format totalArcsCount = "\FN{totalArcsCount}"
 %format violationsCount = "\FN{violationsCount}"
 
-> omega :: Ord a => Tree a -> Rational
-> omega tree = ratio (edgeViolations edges) (genericLength edges) where
->   edges = allEdges tree
+> data Omega = Omega Integer Integer
+> computeOmega :: Omega -> Rational
+> computeOmega (Omega vs es) = ratio vs es
 
+Furthermore, |Omega|s generate a monoid, which is an algebraic structure that
+abstracts out the notion of an identity and an associative binary operation that
+respects that identity. In this way, we can combine |Omega| values:
 
-\section{Parsing the Perseus Treebank}
+> instance Monoid Omega where
+>   mempty = Omega 0 0
+>   mappend (Omega x y) (Omega u v) = Omega (x + u) (y + v)
+
+Finally, |omega| may be computed for trees.
+
+> omega :: Ord a => Tree a -> Omega
+> omega = liftA2 Omega edgeViolations genericLength . allEdges
+
+\section{Working with the Perseus Treebank}
+\label{sec:working-with-treebase}
+
+\subsection{Parsing the XML}
 \label{sec:parsing}
 
 \noindent
@@ -630,12 +679,13 @@ and extracting edges from their children.
 >   children  = findChildren (simpleName "word") e
 
 An edge is got from an element by taking the contents of its \lstinline{id}
-attribute with the contents of its \lstinline{head} attribute.
+attribute with the contents of its \lstinline{head} attribute. We make sure to
+filter out punctuation which would skew our data.
 
 > edgeFromXML :: Element -> Maybe (Edge Integer)
 > edgeFromXML e =
 >   case findAttr (simpleName "form") e of
->      Just x | elem x [".",",",";",":"] -> Nothing
+>      Just x | x `elem` [".",",",";",":"] -> Nothing
 >      otherwise -> liftOp2 (:-:) (readAttr "head" e) (readAttr "id" e)
 
 Thence, turn a sentence into a tree by its edges using the machinery from
@@ -658,15 +708,16 @@ disk.
 > documentFromFile :: FilePath -> IO Document
 > documentFromFile path = liftA (documentFromXML . parseXML) (readFile path)
 
-\section{Analysis of Data}
+\subsection{Analysis of Data}
+\label{sec:analyzing}
 
-We compute the mean |omega| of the trees contained in a document as follows:
+We compute the cumulative |omega| of the trees contained in a document as follows:
 
-> analyzeDocument :: Document -> Rational
-> analyzeDocument doc = mean (liftA omega (treesFromDocument doc))
+> analyzeDocument :: Document -> Omega
+> analyzeDocument doc = mconcat (liftA omega (treesFromDocument doc))
 
-We will wish to compare the |omega| for parts of \emph{Antigone}. A section is
-given by a two sentence indices (a beginning and an end):
+We will wish to compare the |omega| for parts of the \emph{Antigone}. A section
+is given by a two sentence indices (a beginning and an end):
 
 > data Section = MkRange Integer Integer
 
@@ -687,12 +738,12 @@ Then, the entire document can be cut down into smaller documents by section:
 >   let pre = "\\begin{tabular}{clc}\\toprule\\textbf{Lines}&\\textbf{}&|omega|\\\\ \\midrule"
 >   let post = "\\bottomrule\\end{tabular}"
 >   let omegas = (\(_,r,_) -> analyzeDocument $ restrictDocument r antigone) <$> sections
->   let body = fold $ uncurry makeTableRow <$> zip sections omegas
->   let avg = "\\midrule\\multicolumn{3}{r}{|mean omega| = |" ++ showRational (mean omegas)
->               ++ " |, |sdev| = |" ++ showRational (sdev (fromRational <$> omegas)) ++ "|}\\\\"
+>   let totalOmega = computeOmega $ mconcat omegas
+>   let body = fold $ uncurry makeTableRow <$> zip sections (computeOmega <$> omegas)
+>   let avg = "\\midrule\\multicolumn{3}{r}{|cumulative omega| = |" ++ showRational totalOmega ++ "|}\\\\"
 >   return . Unquote $ pre ++ body ++ avg ++ post
 
-> showRational x = printf "%.2f" ((fromInteger $ round $ x * (10^2)) / (10.0^^2) :: Float)
+> showRational x = printf "%.2f" (fromInteger (round $ x * (10^2)) / (10.0**2) :: Float)
 
 > makeTableRow :: (Section, Section, String) -> Rational -> String
 > makeTableRow (ls, r, d) om = lines ++ "&" ++ desc ++ "&" ++ omega ++ "\\\\" where
@@ -768,7 +819,7 @@ Then, the entire document can be cut down into smaller documents by section:
 }
 
 
-\section*{Auxiliary Functions}
+\ignore{
 
 > simpleName :: String -> QName
 > simpleName s = QName s Nothing Nothing
@@ -776,14 +827,12 @@ Then, the entire document can be cut down into smaller documents by section:
 > readAttr :: Read a => String -> Element -> Maybe a
 > readAttr n = fmap read . findAttr (simpleName n)
 
-> mean :: Fractional n => [n] -> n
-> mean =  liftOp2 (/) sum genericLength
 
-> sdev :: Floating n => [n] -> n
-> sdev xs = sqrt (divFrac (sum (liftA (\x -> power x 2) (liftA (- (mean xs) +) xs))) (genericLength xs - 1))
+< mean :: Fractional n => [n] -> n
+< mean =  liftOp2 (/) sum genericLength
 
-
-\ignore{
+< sdev :: Floating n => [n] -> n
+< sdev xs = sqrt (divFrac (sum (liftA (\x -> power x 2) (liftA (- (mean xs) +) xs))) (genericLength xs - 1))
 
 > liftOp2 = liftA2
 > ratio = (%)

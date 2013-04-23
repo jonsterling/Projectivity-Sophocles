@@ -69,8 +69,8 @@
 
 \noindent \textbf{THIS IS A DRAFT.} It is currently lacking a bibliography, and
 the analysis is a bit just-so, I'm afraid. I also intend to add a section about
-how specific choices made about data representation by annotators can affect
-such an analysis as I have given here.
+how specific choices made about data representation by Perseus annotators can
+affect such an analysis as I have given here.
 
 In this paper, I will show how, and to what degree, phrase projectivity
 corresponds with register and meter in Sophocles's \emph{Antigone}, by
@@ -229,7 +229,7 @@ Then, each edge in our table must be checked for violations against all the
 other edges in the table except those which are in a level higher than it. The
 level of the edge corresponds with the height at which we drew the arcs; this
 condition arises out of the fact that an arc cannot cross an arc that is above
-it, rather, only one that is below it.
+it.
 
 Next, we must figure out all the possible ways for an arc to intersect another
 at given levels. These are enumerated in detail in the function |checkEdges| in
@@ -282,12 +282,12 @@ metric $\omega$, as given by the following ratio:
 Now, this metric applies just as much to a single sentence as it does to a
 larger body of text. So, averages of |omega| should not be taken; rather, total
 numbers of violations and total numbers of arcs should be accumulated until
-omega may be computed for the entire body of text being examined.
+|omega| may be computed for the entire body of text being examined.
 
 \section{The Perseus Treebank}
 %
 The Perseus Ancient Greek Dependency Treebank is a massive trove of annotated
-texts that encode the all dependency relations in every sentence. The data is
+texts that encode all the dependency relations in every sentence. The data is
 given in an XML (E\textbf{x}tensible \textbf{M}arkup \textbf{L}anguage) format
 resembling the following:
 
@@ -390,7 +390,7 @@ relevant to the questions we are considering.
 
 As for dialog, longer-form speeches are largely conformant in their |omega|,
 with stichomythias varying a bit more. Speeches are a somewhat less projective
-than the stichmythias, being typically more eloquent and long-winded than their
+than the stichomythias, being typically more eloquent and long-winded than their
 argumentative, choppy counterparts.
 
 So far, the most surprising thing about the data is the degree to which certain

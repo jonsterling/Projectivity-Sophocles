@@ -33,7 +33,7 @@
 
 \begin{document}
 \onehalfspacing
-\setmainfont{Times New Roman}
+\setmainfont{Adobe Text Pro}
 
 \author{Jonathan Sterling}
 
@@ -149,7 +149,7 @@ hyperbata.
   \xybarnode{μελάθρων} &
   \xybarnode{φονώσαισιν} &
   \xybarnode{ἀμφι}
-    \xybarconnect[6](U,U){3} &
+    \xybarconnect[6](UR,U){3} &
   \xybarnode{\!\!\!χανὼν}
     \xybarconnect[6](U,U){1}
     \xybarconnect[6](UL,U){4}&
@@ -158,13 +158,15 @@ hyperbata.
   \xybarnode{ἑπτάπυλον} &
   \xybarnode{στόμα}\xybarconnect[3](UL,U){-1} &
   \xybarnode{ἔβα}
-    \xybarconnect[9](UL,UL){-11}
+    \xybarconnect[9](U,UL){-11}
     \xybarconnect[9](U,U){-10}
-    \xybarconnect[9](UR,UL){-6}
+    \xybarconnect[9](U,U){-6}
 }
 \caption{``And he stood over the rooftops, gaped in a circle with murderous
 spears around the seven-gated mouth, and left'' (\emph{Antigone}
-117--120) has six projectivity violations.}
+117--120) has six projectivity violations, five of which are induced by the
+hyperbaton of φονώσαισιν, and one from the usual placement of δ' in
+Wackernagel's Position.}
 \label{fig:stas-tree}
 \end{figure}
 
@@ -320,7 +322,7 @@ its ``head'', to the extent that it means anything at all for a punctuation mark
 to have a head.
 
 
-\section{Projectivity in the Antigone}
+\section{Projectivity in the \emph{Antigone}}
 
 To observe the variation of projectivity within a text, then, one may make a
 selection of sentences that have something in common, compute their trees and
@@ -437,12 +439,7 @@ calculus with inductive data types and type classes; the listings below use
 standard Haskell syntax with the exception of some infix operators to improve
 readability, and the addition of so-called ``idiom brackets'', which allow a
 more syntactically clean presentation of function application within a
-context; thus, the following two lines are equivalent:
-
-%format traditional = "\FN{traditional}"
-%format idiomBrackets = "\FN{idiomBrackets}"
-< traditional    =  (*) <$> [1,2,3] <*> [5,6,7]
-< idiomBrackets  =  liftOp2 (*) [1,2,3] [5,6,7]
+context.
 
 \section{Algorithm \& Data Representation}
 \label{sec:algorithm}
@@ -558,7 +555,7 @@ where |n| is the tree's depth.
 We can now annotate each node in a tree with what level it is at:
 
 > annotateLevels :: Tree a -> Tree (Level, a)
-> annotateLevels tree = aux (depth tree) tree where
+> annotateLevels = liftA2 aux depth id where
 >   aux l (Node x ts) = Node (l, x) (liftA (aux (l - 1)) ts)
 
 Then, we fold up the tree into a list of edges and levels:
@@ -566,7 +563,7 @@ Then, we fold up the tree into a list of edges and levels:
 %format go = "\FN{go}"
 
 > allEdges :: Ord a => Tree a -> [(Level, Edge a)]
-> allEdges tree = aux (annotateLevels tree) where
+> allEdges = aux . annotateLevels where
 >   aux (Node (_,x) ts) = ts >>= go where
 >     go t@(Node (l, y) _) = (l, edgeWithRange [x,y]) : aux t
 
@@ -618,14 +615,21 @@ level:
 We introduce a data type |Omega| of integer-to-integer ratios which may be
 computed into a rational.
 
-%format edges = "\FN{edges}"
-%format totalArcsCount = "\FN{totalArcsCount}"
-%format violationsCount = "\FN{violationsCount}"
+%format edgeCount = "\FN{edgeCount}"
+%format violationCount = "\FN{violationCount}"
+%format liftRatio f g = "\left\llbracket" ^^ "\dfrac{" f "}{" g "}\right\rrbracket"
 
-> data Omega = Omega Integer Integer
+> data Omega = Omega { violationCount :: Integer, edgeCount :: Integer }
 > computeOmega :: Omega -> Rational
-> computeOmega (Omega vs es) = ratio vs es
+> computeOmega = liftRatio violationCount edgeCount
 
+\ignore{
+
+> liftRatio = liftA2 ratio
+
+}
+
+\noindent
 Furthermore, |Omega|s generate a monoid, which is an algebraic structure that
 abstracts out the notion of an identity and an associative binary operation that
 respects that identity. In this way, we can combine |Omega| values:

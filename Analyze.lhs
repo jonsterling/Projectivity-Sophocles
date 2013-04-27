@@ -1,14 +1,33 @@
-%!TEX encoding = UTF-8 Unicode
+%&program=xelatex
+%&encoding=UTF-8 Unicode
 
 \documentclass{article}
 
 %options ghci -fglasgow-exts
 %include Analyze.fmt
 
-\usepackage{setspace,homework,stmaryrd,wasysym,url,upgreek,subfigure}
+\usepackage{setspace,stmaryrd,url,subfigure, amssymb, amsfonts,amsmath,multicol,booktabs}
 \usepackage[margin=1cm]{caption}
-\usepackage{xytree, listings, linguex, qtree}
+\usepackage{xytree, listings, cgloss4e, qtree}
 \usepackage[toc,page]{appendix}
+
+\usepackage[silent]{fontspec}
+\usepackage{xltxtra}
+\usepackage{polyglossia}
+
+\newICUfeature{Contextual}{on}{+calt}
+
+\defaultfontfeatures{Mapping=tex-text}
+\newcommand{\salt}[1]{{\addfontfeature{Style=Alternate}{#1}}}
+\newcommand{\hlig}[1]{{\addfontfeature{Ligatures=Historical}{#1}}}
+
+\newfontfamily\greekfont[Script=Greek, Scale=MatchUppercase, Contextual=on]{Junicode}
+\setotherlanguage{greek}
+\setmainfont{Adobe Text Pro}
+
+\let\eachwordone=\textgreek
+
+\def\gkbarnode#1{\xybarnode{\textgreek{#1}}}
 
 \definecolor{gray}{rgb}{0.4,0.4,0.4}
 
@@ -33,7 +52,6 @@
 
 \begin{document}
 \onehalfspacing
-\setmainfont{Adobe Text Pro}
 
 \author{Jonathan Sterling}
 
@@ -93,18 +111,18 @@ dependency ``wraps around itself''.
 \centering
 \subfigure[``Full of plentiful supplies'' (Xenophon, \emph{Anabasis} 3.5.1) is fully projective.]{
   \xytext{
-    \xybarnode{μεστῇ}\xybarconnect[6](U,U){2}&
-    \xybarnode{πολλῶν}&
-    \xybarnode{ἀγαθῶν}\xybarconnect[3](UL,U){-1}
+    \gkbarnode{μεστῇ}\xybarconnect[6](U,U){2}&
+    \gkbarnode{πολλῶν}&
+    \gkbarnode{ἀγα\salt{θ}ῶν}\xybarconnect[3](UL,U){-1}
   }
 }
 \hspace{6pt}
 \subfigure[``Full of many good things'' (Plato, \emph{Laws} 906a) has one
 projectivity violation.]{
   \xytext{
-    \xybarnode{πολλῶν}&
-    \xybarnode{μεστὸν}\xybarconnect[6]{1}&
-    \xybarnode{ἀγαθῶν}\xybarconnect[3](UL,U){-2}
+    \gkbarnode{πολλῶν}&
+    \gkbarnode{μεστὸν}\xybarconnect[6]{1}&
+    \gkbarnode{ἀγα\salt{θ}ῶν}\xybarconnect[3](UL,U){-2}
   }
 }
 
@@ -115,58 +133,58 @@ projectivity violation.]{
 In addition to the above, adjacent phrases (that is, phrases at the same level
 in the tree) may interlace, causing projectivity violations. This is commonly
 introduced by Wackernagel's Law, as in Figure~\ref{fig:wackernagel}, where the
-placement of μὲν δὴ interlaces with the τὰ...πόλεος phrase.
+placement of \textgreek{μὲν δὴ} interlaces with the \textgreek{τὰ...πόλεος} phrase.
 
 \begin{figure}[h!]
 \centering
 \xytext{
-    \xybarnode{τὰ}\xybarconnect[6]{3}&
-    \xybarnode{μὲν}\xybarconnect[3](UR,U){1}&
-    \xybarnode{δὴ}&
-    \xybarnode{πόλεος}&
-    \xybarnode{...}&
-    \xybarnode{ὤρθησαν}\xybarconnect[9](U,UL){-5}\xybarconnect[9]{-4}
+    \gkbarnode{τὰ}\xybarconnect[6]{3}&
+    \gkbarnode{μὲν}\xybarconnect[3](UR,U){1}&
+    \gkbarnode{δὴ}&
+    \gkbarnode{πόλεος}&
+    \gkbarnode{...}&
+    \gkbarnode{ὤρ\salt{θ}ησαν}\xybarconnect[9](U,UL){-5}\xybarconnect[9]{-4}
 }
 \caption{``[The gods] righted the matters of the city...'' (\emph{Antigone}
 162--163) has
-one projectivity violation, due to the μὲν δὴ falling in Wackernagel's Position.}
+one projectivity violation, due to the \textgreek{μὲν δὴ} falling in Wackernagel's Position.}
 \label{fig:wackernagel}
 \end{figure}
 
 We consider a violation to have occured for each and every intersection of lines
 on such a drawing; thus, the hyperbaton of one word may introduce multiple
 violations. Consider, for instance, Figure~\ref{fig:stas-tree}, in which five
-violations are brought about by the displacement of φονώσαισιν. In this way, the
-number of intersections is a good heuristic for judging the severity of
-hyperbata.
+violations are brought about by the displacement of \textgreek{φονώσαισιν}. In
+this way, the number of intersections is a good heuristic for judging the
+severity of hyperbata.
 
 \begin{figure}[h!]
 \centering
 \xytext{
-  \xybarnode{στὰς}\xybarconnect[6]{2} &
-  \xybarnode{δ'} &
-  \xybarnode{ὑπὲρ}\xybarconnect[3](UR,U){1} &
-  \xybarnode{μελάθρων} &
-  \xybarnode{φονώσαισιν} &
-  \xybarnode{ἀμφι}
+  \gkbarnode{στὰς}\xybarconnect[6]{2} &
+  \gkbarnode{δ'} &
+  \gkbarnode{ὑπὲρ}\xybarconnect[3](UR,U){1} &
+  \gkbarnode{μελά\salt{θ}ρων} &
+  \gkbarnode{φονώσαισιν} &
+  \gkbarnode{ἀμφι}
     \xybarconnect[6](UR,U){3} &
-  \xybarnode{\!\!\!χανὼν}
+  \gkbarnode{\!\!\!χανὼν}
     \xybarconnect[6](U,U){1}
     \xybarconnect[6](UL,U){4}&
-  \xybarnode{κύκλῳ} &
-  \xybarnode{λόγχαις}\xybarconnect[3](UL,U){-4} &
-  \xybarnode{ἑπτάπυλον} &
-  \xybarnode{στόμα}\xybarconnect[3](UL,U){-1} &
-  \xybarnode{ἔβα}
+  \gkbarnode{κύκλῳ} &
+  \gkbarnode{λόγχαις}\xybarconnect[3](UL,U){-4} &
+  \gkbarnode{ἑπτάπυλον} &
+  \gkbarnode{στόμα}\xybarconnect[3](UL,U){-1} &
+  \gkbarnode{ἔβα}
     \xybarconnect[9](U,UL){-11}
     \xybarconnect[9](U,U){-10}
     \xybarconnect[9](U,U){-6}
 }
 \caption{``And he stood over the rooftops, gaped in a circle with murderous
-spears around the seven-gated mouth, and left'' (\emph{Antigone}
-117--120) has six projectivity violations, five of which are induced by the
-hyperbaton of φονώσαισιν, and one from the usual placement of δ' in
-Wackernagel's Position.}
+spears around the seven-gated mouth, and left'' (\emph{Antigone} 117--120) has
+six projectivity violations, five of which are induced by the hyperbaton of
+\textgreek{φονώσαισιν}, and one from the usual placement of δ' in Wackernagel's
+Position.}
 \label{fig:stas-tree}
 \end{figure}
 
@@ -185,7 +203,7 @@ its linear position, and cross-reference it with the linear position of its
 head:
 
 \begin{quote}
-\gll στὰς δ' ὑπὲρ μελάθρων φονώσαισιν ἀμφικανὼν κύκλῳ λόγχαις ἑπτάπυλον στόμα
+\gll στὰς δ' ὑπὲρ μελά\salt{θ}ρων φονώσαισιν ἀμφικανὼν κύκλῳ λόγχαις ἑπτάπυλον στόμα
 ἔβα\\
       1:11  2:11 3:1 4:3 5:8 6:11 7:6 8:6 9:10 10:6 11:\_\\
 \end{quote}
@@ -277,9 +295,9 @@ Table~\ref{tab:edges}.}
 
 In order for our view of a text's overall projectivity to not be skewed by its
 length, we must have a ratio. For the purposes of this paper, we shall call this
-metric $\omega$, as given by the following ratio:
+metric |\omega|, as given by the following ratio:
 %
-\[ \omega = \frac{\text{number of violations}}{\text{number of arcs}} \]
+\[ \wp = \frac{\text{number of violations}}{\text{number of arcs}} \]
 %
 Now, this metric applies just as much to a single sentence as it does to a
 larger body of text. So, averages of |omega| should not be taken; rather, total
@@ -300,8 +318,8 @@ resembling the following:
 
 \begin{lstlisting}
     <sentence id="2900759">
-      <word id="1" form="*\color{gray}\textrm{χρὴ}*" lemma="*\color{gray}\textrm{χρή}*" head="0" />
-      <word id="2" form="*\color{gray}\textrm{δὲ}*" lemma="*\color{gray}\textrm{δέ}*" head="1" />
+      <word id="1" form="*\color{gray}\textrm{\textgreek{\hlig{χρὴ}}}*" lemma="*\color{gray}\textrm{\textgreek{\hlig{χρή}}}*" head="0" />
+      <word id="2" form="*\color{gray}\textrm{\textgreek{δὲ}}*" lemma="*\color{gray}\textrm{\textgreek{δέ}}*" head="1" />
       ...
     </sentence>
 \end{lstlisting}
@@ -383,11 +401,11 @@ proved in the \emph{Antigone} to have the highest proportion of projectivity
 violations.
 
 Within the lyric passages, the laments appear to have consistently higher
-|omega|s than the choral odes, which may stem from their being much more emotive
+|omega| than the choral odes, which may stem from their being much more emotive
 and personal in nature. It should be noted that, whilst the individual odes
 conform tightly to the cumulative |omega| of their category, there is a fair
 degree of variation among the laments. Likewise, the anapaests vary so wildly in
-their |omega|s that it may be difficult to say very much about them that is
+their |omega| that it may be difficult to say very much about them that is
 relevant to the questions we are considering.
 
 As for dialog, longer-form speeches are largely conformant in their |omega|,
@@ -796,20 +814,20 @@ Then, the entire document can be cut down into smaller documents by section:
 >              ]
 
 > speeches :: [(Section, Section, String)]
-> speeches =  [  (MkRange 162 210,    MkRange 2900146 2900157, "\\emph{Kreon:} ἄνδρες, τὰ μὲν δὴ..."),
->                (MkRange 249 277,    MkRange 2900191 2900204, "\\emph{Guard:} οὐκ οἶδ'· ἐκεῖ γὰρ οὔτε..."),
->                (MkRange 280 314,    MkRange 2900206 2900220, "\\emph{Kreon:} παῦσαι, πρὶν ὀργῆς..."),
->                (MkRange 407 440,    MkRange 2900271 2900282, "\\emph{Guard:} τοιοῦτον ἦν τὸ πρᾶγμ'..."),
->                (MkRange 450 470,    MkRange 2900291 2900302, "\\emph{Antigone:} οὐ γάρ τί μοι Ζεὺς..."),
->                (MkRange 473 495,    MkRange 2900305 2900316, "\\emph{Kreon:} ἀλλ' ἴσθι τοι..."),
->                (MkRange 639 680,    MkRange 2900410 2900427, "\\emph{Kreon:} οὕτω γὰρ, ὦ παῖ..."),
->                (MkRange 683 723,    MkRange 2900429 2900446, "\\emph{Haimon:} πἀτερ, θεοὶ φύουσιν..."),
->                (MkRange 891 928,    MkRange 2900531 2900547, "\\emph{Antigone:} ὦ τύμβος, ὦ νυμφεῖον..."),
->                (MkRange 998 1032,   MkRange 2900577 2900595, "\\emph{Teiresias:} γνώσῃ, τέχνης σημεῖα..."),
->                (MkRange 1033 1047,  MkRange 2900596 2900601, "\\emph{Kreon:} ὦ πρέσβυ, πάντες..."),
->                (MkRange 1064 1090,  MkRange 2900621 2900628, "\\emph{Teiresias:} ἀλλ' εὖ γέ τοι..."),
->                (MkRange 1155 1172,  MkRange 2900655 2900662, "\\emph{Messenger:} Κάδμου πάροικοι καὶ..."),
->                (MkRange 1192 1243,  MkRange 2900681 2900703, "\\emph{Messenger:} ἐγώ, φίλη δέσποινα...") ]
+> speeches =  [  (MkRange 162 210,    MkRange 2900146 2900157, "\\emph{Kreon: \\textgreek{ἄνδρες, τὰ μὲν δὴ...}}"),
+>                (MkRange 249 277,    MkRange 2900191 2900204, "\\emph{Guard: \\textgreek{οὐκ οἶδ'· ἐκ\\hlig{εῖ} γὰρ οὔτε...}}"),
+>                (MkRange 280 314,    MkRange 2900206 2900220, "\\emph{Kreon: \\textgreek{παῦσαι, πρὶν ὀργῆς...}}"),
+>                (MkRange 407 440,    MkRange 2900271 2900282, "\\emph{Guard: \\textgreek{τοιοῦτον ἦν τὸ πρᾶγμ'...}}"),
+>                (MkRange 450 470,    MkRange 2900291 2900302, "\\emph{Antigone: \\textgreek{οὐ γάρ τί μοι Ζεὺς...}}"),
+>                (MkRange 473 495,    MkRange 2900305 2900316, "\\emph{Kreon: \\textgreek{ἀλλ' ἴσ\\salt{θ}ι τοι...}}"),
+>                (MkRange 639 680,    MkRange 2900410 2900427, "\\emph{Kreon: \\textgreek{οὕτω γὰρ, ὦ παῖ...}}"),
+>                (MkRange 683 723,    MkRange 2900429 2900446, "\\emph{Haimon: \\textgreek{πἀτερ, \\salt{θ}εοὶ φύουσιν...}}"),
+>                (MkRange 891 928,    MkRange 2900531 2900547, "\\emph{Antigone: \\textgreek{ὦ τύμβος, ὦ νυμφ\\hlig{εῖ}ον...}}"),
+>                (MkRange 998 1032,   MkRange 2900577 2900595, "\\emph{Teiresias: \\textgreek{γνώσῃ, τέχνης σημ\\hlig{εῖ}α...}}"),
+>                (MkRange 1033 1047,  MkRange 2900596 2900601, "\\emph{Kreon: \\textgreek{ὦ πρέσβυ, πάντες...}}"),
+>                (MkRange 1064 1090,  MkRange 2900621 2900628, "\\emph{Teiresias: \\textgreek{ἀλλ' εὖ γέ τοι...}}"),
+>                (MkRange 1155 1172,  MkRange 2900655 2900662, "\\emph{Messenger: \\textgreek{Κάδμου πάροικοι καὶ...}}"),
+>                (MkRange 1192 1243,  MkRange 2900681 2900703, "\\emph{Messenger: \\textgreek{ἐγώ, φίλη δέσποινα...}}") ]
 >
 
 > stichos :: [(Section, Section, String)]

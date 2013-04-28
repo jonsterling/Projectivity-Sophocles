@@ -113,7 +113,7 @@ dependency ``wraps around itself''.
 \subfigure[``Full of plentiful supplies'' (Xenophon, \emph{Anabasis} 3.5.1) is fully projective.]{
   \xytext{
     \gkbarnode{μεστῇ}\xybarconnect[6](U,U){2}&
-    \gkbarnode{πολλῶν}&
+    \gkbarnode{πο\hlig{λλ}ῶν}&
     \gkbarnode{ἀγα\salt{θ}ῶν}\xybarconnect[3](UL,U){-1}
   }
 }
@@ -121,7 +121,7 @@ dependency ``wraps around itself''.
 \subfigure[``Full of many good things'' (Plato, \emph{Laws} 906a) has one
 projectivity violation.]{
   \xytext{
-    \gkbarnode{πολλῶν}&
+    \gkbarnode{πο\hlig{λλ}ῶν}&
     \gkbarnode{μεστὸν}\xybarconnect[6]{1}&
     \gkbarnode{ἀγα\salt{θ}ῶν}\xybarconnect[3](UL,U){-2}
   }
@@ -922,13 +922,13 @@ Then, the entire document can be cut down into smaller documents by section:
 >                (MkRange 280 314,    MkRange 2900206 2900220, "\\emph{Kreon: \\textgreek{παῦσαι, πρὶν ὀργῆς...}}"),
 >                (MkRange 407 440,    MkRange 2900271 2900282, "\\emph{Guard: \\textgreek{τοιοῦτον ἦν τὸ πρᾶγμ'...}}"),
 >                (MkRange 450 470,    MkRange 2900291 2900302, "\\emph{Antigone: \\textgreek{οὐ γάρ τί μοι Ζεὺς...}}"),
->                (MkRange 473 495,    MkRange 2900305 2900316, "\\emph{Kreon: \\textgreek{ἀλλ' ἴσ\\salt{θ}ι τοι...}}"),
+>                (MkRange 473 495,    MkRange 2900305 2900316, "\\emph{Kreon: \\textgreek{ἀ\\hlig{λλ}' ἴσ\\salt{θ}ι τοι...}}"),
 >                (MkRange 639 680,    MkRange 2900410 2900427, "\\emph{Kreon: \\textgreek{οὕτω γὰρ, ὦ παῖ...}}"),
 >                (MkRange 683 723,    MkRange 2900429 2900446, "\\emph{Haimon: \\textgreek{πἀτερ, \\salt{θ}εοὶ φύουσιν...}}"),
 >                (MkRange 891 928,    MkRange 2900531 2900547, "\\emph{Antigone: \\textgreek{ὦ τύμβος, ὦ νυμφ\\hlig{εῖ}ον...}}"),
 >                (MkRange 998 1032,   MkRange 2900577 2900595, "\\emph{Teiresias: \\textgreek{γνώσῃ, τέχνης σημ\\hlig{εῖ}α...}}"),
 >                (MkRange 1033 1047,  MkRange 2900596 2900601, "\\emph{Kreon: \\textgreek{ὦ πρέσβυ, πάντες...}}"),
->                (MkRange 1064 1090,  MkRange 2900621 2900628, "\\emph{Teiresias: \\textgreek{ἀλλ' εὖ γέ τοι...}}"),
+>                (MkRange 1064 1090,  MkRange 2900621 2900628, "\\emph{Teiresias: \\textgreek{ἀ\\hlig{λλ'} εὖ γέ τοι...}}"),
 >                (MkRange 1155 1172,  MkRange 2900655 2900662, "\\emph{Messenger: \\textgreek{Κάδμου πάροικοι καὶ...}}"),
 >                (MkRange 1192 1243,  MkRange 2900681 2900703, "\\emph{Messenger: \\textgreek{ἐγώ, φίλη δέσποινα...}}") ]
 >

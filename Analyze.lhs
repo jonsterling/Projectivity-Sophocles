@@ -1,15 +1,19 @@
 %&program=xelatex
 %&encoding=UTF-8 Unicode
 
-\documentclass{article}
+\documentclass[letterpaper, 11pt]{article}
 
 %options ghci -fglasgow-exts
 %include Analyze.fmt
 
 \usepackage{setspace,stmaryrd,url,subfigure, amssymb, amsfonts,amsmath,multicol,booktabs}
-\usepackage[margin=1cm]{caption}
+\usepackage[font=small, margin=2cm]{caption}
 \usepackage{xytree, listings, cgloss4e, qtree}
 \usepackage[toc,page]{appendix}
+\usepackage[round]{natbib}
+
+\usepackage{anysize}
+\usepackage[margin=1.25in]{geometry}
 
 \usepackage[silent]{fontspec}
 \usepackage{xltxtra}
@@ -59,6 +63,14 @@
 \date{April 2013}
 \maketitle
 
+\abstract{In this paper, I demonstrate how, and to what degree, phrase
+projectivity corresponds with register and meter in Sophocles's \emph{Antigone},
+by developing a quantitative metric for projectivity and comparing it across
+lyrics, trimeters and anapaests using the data provided by the Perseus Ancient
+Greek Dependency Treebank \citep{perseustreebanks2011}. In the appendices, the
+formal algorithm for the computations done herein is developed in the
+programming language Haskell \citep{haskell2010}.}
+
 %if codeOnly || showModuleHeader
 
 > {-# LANGUAGE StandaloneDeriving        #-}
@@ -85,17 +97,6 @@
 
 %endif
 
-\noindent \textbf{THIS IS A DRAFT.} It is currently lacking a bibliography, and
-the analysis is a bit just-so, I'm afraid. I also intend to add a section about
-how specific choices made about data representation by Perseus annotators can
-affect such an analysis as I have given here.
-
-In this paper, I will show how, and to what degree, phrase projectivity
-corresponds with register and meter in Sophocles's \emph{Antigone}, by
-developing a quantitative metric for projectivity and comparing it across
-lyrics, trimeters and anapaests using the data provided by the Perseus Ancient
-Greek Dependency Treebank. In the appendices, the formal algorithm for the
-computations done herein is developed in the programming language Haskell.
 
 \section{Dependency Trees and Their Projectivity}
 
@@ -126,7 +127,7 @@ projectivity violation.]{
   }
 }
 
-\caption{Examples drawn from Devine~\&~Stephens.}
+\caption{Examples drawn from \citet[p.\ 11]{devine2000discontinuous}.}
 \label{fig:dependency-trees1}
 \end{figure}
 
@@ -145,8 +146,8 @@ placement of \textgreek{μὲν δὴ} interlaces with the \textgreek{τὰ...π
     \gkbarnode{...}&
     \gkbarnode{ὤρ\salt{θ}ησαν}\xybarconnect[9](U,UL){-5}\xybarconnect[9]{-4}
 }
-\caption{``[The gods] righted the matters of the city...'' (\emph{Antigone}
-162--163) has
+\caption{``[The gods] righted the matters of the city...'' (\emph{Antigone},
+ll.\ 162--163) has
 one projectivity violation, due to the \textgreek{μὲν δὴ} falling in Wackernagel's Position.}
 \label{fig:wackernagel}
 \end{figure}
@@ -181,7 +182,7 @@ severity of hyperbata.
     \xybarconnect[9](U,U){-6}
 }
 \caption{``And he stood over the rooftops, gaped in a circle with murderous
-spears around the seven-gated mouth, and left'' (\emph{Antigone} 117--120) has
+spears around the seven-gated mouth, and left'' (\emph{Antigone}, ll.\ 117--120) has
 six projectivity violations, five of which are induced by the hyperbaton of
 \textgreek{φονώσαισιν}, and one from the usual placement of δ' in Wackernagel's
 Position.}
@@ -209,12 +210,13 @@ head:
 \end{quote}
 
 \noindent
+%
 Next, arrange the dependencies into a tree as in Figure~\ref{fig:rose-tree}.
 Then, counting upwards from the lowest edges (i.e.\ the lines) in the tree up to
 the topmost ones, make a list of edges indexed by vertical level as in
 Table~\ref{tab:edges}.
 
-\begin{figure}
+\begin{figure}[h]
   \Tree
   [.11
     [.1 [.3 4 ] ]
@@ -229,11 +231,11 @@ Table~\ref{tab:edges}.
 \label{fig:rose-tree}
 \end{figure}
 
-\begin{table}
+\begin{table}[h]
 \centering
   \begin{tabular}{cl}
   \toprule
-  \emph{level} & \emph{edges}\\
+  \textsc{level} & \textsc{edges}\\
   \midrule
   1 & |3:-:4, 5:-:8, 9:-:10|\\
   2 & |1:-:3, 6:-:7, 6:-:8, 6:-:10|\\
@@ -291,18 +293,18 @@ Table~\ref{tab:edges}.}
 \label{tab:violations}
 \end{table}
 
-\subsection{|omega|: a metric of projectivity}
+\subsection{|proj|: a metric of projectivity}
 
 In order for our view of a text's overall projectivity to not be skewed by its
 length, we must have a ratio. For the purposes of this paper, we shall call this
-metric |\omega|, as given by the following ratio:
+metric |\proj|, as given by the following ratio:
 %
 \[ \wp = \frac{\text{number of violations}}{\text{number of arcs}} \]
 %
 Now, this metric applies just as much to a single sentence as it does to a
-larger body of text. So, averages of |omega| should not be taken; rather, total
+larger body of text. So, averages of |proj| should not be taken; rather, total
 numbers of violations and total numbers of arcs should be accumulated until
-|omega| may be computed for the entire body of text being examined.
+|proj| may be computed for the entire body of text being examined.
 
 \section{The Perseus Treebank}
 %
@@ -327,33 +329,40 @@ resembling the following:
 \noindent
 %
 Every sentence is given a unique, sequential identifier; within each sentence,
-every word is indexed by its linear position and coreferenced with the linear
-position of its dominating head. In the case of the data for the \emph{Antigone},
-the maximal head of each sentence has its own head given as \lstinline{0}.
-Appendix~\ref{sec:parsing} deals with parsing these XML representations into
-dependency trees for which we can compute |omega|.
+every word is indexed by its linear position and coindexed with the linear
+position of its superordinate head. Hence, the treebanks are an invaluable
+source for a scholar who wishes to confirm intuitions about hyperbaton-frequency
+with real data on a large scale.
 
-The Perseus data also includes punctuation in the dependency trees, which we
-must of course filter out; a comma, for instance, may induce a technical
-hyperbaton, simply by virtue of what the Perseus editors have chosen to mark as
-its ``head'', to the extent that it means anything at all for a punctuation mark
-to have a head.
+Indeed, it is not a new proposition to analyze the Perseus Treebanks for
+hyperbata; for instance, \citet{bamman2006design} report an experiment run
+against the Latin Treebank to compare the level of hyperbaton across Jerome,
+Caesar, Cicero and Vergil. \citeauthor{bamman2006design}'s design, however, is
+both more limited and more fine-grained than the one presented in this paper: on
+the one hand, they exclusively observe hyperbata that involve a dependent being
+transposed out from under a preposition (and ignore the syntactically parallel
+account for other categories); on the other hand, they distinguish between two
+different such cases, namely those of \emph{memorem ob īram} and \emph{īram ob
+memorem}, which are respectively the Y$_2$ and Y$_1$ hyperbata of
+\citeauthor{devine2000discontinuous}.
 
 
 \section{Projectivity in the \emph{Antigone}}
 
 To observe the variation of projectivity within a text, then, one may make a
 selection of sentences that have something in common, compute their trees and
-thence derive a cumulative |omega| for the entire selection. Then that figure
+thence derive a cumulative |proj| for the entire selection. Then that figure
 may be compared with that of other selections.
 
 I have chosen to compare projectivity in lyrics, anapaests and trimeters. Lyrics
 I have divided into two categories: choral odes and laments, whereas I divide
 trimeters into medium-to-long speeches and stichomythia.
+Appendix~\ref{sec:parsing} deals with parsing the Perseus XML representations of
+the \emph{Antigone} into dependency trees for which we can compute |proj|.
 
 To that end, I have selected passages from the \emph{Antigone} and organized
 them by type. Table~\ref{tab:lyrics} enumerates the lyric passages of the play,
-along with their computed |omega| values, and a cumulative |omega| value for the
+along with their computed |proj| values, and a cumulative |proj| value for the
 entire set. Table~\ref{tab:anapaests} does the same for anapaests. Lastly,
 Table~\ref{tab:dialogue} gives selections of dialogue (which is in iambic
 trimeters), divided between medium-to-long speeches and stichomythia.
@@ -390,8 +399,8 @@ hyperbaton in more general terms.
 
 Whereas in prose, hyperbaton corresponds to \emph{strong focus}, which ``does
 not merely fill a gap in the addressee's knowledge but additionally evokes and
-excludes alternatives'' (Devine~\&~Stephens 303), hyperbaton in verse only
-entails weak focus, which emphasizes but does not exclude (ibid.\ 107).
+excludes alternatives'', hyperbaton in verse only entails weak focus, which
+emphasizes but does not exclude \citep[p.\ 107, 303]{devine2000discontinuous}.
 
 As a result, hyperbaton in verse may be used to evoke a kind of elevated style
 without incidentally entailing more emphasis and other pragmatic effects than
@@ -401,27 +410,28 @@ proved in the \emph{Antigone} to have the highest proportion of projectivity
 violations.
 
 Within the lyric passages, the laments appear to have consistently higher
-|omega| than the choral odes, which may stem from their being much more emotive
-and personal in nature. It should be noted that, whilst the individual odes
-conform tightly to the cumulative |omega| of their category, there is a fair
-degree of variation among the laments. Likewise, the anapaests vary so wildly in
-their |omega| that it may be difficult to say very much about them that is
-relevant to the questions we are considering.
+|proj| than the choral odes, which may stem from their being much more emotive
+and personal in nature; I have not come to a firm conclusion on that particular
+matter. It should be noted that, whilst the individual odes conform tightly to
+the cumulative |proj| of their category, there is a fair degree of variation
+among the laments. Likewise, the anapaests vary so wildly in their |proj| that
+it may be difficult to say very much about them that is relevant to the
+questions we are considering.
 
-As for dialog, longer-form speeches are largely conformant in their |omega|,
+As for dialog, longer-form speeches are largely conformant in their |proj|,
 with stichomythias varying a bit more. Speeches are a somewhat less projective
 than the stichomythias, being typically more eloquent and long-winded than their
 argumentative, choppy counterparts.
 
 So far, the most surprising thing about the data is the degree to which certain
-verse-types vary in |omega| (or, if you like, the degree to which other types
+verse-types vary in |proj| (or, if you like, the degree to which other types
 \emph{don't}). The data draw us, then, to the following conclusions:
 
 \begin{enumerate}
 \item Non-projectivity varies within a single metrical type (lyrics, iambic trimeters,
 anapaests).
 
-\item Certain registers seem to be more conventionalized with respect to |omega|
+\item Certain registers seem to be more conventionalized with respect to |proj|
 than others; that is, choral odes and speeches do not vary greatly amongst
 themselves, but laments and anapaests do.
 \end{enumerate}
@@ -436,19 +446,110 @@ would not seem to be a primary factor for predicting incidence and severity of
 hyperbaton, but rather a secondary one at best.
 
 That is to say, we know for a fact that passages in lyric meters have greater
-|omega| than passages in other meters. Yet, the variation of |omega| within that
+|proj| than passages in other meters. Yet, the variation of |proj| within that
 very meter indicates that there is some other factor involved, which very likely
 has to do with register along two different dimensions, which is to say,
 relative ``dignity of style'' and emotive force.
 
-With regard to the very low |omega| found in the stichomythias, I suggest that
+With regard to the very low |proj| found in the stichomythias, I suggest that
 it is the necessary shortness of each utterance which is at fault here. That is,
 the maximum ``damage'' that a hyperbaton can do is greatly lessened, when the
 ultimate depth of the phrase structure is limited by its length (whence, for
 instance, it is unlikely for a single hyperbaton to cause more than a few
 projectivity violations).
 
+\subsection{Representational Distortions}
+
+The particular format and conventions adopted by the Perseus Project in their
+dependency annotation can cause some distortions in the analysis of hyperbaton.
+The first and most easily dispatched of these is that in addition to words, they
+also include punctuation in the dependency trees (such as commas, periods and
+question marks).
+
+This is problematic, since such a mark may induce a technical hyperbaton, simply
+by virtue of what the Perseus annotators have chosen to mark as its ``head'', to
+the extent that it means anything at all for a punctuation mark to have a head.
+To compensate, we simply filter out all punctuation during the parsing stage
+(see |edgeFromXML| on p.\ \pageref{func:edge-from-xml} in
+Appendix~\ref{sec:parsing}).
+
+\subsubsection*{Wackernagel's Law: Syntax or Phonology?}
+
+Another potention source of distortion is the choice of the annotators to label
+the members of postpositional particle chains in Wackernagel's Position as being
+heads of each other in a chain from left to right, such as where \textgreek{μὲν}
+is given as the head of \textgreek{δὴ} in Figure~\ref{fig:wackernagel}. I am
+unconvinced either way as to whether this is the relation for particle chains in
+Dependency Grammar, and simply would observe for the sake of argument that an
+alternative analysis, where the verb is the head of each, might yield a greater
+number of projectivity violations, as in Figure~\ref{fig:wackernagel-redux}.
+
+\begin{figure}[h!]
+\centering
+\xytext{
+    \gkbarnode{τὰ}\xybarconnect[6]{3}&
+    \gkbarnode{μὲν}&
+    \gkbarnode{δὴ}&
+    \gkbarnode{πόλεος}&
+    \gkbarnode{...}&
+    \gkbarnode{ὤρ\salt{θ}ησαν}
+      \xybarconnect[9](U,UL){-5}
+      \xybarconnect[9]{-4}
+      \xybarconnect[9]{-3}
+}
+\caption{An alternative analysis of the dependency relations in
+Figure~\ref{fig:wackernagel} yields a greater number of projectivity violations.}
+\label{fig:wackernagel-redux}
+\end{figure}
+
+Further, if we allow ourselves to step outside the tiptoe of Dependency Grammar
+for a moment into a more orthodox, derivational approach, we will see that
+``hyperbata'' which arise from enclitics are likely of a very different kind of
+displacement than that which occurs in, for instance, prepositional phrases or
+noun phrases.  \citet{agbayani2010second} argue convincingly that the placement
+of enclitics in so-called ``second position'' is phonological, and not
+syntactic. I shall follow their analysis, which holds that the enclitics are
+\emph{syntactically} in first position, and mandate \emph{phonologically} that
+they have a word to their left which is from the modified phrase.
+
+According to the Y-Model of Linguistics (Figure~\ref{fig:y-model}), phonological
+concerns cannot affect semantic interpretation, and vice versa. So, when a
+movement occurs along the path from syntax to phonology, it cannot have any
+semantic force. Therefore, the \emph{phonological} movement of a word to the
+position behind a postpositive particle cannot confer any particular focus,
+which is consistent with our understanding that postpostive conjunctions,
+asseveratives and other particles may apply semantic force to their complements,
+and not \emph{per se} to the words onto which they are enclitic (i.e.\ the
+emphasis in \textgreek{τὰ μὲν ...  πόλεος} is on \textgreek{τὰ πόλεος}, not just
+\textgreek{τά}).
+
+\begin{figure}[h!]
+  \Tree
+  [.{\sc syntax}
+    {\sc phonology} {\sc semantics}
+  ]
+\caption{The Y-Model of Linguistics, in which Syntax is interpreted
+separately into Phonological Form (PF) and Logical Form (LF).}
+\label{fig:y-model}
+\end{figure}
+
+Yet, the other kinds of displacement do indeed induce focus, whether it be weak
+or strong. And so, whether these hyperbata are taken as a kind of movement or
+not, it is untenable to analyze them as phonological movements: they must be
+present in the syntax prior to translation to PF.
+
+Thus, a general analysis of hyperbaton which uses Dependency Grammar as its
+basis will invariably fail to recognize the difference between displacements
+which are \emph{phonological} in nature and those which are \emph{syntactic},
+where the latter are the true target of our investigation. This confounding
+factor, then, must be kept in mind, when analyzing data from such an
+experiment.
+
+\nocite{sophocles1999sophocles, euripides2002euripides}
+\bibliographystyle{plainnat} % basic style, author-year citations
+\bibliography{Analyze} % name your BibTeX data base
 \newpage
+
 \begin{appendices}
 
 The functions used in parsing and computing the data for this paper are
@@ -457,7 +558,7 @@ calculus with inductive data types and type classes; the listings below use
 standard Haskell syntax with the exception of some infix operators to improve
 readability, and the addition of so-called ``idiom brackets'', which allow a
 more syntactically clean presentation of function application within a
-context.
+context \citep{mcbride2008functional}.
 
 \section{Algorithm \& Data Representation}
 \label{sec:algorithm}
@@ -551,9 +652,9 @@ complete tree structure:
 \label{sec:counting}
 
 The basic procedure for counting projectivity violations is as follows: flatten
-down the tree into a list of edges cross-referenced by their vertical position
-in the tree; then traverse the list and see how many times these edges intersect
-each other.
+down the tree into a list of edges coindexed by their vertical position in the
+tree; then traverse the list and see how many times these edges intersect each
+other.
 
 > type Level = Integer
 
@@ -627,19 +728,19 @@ level:
 >   rangesBelow (l, _)  = filter (\(l', _) -> l' <= l) xs
 >   violationsWith x    = sum (liftA (checkEdges x) (rangesBelow x))
 
-\subsection{Computing |omega|}
-\label{sec:computing-omega}
+\subsection{Computing |proj|}
+\label{sec:computing-proj}
 
-We introduce a data type |Omega| of integer-to-integer ratios which may be
+We introduce a data type |proj| of integer-to-integer ratios which may be
 computed into a rational.
 
 %format edgeCount = "\FN{edgeCount}"
 %format violationCount = "\FN{violationCount}"
 %format liftRatio f g = "\left\llbracket" ^^ "\dfrac{" f "}{" g "}\right\rrbracket"
 
-> data Omega = Omega { violationCount :: Integer, edgeCount :: Integer }
-> computeOmega :: Omega -> Rational
-> computeOmega = liftRatio violationCount edgeCount
+> data Proj = Proj { violationCount :: Integer, edgeCount :: Integer }
+> computeProj :: Proj -> Rational
+> computeProj = liftRatio violationCount edgeCount
 
 \ignore{
 
@@ -648,18 +749,18 @@ computed into a rational.
 }
 
 \noindent
-Furthermore, |Omega|s generate a monoid, which is an algebraic structure that
+Furthermore, |proj|s generate a monoid, which is an algebraic structure that
 abstracts out the notion of an identity and an associative binary operation that
-respects that identity. In this way, we can combine |Omega| values:
+respects that identity. In this way, we can combine |proj| values:
 
-> instance Monoid Omega where
->   mempty = Omega 0 0
->   mappend (Omega x y) (Omega u v) = Omega (x + u) (y + v)
+> instance Monoid Proj where
+>   mempty = Proj 0 0
+>   mappend (Proj x y) (Proj u v) = Proj (x + u) (y + v)
 
-Finally, |omega| may be computed for trees.
+Finally, |proj| may be computed for trees.
 
-> omega :: Ord a => Tree a -> Omega
-> omega = liftA2 Omega edgeViolations genericLength . allEdges
+> proj :: Ord a => Tree a -> Proj
+> proj = liftA2 Proj edgeViolations genericLength . allEdges
 
 \section{Working with the Perseus Treebank}
 \label{sec:working-with-treebase}
@@ -710,6 +811,8 @@ filter out punctuation which would skew our data.
 >      Just x | x `elem` [".",",",";",":"] -> Nothing
 >      otherwise -> liftOp2 (:-:) (readAttr "head" e) (readAttr "id" e)
 
+\label{func:edge-from-xml}
+%
 Thence, turn a sentence into a tree by its edges using the machinery from
 Section~\ref{sec:edges-to-trees}.
 
@@ -733,12 +836,12 @@ disk.
 \subsection{Analysis of Data}
 \label{sec:analyzing}
 
-We compute the cumulative |omega| of the trees contained in a document as follows:
+We compute the cumulative |proj| of the trees contained in a document as follows:
 
-> analyzeDocument :: Document -> Omega
-> analyzeDocument doc = mconcat (liftA omega (treesFromDocument doc))
+> analyzeDocument :: Document -> Proj
+> analyzeDocument doc = mconcat (liftA proj (treesFromDocument doc))
 
-We will wish to compare the |omega| for parts of the \emph{Antigone}. A section
+We will wish to compare the |proj| for parts of the \emph{Antigone}. A section
 is given by a two sentence indices (a beginning and an end):
 
 > data Section = MkRange Integer Integer
@@ -757,22 +860,22 @@ Then, the entire document can be cut down into smaller documents by section:
 > makeTable :: [(Section, Section, String)] -> IO UnquotedString
 > makeTable sections = do
 >   antigone <- documentFromFile "antigone.xml"
->   let pre = "\\begin{tabular}{clc}\\toprule\\textbf{Lines}&\\textbf{}&|omega|\\\\ \\midrule"
+>   let pre = "\\begin{tabular}{clc}\\toprule\\textsc{lines}&\\textsc{}&|proj|\\\\ \\midrule"
 >   let post = "\\bottomrule\\end{tabular}"
->   let omegas = (\(_,r,_) -> analyzeDocument $ restrictDocument r antigone) <$> sections
->   let totalOmega = computeOmega $ mconcat omegas
->   let body = fold $ uncurry makeTableRow <$> zip sections (computeOmega <$> omegas)
->   let avg = "\\midrule\\multicolumn{3}{r}{|cumulative omega| = |" ++ showRational totalOmega ++ "|}\\\\"
+>   let projs = (\(_,r,_) -> analyzeDocument $ restrictDocument r antigone) <$> sections
+>   let totalproj = computeProj $ mconcat projs
+>   let body = fold $ uncurry makeTableRow <$> zip sections (computeProj <$> projs)
+>   let avg = "\\midrule\\multicolumn{3}{r}{|cumulative proj| = |" ++ showRational totalproj ++ "|}\\\\"
 >   return . Unquote $ pre ++ body ++ avg ++ post
 
 > showRational x = printf "%.2f" (fromInteger (round $ x * (10^2)) / (10.0**2) :: Float)
 
 > makeTableRow :: (Section, Section, String) -> Rational -> String
-> makeTableRow (ls, r, d) om = lines ++ "&" ++ desc ++ "&" ++ omega ++ "\\\\" where
+> makeTableRow (ls, r, d) om = lines ++ "&" ++ desc ++ "&" ++ proj ++ "\\\\" where
 >   desc = "\\emph{" ++ d ++ "}"
 >   lines = "|" ++ show ls ++ "|"
 >   range = "|" ++ show r ++ "|"
->   omega = "|" ++ showRational om ++ "|"
+>   proj = "|" ++ showRational om ++ "|"
 
 > deriving instance Show Section
 > newtype UnquotedString = Unquote String
@@ -865,6 +968,8 @@ Then, the entire document can be cut down into smaller documents by section:
 }
 
 \end{appendices}
+
+
 \end{document}
 
 

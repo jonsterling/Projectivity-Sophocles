@@ -95,9 +95,9 @@
 %format Bool = "\mathbb{B}"
 
 %format aux = "\FN{aux}"
-%format omega ="\FN{\wp}"
-%format Omega ="\mathfrak{P}"
-%format computeOmega = "\FN{compute_\omega}"
+%format proj ="\FN{\wp}"
+%format Proj ="\mathfrak{P}"
+%format computeProj = "\FN{compute_\wp}"
 
 %format (liftA f x) = "\llbracket" ^^ f ^^ x ^^ "\rrbracket"
 %format (liftA2 f x y) = "\llbracket" ^^ f ^^ x ^^ y ^^ "\rrbracket"

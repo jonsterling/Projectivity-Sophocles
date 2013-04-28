@@ -1,3 +1,9 @@
 *.aux
 *.ptb
 *.agdai
+*.blg
+*.log
+*.url
+*.ptb
+*.toc
+*.bbl

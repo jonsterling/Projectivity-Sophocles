@@ -4,7 +4,7 @@
 \documentclass[letterpaper, 11pt]{article}
 
 %options ghci -fglasgow-exts
-%include Analyze.fmt
+%include Projectivity.fmt
 
 \usepackage{setspace,stmaryrd,url,subfigure, amssymb, amsfonts,amsmath,multicol,booktabs}
 \usepackage[font=small, margin=2cm]{caption}
@@ -77,7 +77,7 @@ programming language Haskell \citep{haskell2010}.}
 > {-# LANGUAGE DeriveFunctor             #-}
 > {-# LANGUAGE NoMonomorphismRestriction #-}
 
-> module Analyze where
+> module Projectivity where
 
 > import Control.Applicative
 > import Control.Monad ((>=>))
@@ -548,8 +548,8 @@ factor, then, must be kept in mind, when analyzing data from such an
 experiment.
 
 \nocite{sophocles1999sophocles, euripides2002euripides}
-\bibliographystyle{plainnat} % basic style, author-year citations
-\bibliography{Analyze} % name your BibTeX data base
+\bibliographystyle{plainnat}
+\bibliography{Projectivity}
 \newpage
 
 \begin{appendices}

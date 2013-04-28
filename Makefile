@@ -1,15 +1,15 @@
-default : Analyze.pdf
+default : Projectivity.pdf
 
-Analyze.tex : Analyze.lhs
-	lhs2TeX Analyze.lhs > Analyze.tex
+Projectivity.tex : Projectivity.lhs
+	lhs2TeX Projectivity.lhs > Projectivity.tex
 
-Analyze.aux : Analyze.tex
-	xelatex Analyze
+Projectivity.aux : Projectivity.tex
+	xelatex Projectivity
 
-Analyze.blg : Analyze.aux
-	bibtex Analyze
+Projectivity.blg : Projectivity.aux
+	bibtex Projectivity
 
-Analyze.pdf : Analyze.tex Analyze.blg
-	xelatex analyze
-	xelatex analyze
+Projectivity.pdf : Projectivity.tex Projectivity.blg
+	xelatex Projectivity
+	xelatex Projectivity
 

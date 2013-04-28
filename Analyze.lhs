@@ -475,14 +475,15 @@ Appendix~\ref{sec:parsing}).
 
 \subsubsection*{Wackernagel's Law: Syntax or Phonology?}
 
-Another potention source of distortion is the choice of the annotators to label
+Another potential source of distortion is the choice of the annotators to label
 the members of postpositional particle chains in Wackernagel's Position as being
 heads of each other in a chain from left to right, such as where \textgreek{μὲν}
 is given as the head of \textgreek{δὴ} in Figure~\ref{fig:wackernagel}. I am
-unconvinced either way as to whether this is the relation for particle chains in
-Dependency Grammar, and simply would observe for the sake of argument that an
-alternative analysis, where the verb is the head of each, might yield a greater
-number of projectivity violations, as in Figure~\ref{fig:wackernagel-redux}.
+unconvinced either way as to whether this is the proper relation for particle
+chains in Dependency Grammar, and simply would observe for the sake of argument
+that an alternative analysis, where the verb is the head of each, might yield a
+greater number of projectivity violations, as in
+Figure~\ref{fig:wackernagel-redux}.
 
 \begin{figure}[h!]
 \centering
@@ -502,7 +503,7 @@ Figure~\ref{fig:wackernagel} yields a greater number of projectivity violations.
 \label{fig:wackernagel-redux}
 \end{figure}
 
-Further, if we allow ourselves to step outside the tiptoe of Dependency Grammar
+Further, if we allow ourselves to tiptoe outside the bounds of Dependency Grammar
 for a moment into a more orthodox, derivational approach, we will see that
 ``hyperbata'' which arise from enclitics are likely of a very different kind of
 displacement than that which occurs in, for instance, prepositional phrases or
@@ -534,11 +535,12 @@ separately into Phonological Form (PF) and Logical Form (LF).}
 \end{figure}
 
 Yet, the other kinds of displacement do indeed induce focus, whether it be weak
-or strong. And so, whether these hyperbata are taken as a kind of movement or
-not, it is untenable to analyze them as phonological movements: they must be
-present in the syntax prior to translation to PF.
+or strong. And so, whether these hyperbata are to be taken as a kind of movement
+or not, it is untenable to analyze them as phonological movements: they must be
+present in the syntax prior to translation to PF. Thus these are distinct from
+those displacements which arise from Wackernagel's Law.
 
-Thus, a general analysis of hyperbaton which uses Dependency Grammar as its
+In this way, a general analysis of hyperbaton which uses Dependency Grammar as its
 basis will invariably fail to recognize the difference between displacements
 which are \emph{phonological} in nature and those which are \emph{syntactic},
 where the latter are the true target of our investigation. This confounding

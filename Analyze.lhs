@@ -184,7 +184,7 @@ severity of hyperbata.
 \caption{``And he stood over the rooftops, gaped in a circle with murderous
 spears around the seven-gated mouth, and left'' (\emph{Antigone}, ll.\ 117--120) has
 six projectivity violations, five of which are induced by the hyperbaton of
-\textgreek{φονώσαισιν}, and one from the usual placement of δ' in Wackernagel's
+\textgreek{φονώσαισιν}, and one from the usual placement of \textgreek{δ'} in Wackernagel's
 Position.}
 \label{fig:stas-tree}
 \end{figure}
@@ -297,7 +297,7 @@ Table~\ref{tab:edges}.}
 
 In order for our view of a text's overall projectivity to not be skewed by its
 length, we must have a ratio. For the purposes of this paper, we shall call this
-metric |\proj|, as given by the following ratio:
+metric |proj|, as given by the following ratio:
 %
 \[ \wp = \frac{\text{number of violations}}{\text{number of arcs}} \]
 %

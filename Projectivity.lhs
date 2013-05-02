@@ -540,12 +540,11 @@ or not, it is untenable to analyze them as phonological movements: they must be
 present in the syntax prior to translation to PF. Thus these are distinct from
 those displacements which arise from Wackernagel's Law.
 
-In this way, a general analysis of hyperbaton which uses Dependency Grammar as its
-basis will invariably fail to recognize the difference between displacements
+In this way, a general account of hyperbaton which uses Dependency Grammar as
+its basis will invariably fail to recognize the difference between displacements
 which are \emph{phonological} in nature and those which are \emph{syntactic},
 where the latter are the true target of our investigation. This confounding
-factor, then, must be kept in mind, when analyzing data from such an
-experiment.
+factor, then, must be kept in mind, when analyzing data from such an experiment.
 
 \nocite{sophocles1999sophocles, euripides2002euripides}
 \bibliographystyle{plainnat}

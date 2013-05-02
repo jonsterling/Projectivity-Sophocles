@@ -360,10 +360,10 @@ trimeters into medium-to-long speeches and stichomythia.
 Appendix~\ref{sec:parsing} deals with parsing the Perseus XML representations of
 the \emph{Antigone} into dependency trees for which we can compute |proj|.
 
-To that end, I have selected passages from the \emph{Antigone} and organized
-them by type. Table~\ref{tab:lyrics} enumerates the lyric passages of the play,
-along with their computed |proj| values, and a cumulative |proj| value for the
-entire set. Table~\ref{tab:anapaests} does the same for anapaests. Lastly,
+I have selected passages from the \emph{Antigone} and organized them by type.
+Table~\ref{tab:lyrics} enumerates the lyric passages of the play, along with
+their computed |proj| values, and a cumulative |proj| value for the entire set.
+Table~\ref{tab:anapaests} does the same for anapaests. Lastly,
 Table~\ref{tab:dialogue} gives selections of dialogue (which is in iambic
 trimeters), divided between medium-to-long speeches and stichomythia.
 
@@ -419,7 +419,7 @@ it may be difficult to say very much about them that is relevant to the
 questions we are considering.
 
 As for dialog, longer-form speeches are largely conformant in their |proj|,
-with stichomythias varying a bit more. Speeches are a somewhat less projective
+with stichomythias varying a bit more. Speeches are somewhat less projective
 than the stichomythias, being typically more eloquent and long-winded than their
 argumentative, choppy counterparts.
 
@@ -477,11 +477,11 @@ Appendix~\ref{sec:parsing}).
 
 Another potential source of distortion is the choice of the annotators to label
 the members of postpositional particle chains in Wackernagel's Position as being
-heads of each other in a chain from left to right, such as where \textgreek{μὲν}
-is given as the head of \textgreek{δὴ} in Figure~\ref{fig:wackernagel}. I am
+heads of each other in a chain from left to right, such as where \textgreek{μέν}
+is given as the head of \textgreek{δή} in Figure~\ref{fig:wackernagel}. I am
 unconvinced either way as to whether this is the proper relation for particle
 chains in Dependency Grammar, and simply would observe for the sake of argument
-that an alternative analysis, where the verb is the head of each, might yield a
+that an alternative analysis, where the verb is the head of each, would yield a
 greater number of projectivity violations, as in
 Figure~\ref{fig:wackernagel-redux}.
 
@@ -506,7 +506,7 @@ Figure~\ref{fig:wackernagel} yields a greater number of projectivity violations.
 Further, if we allow ourselves to tiptoe outside the bounds of Dependency Grammar
 for a moment into a more orthodox, derivational approach, we will see that
 ``hyperbata'' which arise from enclitics are likely of a very different kind of
-displacement than that which occurs in, for instance, prepositional phrases or
+displacement from that which occurs in, for instance, prepositional phrases or
 noun phrases.  \citet{agbayani2010second} argue convincingly that the placement
 of enclitics in so-called ``second position'' is phonological, and not
 syntactic. I shall follow their analysis, which holds that the enclitics are
@@ -534,11 +534,13 @@ separately into Phonological Form (PF) and Logical Form (LF).}
 \label{fig:y-model}
 \end{figure}
 
-Yet, the other kinds of displacement do indeed induce focus, whether it be weak
-or strong. And so, whether these hyperbata are to be taken as a kind of movement
-or not, it is untenable to analyze them as phonological movements: they must be
-present in the syntax prior to translation to PF. Thus these are distinct from
-those displacements which arise from Wackernagel's Law.
+Yet, the other kinds of displacement (e.g.\ the displacement of a noun out of a
+determiner phrase) do indeed induce focus, whether it be weak or strong.  And
+so, whether these hyperbata are to be taken as a kind of movement in the
+Chomskyan sense or not, it is untenable to analyze them as phonological
+movements: for they must be present in the syntax prior to translation to PF.
+Thus these are distinct from those displacements which arise from Wackernagel's
+Law.
 
 In this way, a general account of hyperbaton which uses Dependency Grammar as
 its basis will invariably fail to recognize the difference between displacements
